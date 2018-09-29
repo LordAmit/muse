@@ -40,10 +40,10 @@ import edu.wm.cs.mplus.detectors.code.visitors.ASTHelper;
  * @since October 12, 2017
  */
 public class Muse {
-	
+
 	int counter = 0;
 	ASTRewrite rewriter;
-	
+
 	public void runMuse(String[] args) {
 		//Usage Error
 		if(args.length != 4){
@@ -55,13 +55,13 @@ public class Muse {
 			System.out.println("4. Mutants path");
 			return;
 		}
-		
+
 		//Getting arguments
 		String binariesFolder = args[0];
 		String rootPath = args[1];
 		String appName = args[2];
 		String mutantsFolder = args[3];
-		
+
 		try {
 			String newRoot = mutantsFolder + File.separator + appName;
 			if (new File(newRoot).exists()) {
@@ -72,35 +72,34 @@ public class Muse {
 		} catch (IOException e) {
 			return;
 		}
-	
-		
+
 		System.out.println(rootPath);
 		Collection<File> files = FileUtils.listFiles(new File(rootPath), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 		for (File file : files) {
 			try {
 				if(file.getName().endsWith(".java") && file.getCanonicalPath().contains(appName.replace(".", "/")) && !file.getName().contains("EmmaInstrumentation.java") && !file.getName().contains("FinishListener.java") && !file.getName().contains("InstrumentedActivity.java") && !file.getName().contains("SMSInstrumentedReceiver.java")){
-					//System.out.println("PROCESSING: " + file.getAbsolutePath());
-					String source = readSourceFile(file.getAbsolutePath()).toString();
-					CompilationUnit root = ASTHelper.getAST(source, binariesFolder, rootPath);
-					rewriter = ASTRewrite.create(root.getAST());
-					root.accept(new SourceVisitor());
-					
-					Document sourceDoc = new Document(source);
-					TextEdit edits = rewriter.rewriteAST(sourceDoc, null);
-					edits.apply(sourceDoc);
-					FileUtils.writeStringToFile(file, sourceDoc.get(), false);
-					rewriter = null;
-					
-					source = readSourceFile(file.getAbsolutePath()).toString();
-					root = ASTHelper.getAST(source, binariesFolder, rootPath);
-					rewriter = ASTRewrite.create(root.getAST());
-					root.accept(new SinkVisitor());
-					
-					//sourceDoc = new Document(source);
-					//edits = rewriter.rewriteAST(sourceDoc, null);
-					//edits.apply(sourceDoc);
-					//FileUtils.writeStringToFile(file, sourceDoc.get(), false);
-					//rewriter = null;
+					System.out.println("PROCESSING: " + file.getAbsolutePath());
+          String source = readSourceFile(file.getAbsolutePath()).toString();
+          CompilationUnit root = ASTHelper.getAST(source, binariesFolder, rootPath);
+          rewriter = ASTRewrite.create(root.getAST());
+          root.accept(new ReachabilityVisitor());
+
+          Document sourceDoc = new Document(source);
+          TextEdit edits = rewriter.rewriteAST(sourceDoc, null);
+          edits.apply(sourceDoc);
+          FileUtils.writeStringToFile(file, sourceDoc.get(), false);
+          rewriter = null;
+
+          /*source = readSourceFile(file.getAbsolutePath()).toString();
+          root = ASTHelper.getAST(source, binariesFolder, rootPath);
+          rewriter = ASTRewrite.create(root.getAST());
+          root.accept(new SinkVisitor());
+
+          sourceDoc = new Document(source);
+          edits = rewriter.rewriteAST(sourceDoc, null);
+          edits.apply(sourceDoc);
+          FileUtils.writeStringToFile(file, sourceDoc.get(), false);
+          rewriter = null;*/
 				}
 			} catch (IOException e) {
 				System.err.println(String.format("ERROR PROCESSING \"%s\": %s", file.getAbsolutePath(), e.getMessage()));
@@ -108,11 +107,11 @@ public class Muse {
 			} catch (MalformedTreeException | BadLocationException e) {
 				System.err.println("ERROR EDITING AST: " + e.getMessage());
 				return;
-			} 
+			}
 		}
 	}
 
-	
+
 	private StringBuffer readSourceFile(String filePath) throws FileNotFoundException, IOException {
 		StringBuffer source = new StringBuffer();
 		BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -124,7 +123,7 @@ public class Muse {
 		reader.close();
 		return source;
 	}
-	
+
 	private class ReachabilityVisitor extends ASTVisitor {
 		protected void insertDataLeak(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 			AST ast = node.getAST();
@@ -137,8 +136,8 @@ public class Muse {
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(leak, ASTNode.EMPTY_STATEMENT);
 			listRewrite.insertAt(placeHolder, index, null);
 		}
-		
-		
+
+
 		public boolean visit(TypeDeclaration node) {
 			// Classes and Interfaces
 			if (node.isInterface()) {
@@ -149,7 +148,7 @@ public class Muse {
 			insertDataLeak(node, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
 			return true;
 		}
-		
+
 		public boolean visit(AnonymousClassDeclaration node) {
 			// Anonymous classes
 			String loc = "1.<init>";
@@ -158,7 +157,7 @@ public class Muse {
 			return true;
 		}
 
-		
+
 		public boolean visit(Block node) {
 			// Blocks
 			int index = 0;
@@ -190,10 +189,10 @@ public class Muse {
 			return true;
 		}
 	}
-	
-	
+
+
 	private class ComplexVisitor extends ReachabilityVisitor {
-		
+
 		String[] paths = new String[] {
 				"String[] leakArRay%d = new String[] {\"n/a\", dataLeAk%d};\n"
 				+ "String dataLeAkPath%d = leakArRay%d[leakArRay%d.length - 1];",
@@ -213,7 +212,7 @@ public class Muse {
 				+ "dataLeAkPath%d = leakErRor%d.getMessage();"
 			    + "}"
 		};
-		
+
 		@Override
 		protected void insertDataLeak(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 			AST ast = node.getAST();
@@ -225,9 +224,9 @@ public class Muse {
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(leak, ASTNode.EMPTY_STATEMENT);
 			listRewrite.insertAt(placeHolder, index, null);
 
-			
+
 			}
-		
+
 		public boolean visit(TypeDeclaration node) {
 			// Classes and Interfaces
 			if (node.isInterface()) {
@@ -235,15 +234,15 @@ public class Muse {
 			}
 			return true;
 		}
-		
+
 		public boolean visit(AnonymousClassDeclaration node) {
 			// Anonymous classes
 			return true;
 		}
 	}
 
-	
-	private class SourceVisitor extends ASTVisitor {		
+
+	private class SourceVisitor extends ASTVisitor {
 		private void insertSource(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 			ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 			String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();", counter);
@@ -251,15 +250,15 @@ public class Muse {
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
 			listRewrite.insertAt(placeHolder, index, null);
 		}
-		
+
 		private void insertVariable(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 			ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 			String variable = String.format("String dataLeAk%d = \"\";", counter);
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
 			listRewrite.insertAt(placeHolder, index, null);
 		}
-	
-		
+
+
 		public boolean visit(MethodDeclaration method) {
 			// Methods
 			Block node = method.getBody();
@@ -314,17 +313,17 @@ public class Muse {
 					inAnonymousClass = true;
 					break;
 				}
-				n = n.getParent();	
+				n = n.getParent();
 			}
 			return true;
 		}
 	}
-	
-	
-	private class SinkVisitor extends ASTVisitor {	
+
+
+	private class SinkVisitor extends ASTVisitor {
 		Pattern variablePattern = Pattern.compile("(.*String dataLeAk)(\\d+).*");   // the pattern to search for
 		HashMap<Integer, Integer> repeatCounts = new HashMap<Integer, Integer>();
-	    
+
 		private void insertSink(ASTNode node, int index, int count, ChildListPropertyDescriptor nodeProperty, ASTNode method) {
 			ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 			int cur = repeatCounts.containsKey(count) ? repeatCounts.get(count) : -1;
@@ -348,15 +347,15 @@ public class Muse {
 			}
 			System.out.println(String.format("leak-%d-%d: %s.%s", count, repeatCounts.get(count), className, methodName));
 		}
-		
+
 		private void insertSource(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 			ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 			String source = String.format("final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();", counter);
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
 			listRewrite.insertAt(placeHolder, index, null);
 		}
-	
-		
+
+
 		public boolean visit(MethodDeclaration method) {
 			// Methods
 			int count = 0;
@@ -422,7 +421,7 @@ public class Muse {
 					inAnonymousClass = true;
 					break;
 				}
-				n = n.getParent();	
+				n = n.getParent();
 			}
 			while (inAnonymousClass && n != null && !inStaticContext) {
 				switch (n.getNodeType()) {
@@ -464,14 +463,13 @@ public class Muse {
 					insertSink(node, index, counter, Block.STATEMENTS_PROPERTY, method);
 					break;
 				}
-				n = n.getParent();	
+				n = n.getParent();
 			}
 			return true;
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		new Muse().runMuse(args);
 	}
 }
-
