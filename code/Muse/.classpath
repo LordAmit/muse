@@ -16,6 +16,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/amit/git/muse/Muse/org.eclipse.equinox.common-3.6.200.v20130402-1505.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
