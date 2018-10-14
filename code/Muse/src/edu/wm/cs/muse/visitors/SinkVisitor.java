@@ -1,4 +1,4 @@
-package edu.wm.cs.muse;
+package edu.wm.cs.muse.visitors;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -18,7 +18,9 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
-class SinkVisitor extends ASTVisitor {
+import edu.wm.cs.muse.utility.Utility;
+
+public class SinkVisitor extends ASTVisitor {
 	ASTRewrite rewriter;
 
 	public SinkVisitor(ASTRewrite rewriter) {

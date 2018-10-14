@@ -15,6 +15,10 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
 
+import edu.wm.cs.muse.mdroid.ASTHelper;
+import edu.wm.cs.muse.visitors.ReachabilityVisitor;
+import edu.wm.cs.muse.visitors.SinkVisitor;
+
 /**
  *
  * @author Richard Bonett

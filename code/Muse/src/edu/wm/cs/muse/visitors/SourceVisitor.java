@@ -1,4 +1,4 @@
-package edu.wm.cs.muse;
+package edu.wm.cs.muse.visitors;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -11,6 +11,8 @@ import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
+
+import edu.wm.cs.muse.utility.Utility;
 
 class SourceVisitor extends ASTVisitor {
 	ASTRewrite rewriter;

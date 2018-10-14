@@ -1,6 +1,6 @@
-package edu.wm.cs.muse;
+package edu.wm.cs.muse.mdroid;
 
-public class MethodCallVO {
+public class MethodDeclarationVO {
 
 	private String classQualifiedName;
 	private String methodName;
@@ -10,14 +10,14 @@ public class MethodCallVO {
 	
 	
 	
-	public MethodCallVO(String classQualifiedName, String methodName) {
+	public MethodDeclarationVO(String classQualifiedName, String methodName) {
 		this.classQualifiedName = classQualifiedName;
 		this.methodName = methodName;
 	}
 	
 	
 	
-	public MethodCallVO(String classQualifiedName, String methodName, int start, int length) {
+	public MethodDeclarationVO(String classQualifiedName, String methodName, int start, int length) {
 		super();
 		this.classQualifiedName = classQualifiedName;
 		this.methodName = methodName;
@@ -30,7 +30,7 @@ public class MethodCallVO {
 
 
 
-	public MethodCallVO(String classQualifiedName, String methodName, int line, int start, int length) {
+	public MethodDeclarationVO(String classQualifiedName, String methodName, int line, int start, int length) {
 		super();
 		this.classQualifiedName = classQualifiedName;
 		this.methodName = methodName;
