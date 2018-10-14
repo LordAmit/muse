@@ -27,6 +27,7 @@ public class ReachabilityVisitor extends ASTVisitor{
 		String sink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
 		String leak = String.format(source, Utility.COUNTER_GLOBAL) + "\n" + String.format(sink, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL);
 		Utility.COUNTER_GLOBAL++;
+		
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(leak, ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 	}
