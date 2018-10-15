@@ -1,4 +1,4 @@
-package edu.wm.cs.muse;
+package main.java.edu.wm.cs.muse;
 
 import java.io.BufferedReader;
 import java.io.File;

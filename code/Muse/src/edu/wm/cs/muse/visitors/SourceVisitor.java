@@ -14,27 +14,28 @@ import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
 import edu.wm.cs.muse.utility.Utility;
 
-class SourceVisitor extends ASTVisitor {
+class SourceVisitor extends Visitor {
 	ASTRewrite rewriter;
 
 	public SourceVisitor(ASTRewrite rewriter) {
-
-		this.rewriter = rewriter;
+//		this.rewriter = rewriter;
+		super(rewriter);
 	}
 
-	private void insertSource(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
-		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
+	@Override
+	protected void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
+		ListRewrite listRewrite = super.rewriter.getListRewrite(node, nodeProperty);
 		String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
 				Utility.COUNTER_GLOBAL);
 		Utility.COUNTER_GLOBAL++;
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
+		Statement placeHolder = (Statement) super.rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 	}
 
 	private void insertVariable(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
-		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
+		ListRewrite listRewrite = super.rewriter.getListRewrite(node, nodeProperty);
 		String variable = String.format("String dataLeAk%d = \"\";", Utility.COUNTER_GLOBAL);
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
+		Statement placeHolder = (Statement) super.rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 	}
 
@@ -74,7 +75,7 @@ class SourceVisitor extends ASTVisitor {
 			 */
 			case ASTNode.TYPE_DECLARATION:
 				insertVariable(n, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
-				insertSource(node, index, Block.STATEMENTS_PROPERTY);
+				insertion(node, index, Block.STATEMENTS_PROPERTY);
 				try {
 					if (Modifier.isStatic(((TypeDeclaration) n).getModifiers())) {
 						inStaticContext = true;
@@ -84,12 +85,24 @@ class SourceVisitor extends ASTVisitor {
 				break;
 			case ASTNode.ANONYMOUS_CLASS_DECLARATION:
 				insertVariable(n, 0, AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY);
-				insertSource(node, index, Block.STATEMENTS_PROPERTY);
+				insertion(node, index, Block.STATEMENTS_PROPERTY);
 				inAnonymousClass = true;
 				break;
 			}
 			n = n.getParent();
 		}
+		return true;
+	}
+
+	@Override
+	public boolean visit(TypeDeclaration node) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean visit(AnonymousClassDeclaration node) {
+		// TODO Auto-generated method stub
 		return true;
 	}
 }

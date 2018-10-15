@@ -1,6 +1,6 @@
 package edu.wm.cs.muse.visitors;
 
-import org.eclipse.jdt.core.dom.AST;
+//import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
@@ -31,9 +31,9 @@ class ComplexVisitor extends ReachabilityVisitor {
 					+ "} catch (Exception leakErRor%d) {" + "dataLeAkPath%d = leakErRor%d.getMessage();" + "}" };
 
 	@Override
-	protected void insertDataLeak(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
+	protected void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 //		AST ast = node.getAST();
-		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
+		ListRewrite listRewrite = super.rewriter.getListRewrite(node, nodeProperty);
 		String source = String.format(
 				"String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
 				Utility.COUNTER_GLOBAL);
@@ -45,7 +45,7 @@ class ComplexVisitor extends ReachabilityVisitor {
 						Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL)
 				+ "\n" + sink;
 		Utility.COUNTER_GLOBAL++;
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(leak, ASTNode.EMPTY_STATEMENT);
+		Statement placeHolder = (Statement) super.rewriter.createStringPlaceholder(leak, ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 
 	}
