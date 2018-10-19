@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="code/Muse/src"/>
+	<classpathentry kind="src" path="code/src"/>
+	<classpathentry kind="lib" path="code/Muse/org.eclipse.equinox.common-3.6.200.v20130402-1505.jar"/>
+	<classpathentry kind="lib" path="code/Muse/target/Muse-1.0.0.jar"/>
+	<classpathentry kind="lib" path="code/Muse/target/original-Muse-1.0.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

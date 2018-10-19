@@ -1,8 +1,8 @@
 package edu.wm.cs.muse.visitors;
 
-//import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
-//import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
@@ -14,26 +14,23 @@ import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
 import edu.wm.cs.muse.utility.Utility;
 
-public class ReachabilityVisitor extends Visitor{
+public class ReachabilityVisitor extends ASTVisitor{
 	
 	ASTRewrite rewriter;
 	public ReachabilityVisitor(ASTRewrite rewriter) {
-//		this.rewriter = rewriter;
-		super(rewriter);
-
+		this.rewriter = rewriter;
 	}
 	
-	@Override
 	protected void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 //		AST ast = node.getAST();
-		ListRewrite listRewrite = super.rewriter.getListRewrite(node, nodeProperty);
+		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 
 		String source = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
 		String sink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
 		String leak = String.format(source, Utility.COUNTER_GLOBAL) + "\n" + String.format(sink, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL);
 		Utility.COUNTER_GLOBAL++;
 		
-		Statement placeHolder = (Statement) super.rewriter.createStringPlaceholder(leak, ASTNode.EMPTY_STATEMENT);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(leak, ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 	}
 
@@ -83,12 +80,6 @@ public class ReachabilityVisitor extends Visitor{
 		String loc = className + "." + methodName;
 		System.out.println(String.format("leak-%d: %s", Utility.COUNTER_GLOBAL, loc));
 		insertion(node, index, Block.STATEMENTS_PROPERTY);
-		return true;
-	}
-
-	@Override
-	public boolean visit(MethodDeclaration method) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 }

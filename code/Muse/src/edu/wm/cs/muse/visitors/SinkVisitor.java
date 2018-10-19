@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jdt.core.dom.ASTNode;
-//import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.BodyDeclaration;
@@ -20,12 +20,11 @@ import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
 import edu.wm.cs.muse.utility.Utility;
 
-public class SinkVisitor extends Visitor {
+public class SinkVisitor extends ASTVisitor {
 	ASTRewrite rewriter;
 
 	public SinkVisitor(ASTRewrite rewriter) {
-//		this.rewriter = rewriter;
-		super(rewriter);
+		this.rewriter = rewriter;
 	}
 
 	Pattern variablePattern = Pattern.compile("(.*String dataLeAk)(\\d+).*"); // the pattern to search for
@@ -33,12 +32,12 @@ public class SinkVisitor extends Visitor {
 
 	private void insertSink(ASTNode node, int index, int count, ChildListPropertyDescriptor nodeProperty,
 			ASTNode method) {
-		ListRewrite listRewrite = super.rewriter.getListRewrite(node, nodeProperty);
+		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		int cur = repeatCounts.containsKey(count) ? repeatCounts.get(count) : -1;
 		repeatCounts.put(count, cur + 1);
 		String sink = String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", count, repeatCounts.get(count),
 				count);
-		Statement placeHolder = (Statement) super.rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 		String methodName = ((MethodDeclaration) method).getName().toString();
 		String className = "";
@@ -57,11 +56,11 @@ public class SinkVisitor extends Visitor {
 	}
 
 	private void insertSource(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
-		ListRewrite listRewrite = super.rewriter.getListRewrite(node, nodeProperty);
+		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		String source = String.format(
 				"final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
 				Utility.COUNTER_GLOBAL);
-		Statement placeHolder = (Statement) super.rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 	}
 
@@ -175,24 +174,6 @@ public class SinkVisitor extends Visitor {
 			}
 			n = n.getParent();
 		}
-		return true;
-	}
-
-	@Override
-	protected void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean visit(TypeDeclaration node) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean visit(AnonymousClassDeclaration node) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 }
