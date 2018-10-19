@@ -46,17 +46,18 @@ public class Muse {
 		// Getting arguments
 		String binariesFolder = args[0];
 		String rootPath = args[1];
-		String appName = args[2];
+//		String appName = args[2];
 //		String mutantsFolder = args[3];
 
 		FileUtility.setMutantsDirectory();
 
-		System.out.println(rootPath);
-		Collection<File> files = FileUtils.listFiles(new File(rootPath), TrueFileFilter.INSTANCE,
+		System.out.println(Arguments.getRootPath());
+		Collection<File> files = FileUtils.listFiles(new File(Arguments.getRootPath()), TrueFileFilter.INSTANCE,
 				TrueFileFilter.INSTANCE);
 		for (File file : files) {
 			try {
-				if (file.getName().endsWith(".java") && file.getCanonicalPath().contains(appName.replace(".", "/"))
+				if (file.getName().endsWith(".java")
+						&& file.getCanonicalPath().contains(Arguments.getAppName().replace(".", "/"))
 						&& !file.getName().contains("EmmaInstrumentation.java")
 						&& !file.getName().contains("FinishListener.java")
 						&& !file.getName().contains("InstrumentedActivity.java")
@@ -65,7 +66,8 @@ public class Muse {
 					// System.out.println("PROCESSING: " + file.getAbsolutePath());
 
 					String source = FileUtility.readSourceFile(file.getAbsolutePath()).toString();
-					CompilationUnit root = ASTHelper.getAST(source, binariesFolder, rootPath);
+					
+					CompilationUnit root = ASTHelper.getAST(source, binariesFolder, Arguments.getRootPath());
 					rewriter = ASTRewrite.create(root.getAST());
 					root.accept(new ReachabilityVisitor(rewriter));
 
