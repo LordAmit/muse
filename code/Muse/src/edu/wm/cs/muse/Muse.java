@@ -16,6 +16,8 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
 
 import edu.wm.cs.muse.mdroid.ASTHelper;
+import edu.wm.cs.muse.utility.Arguments;
+import edu.wm.cs.muse.utility.Utility;
 import edu.wm.cs.muse.visitors.ReachabilityVisitor;
 import edu.wm.cs.muse.visitors.SinkVisitor;
 
@@ -39,20 +41,20 @@ public class Muse {
 			System.out.println("4. Mutants path");
 			return;
 		}
-
+		Arguments.extractArguments(args);
 		// Getting arguments
 		String binariesFolder = args[0];
 		String rootPath = args[1];
 		String appName = args[2];
-		String mutantsFolder = args[3];
+//		String mutantsFolder = args[3];
 
 		try {
-			String newRoot = mutantsFolder + File.separator + appName;
+			String newRoot = Arguments.getMutantsFolder() + File.separator + Arguments.getAppName();
 			if (new File(newRoot).exists()) {
 				FileUtils.deleteDirectory(new File(newRoot));
 			}
-			FileUtils.copyDirectory(new File(rootPath), new File(newRoot));
-			rootPath = newRoot;
+			FileUtils.copyDirectory(new File(Arguments.getRootPath()), new File(newRoot));
+			Arguments.setRootPath(newRoot);
 		} catch (IOException e) {
 			return;
 		}
@@ -70,7 +72,7 @@ public class Muse {
 
 					// System.out.println("PROCESSING: " + file.getAbsolutePath());
 
-					String source = readSourceFile(file.getAbsolutePath()).toString();
+					String source = Utility.readSourceFile(file.getAbsolutePath()).toString();
 					CompilationUnit root = ASTHelper.getAST(source, binariesFolder, rootPath);
 					rewriter = ASTRewrite.create(root.getAST());
 					root.accept(new ReachabilityVisitor(rewriter));
@@ -81,10 +83,10 @@ public class Muse {
 					FileUtils.writeStringToFile(file, sourceDoc.get(), false);
 					rewriter = null;
 
-					source = readSourceFile(file.getAbsolutePath()).toString();
-					root = ASTHelper.getAST(source, binariesFolder, rootPath);
-					rewriter = ASTRewrite.create(root.getAST());
-					root.accept(new SinkVisitor(rewriter));
+//					source = readSourceFile(file.getAbsolutePath()).toString();
+//					root = ASTHelper.getAST(source, binariesFolder, rootPath);
+//					rewriter = ASTRewrite.create(root.getAST());
+//					root.accept(new SinkVisitor(rewriter));
 
 					// sourceDoc = new Document(source);
 					// edits = rewriter.rewriteAST(sourceDoc, null);
@@ -104,17 +106,17 @@ public class Muse {
 		}
 	}
 
-	private StringBuffer readSourceFile(String filePath) throws FileNotFoundException, IOException {
-		StringBuffer source = new StringBuffer();
-		BufferedReader reader = new BufferedReader(new FileReader(filePath));
-		String line = null;
-
-		while ((line = reader.readLine()) != null) {
-			source.append(line).append("\n");
-		}
-		reader.close();
-		return source;
-	}
+//	private StringBuffer readSourceFile(String filePath) throws FileNotFoundException, IOException {
+//		StringBuffer source = new StringBuffer();
+//		BufferedReader reader = new BufferedReader(new FileReader(filePath));
+//		String line = null;
+//
+//		while ((line = reader.readLine()) != null) {
+//			source.append(line).append("\n");
+//		}
+//		reader.close();
+//		return source;
+//	}
 
 	public static void main(String[] args) {
 		new Muse().runMuse(args);
