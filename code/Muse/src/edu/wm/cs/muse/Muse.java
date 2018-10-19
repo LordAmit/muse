@@ -44,8 +44,8 @@ public class Muse {
 		}
 		Arguments.extractArguments(args);
 		// Getting arguments
-		String binariesFolder = args[0];
-		String rootPath = args[1];
+//		String binariesFolder = args[0];
+//		String rootPath = args[1];
 //		String appName = args[2];
 //		String mutantsFolder = args[3];
 
@@ -67,7 +67,7 @@ public class Muse {
 
 					String source = FileUtility.readSourceFile(file.getAbsolutePath()).toString();
 					
-					CompilationUnit root = ASTHelper.getAST(source, binariesFolder, Arguments.getRootPath());
+					CompilationUnit root = ASTHelper.getAST(source, Arguments.getBinariesFolder(), Arguments.getRootPath());
 					rewriter = ASTRewrite.create(root.getAST());
 					root.accept(new ReachabilityVisitor(rewriter));
 
