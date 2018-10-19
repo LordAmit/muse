@@ -17,6 +17,7 @@ import org.eclipse.text.edits.TextEdit;
 
 import edu.wm.cs.muse.mdroid.ASTHelper;
 import edu.wm.cs.muse.utility.Arguments;
+import edu.wm.cs.muse.utility.FileUtility;
 import edu.wm.cs.muse.utility.Utility;
 import edu.wm.cs.muse.visitors.ReachabilityVisitor;
 import edu.wm.cs.muse.visitors.SinkVisitor;
@@ -48,16 +49,7 @@ public class Muse {
 		String appName = args[2];
 //		String mutantsFolder = args[3];
 
-		try {
-			String newRoot = Arguments.getMutantsFolder() + File.separator + Arguments.getAppName();
-			if (new File(newRoot).exists()) {
-				FileUtils.deleteDirectory(new File(newRoot));
-			}
-			FileUtils.copyDirectory(new File(Arguments.getRootPath()), new File(newRoot));
-			Arguments.setRootPath(newRoot);
-		} catch (IOException e) {
-			return;
-		}
+		FileUtility.setMutantsDirectory();
 
 		System.out.println(rootPath);
 		Collection<File> files = FileUtils.listFiles(new File(rootPath), TrueFileFilter.INSTANCE,
@@ -72,7 +64,7 @@ public class Muse {
 
 					// System.out.println("PROCESSING: " + file.getAbsolutePath());
 
-					String source = Utility.readSourceFile(file.getAbsolutePath()).toString();
+					String source = FileUtility.readSourceFile(file.getAbsolutePath()).toString();
 					CompilationUnit root = ASTHelper.getAST(source, binariesFolder, rootPath);
 					rewriter = ASTRewrite.create(root.getAST());
 					root.accept(new ReachabilityVisitor(rewriter));
