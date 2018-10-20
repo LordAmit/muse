@@ -34,14 +34,10 @@ public class Muse {
 	public void runMuse(String[] args) {
 		// Usage Error
 		if (args.length != 4) {
-			System.out.println("******* ERROR: INCORRECT USAGE *******");
-			System.out.println("Argument List:");
-			System.out.println("1. Binaries path");
-			System.out.println("2. App Source Code path");
-			System.out.println("3. App Name");
-			System.out.println("4. Mutants path");
+			printArgumentError();
 			return;
 		}
+		
 		Arguments.extractArguments(args);
 		// Getting arguments
 //		String binariesFolder = args[0];
@@ -52,8 +48,10 @@ public class Muse {
 		FileUtility.setMutantsDirectory();
 
 		System.out.println(Arguments.getRootPath());
+		
 		Collection<File> files = FileUtils.listFiles(new File(Arguments.getRootPath()), TrueFileFilter.INSTANCE,
 				TrueFileFilter.INSTANCE);
+		
 		for (File file : files) {
 			try {
 				if (file.getName().endsWith(".java")
@@ -67,8 +65,13 @@ public class Muse {
 
 					String source = FileUtility.readSourceFile(file.getAbsolutePath()).toString();
 					
+					//Creates an abstract syntax tree.
 					CompilationUnit root = ASTHelper.getAST(source, Arguments.getBinariesFolder(), Arguments.getRootPath());
+
+					//Creates a new instance for describing manipulations of the given AST.
 					rewriter = ASTRewrite.create(root.getAST());
+					
+					//Accepts the given visitor on a visit of the current node, which is root here.
 					root.accept(new ReachabilityVisitor(rewriter));
 
 					Document sourceDoc = new Document(source);
@@ -98,6 +101,15 @@ public class Muse {
 				return;
 			}
 		}
+	}
+
+	private void printArgumentError() {
+		System.out.println("******* ERROR: INCORRECT USAGE *******");
+		System.out.println("Argument List:");
+		System.out.println("1. Binaries path");
+		System.out.println("2. App Source Code path");
+		System.out.println("3. App Name");
+		System.out.println("4. Mutants path");
 	}
 
 //	private StringBuffer readSourceFile(String filePath) throws FileNotFoundException, IOException {
