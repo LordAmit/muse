@@ -18,7 +18,7 @@ public class FileUtility {
 	public static int COUNTER_GLOBAL = 0;
 
 	/**
-	 * reads a text file using and returns the contents through StringBuffer
+	 * reads a text file and returns the contents through StringBuffer
 	 * 
 	 * @param filePath of the file
 	 * @return StringBuffer that contains the text contents of file
