@@ -39,11 +39,6 @@ public class Muse {
 		}
 		
 		Arguments.extractArguments(args);
-		// Getting arguments
-//		String binariesFolder = args[0];
-//		String rootPath = args[1];
-//		String appName = args[2];
-//		String mutantsFolder = args[3];
 
 		FileUtility.setMutantsDirectory();
 
