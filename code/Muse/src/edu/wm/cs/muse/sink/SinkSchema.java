@@ -13,10 +13,7 @@ import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import edu.wm.cs.muse.utility.Utility;
-import edu.wm.cs.muse.reachability.ReachabilityNodeChangeContainers;
-import edu.wm.cs.muse.sink.SinkOperator;
 
 /**
  * The SinkSchema visits each node the AST tree to find data sinks, then calls on SinkOperator to insert a

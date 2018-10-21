@@ -8,17 +8,49 @@ import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
-import edu.wm.cs.muse.sink.SinkNodeChangeContainers;
 import edu.wm.cs.muse.utility.Utility;
+
+/**
+ * The SourceOperator class formats and inserts the string data source markers according to the Source 
+ * Schema
+ * @author yang
+ */
 
 public class SourceOperator {
 	
-		ArrayList<SourceNodeChangeContainers> nodeChanges;
-		ASTRewrite rewriter;
+	ArrayList<SourceNodeChangeContainers> nodeChanges;
+	ASTRewrite rewriter;
 
-		public SourceOperator(ASTRewrite rewriter) {
-			this.rewriter = rewriter;
+	public SourceOperator(ASTRewrite rewriter) {
+		this.rewriter = rewriter;
+	}
+	
+	public SourceOperator(ASTRewrite rewriter, ArrayList<SourceNodeChangeContainers> nodeChanges) {
+		this.rewriter = rewriter;
+		this.nodeChanges = nodeChanges;
+	}
+	
+	/**
+	 * Modifies the ASTRewrite to swap between insertions based on the nodeChanges and returns it.
+	 * @return
+	 */
+		
+	public ASTRewrite InsertChanges() {
+
+		for (SourceNodeChangeContainers nodeChange : nodeChanges) {
+			
+			if (nodeChange.insertionType == 0)
+			{
+				insertion(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
+			}
+				
+			else
+			{
+				insertVariable(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
+			}
 		}
+		return rewriter;
+	}
 	
 	protected void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);

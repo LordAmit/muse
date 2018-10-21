@@ -10,7 +10,11 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import edu.wm.cs.muse.sink.SinkNodeChangeContainers;
+/**
+ * The SourceSchema visits each node the AST tree to find data sources, then inserts a placeholder string 
+ * through an SourceOperator.
+ * @author yang
+ */
 
 public class SourceSchema extends ASTVisitor {
 	
@@ -24,6 +28,9 @@ public class SourceSchema extends ASTVisitor {
 		return this.nodeChanges;
 	};
 	
+	/*
+	 * Includes an additional integer param to differentiate between insertion and insertVariable
+	 */
 	public boolean visit(MethodDeclaration method) {
 		// Methods
 		Block node = method.getBody();
@@ -61,6 +68,8 @@ public class SourceSchema extends ASTVisitor {
 			case ASTNode.TYPE_DECLARATION:
 //				insertVariable(n, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
 //				insertion(node, index, Block.STATEMENTS_PROPERTY);
+				nodeChanges.add(new SourceNodeChangeContainers(n, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, 1));
+				nodeChanges.add(new SourceNodeChangeContainers(node, index, Block.STATEMENTS_PROPERTY, 0));
 				try {
 					if (Modifier.isStatic(((TypeDeclaration) n).getModifiers())) {
 						inStaticContext = true;
@@ -71,6 +80,8 @@ public class SourceSchema extends ASTVisitor {
 			case ASTNode.ANONYMOUS_CLASS_DECLARATION:
 //				insertVariable(n, 0, AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY);
 //				insertion(node, index, Block.STATEMENTS_PROPERTY);
+				nodeChanges.add(new SourceNodeChangeContainers(n, 0, AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY, 1));
+				nodeChanges.add(new SourceNodeChangeContainers(node, index, Block.STATEMENTS_PROPERTY, 0));
 				inAnonymousClass = true;
 				break;
 			}

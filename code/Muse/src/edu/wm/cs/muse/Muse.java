@@ -87,15 +87,15 @@ public class Muse {
 					edits.apply(sourceDoc);
 					FileUtils.writeStringToFile(file, sourceDoc.get(), false);
 					rewriter = null;
-					
-//					SinkSchema sinkschema = new SinkSchema(rewriter);
-//					root.accept(sinkschema);
 
 //					source = readSourceFile(file.getAbsolutePath()).toString();
 //					root = ASTHelper.getAST(source, binariesFolder, rootPath);
 					
 					/*
 					 * Uses the rewriter to create an AST for the SinkSchema to utilize
+					 * Then creates a new instance to manipulate the AST
+					 * The root node then accepts the schema visitor on the visit
+					 * The rewriter implements the specified changes made by the sink operator
 					 */
 					SinkSchema sinkScheme = new SinkSchema();
 					rewriter = ASTRewrite.create(root.getAST());
