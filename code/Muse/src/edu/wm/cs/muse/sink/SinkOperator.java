@@ -1,5 +1,6 @@
 package edu.wm.cs.muse.sink;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
@@ -17,11 +18,37 @@ import edu.wm.cs.muse.utility.Utility;
  */
 
 public class SinkOperator {
-	
+	ArrayList<SinkNodeChangeContainers> nodeChanges;
 	ASTRewrite rewriter;
 
 	public SinkOperator(ASTRewrite rewriter) {
 		this.rewriter = rewriter;
+	}
+	
+	public SinkOperator(ASTRewrite rewriter, ArrayList<SinkNodeChangeContainers> nodeChanges) {
+		this.rewriter = rewriter;
+		this.nodeChanges = nodeChanges;
+	}
+	
+	/**
+	 * modifies the ASTRewrite based on the nodeChanges and returns it.
+	 * @return
+	 */
+	public ASTRewrite InsertChanges() {
+
+		for (SinkNodeChangeContainers nodeChange : nodeChanges) {
+		
+			if (nodeChange.insertion == 0)
+			{
+				insertSink(nodeChange.node, nodeChange.index, nodeChange.count, nodeChange.propertyDescriptor, nodeChange.method);
+			}
+			
+			else
+			{
+				insertSource(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
+			}
+		}
+		return rewriter;
 	}
 	
 	HashMap<Integer, Integer> repeatCounts = new HashMap<Integer, Integer>();

@@ -1,5 +1,6 @@
 package edu.wm.cs.muse.sink;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +15,7 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import edu.wm.cs.muse.utility.Utility;
+import edu.wm.cs.muse.reachability.ReachabilityNodeChangeContainers;
 import edu.wm.cs.muse.sink.SinkOperator;
 
 /**
@@ -24,16 +26,22 @@ import edu.wm.cs.muse.sink.SinkOperator;
 
 public class SinkSchema extends ASTVisitor {
 
-	ASTRewrite rewriter;
+	private ArrayList<SinkNodeChangeContainers> nodeChanges;
 
 	public SinkSchema(ASTRewrite rewriter) {
-		this.rewriter = rewriter;
+		nodeChanges = new ArrayList<SinkNodeChangeContainers>();
 	}
+	
+	public ArrayList<SinkNodeChangeContainers> getNodeChanges(){
+		return this.nodeChanges;
+	};
 	
 	Pattern variablePattern = Pattern.compile("(.*String dataLeAk)(\\d+).*"); // the pattern to search for
 	
+/*
+ * Includes an additional integer param to differentiate between insertSource and insertSink
+ */
 	public boolean visit(MethodDeclaration method) {
-		SinkOperator op = new SinkOperator(rewriter);
 		// Methods
 		int count = 0;
 		int index = 0;
@@ -72,7 +80,8 @@ public class SinkSchema extends ASTVisitor {
 						Matcher matcher = variablePattern.matcher(field.toString());
 						if (matcher.find() && field.toString().trim().startsWith("String dataLeAk")) {
 							count = Integer.valueOf(matcher.group(2));
-							op.insertSink(node, index, count, Block.STATEMENTS_PROPERTY, method);
+							nodeChanges.add(new SinkNodeChangeContainers(node, index, count, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, method, 0));
+//							op.insertSink(node, index, count, Block.STATEMENTS_PROPERTY, method);
 						}
 					}
 				}
@@ -87,7 +96,8 @@ public class SinkSchema extends ASTVisitor {
 						Matcher matcher = variablePattern.matcher(field.toString());
 						if (matcher.find() && field.toString().trim().startsWith("String dataLeAk")) {
 							count = Integer.valueOf(matcher.group(2));
-							op.insertSink(node, index, count, Block.STATEMENTS_PROPERTY, method);
+//							op.insertSink(node, index, count, Block.STATEMENTS_PROPERTY, method);
+							nodeChanges.add(new SinkNodeChangeContainers(node, index, count, Block.STATEMENTS_PROPERTY, method, 0));
 						}
 					}
 				}
@@ -117,8 +127,10 @@ public class SinkSchema extends ASTVisitor {
 
 			case ASTNode.TYPE_DECLARATION:
 				Utility.COUNTER_GLOBAL++;
-				op.insertSource(n, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
-				op.insertSink(node, index, Utility.COUNTER_GLOBAL, Block.STATEMENTS_PROPERTY, method);
+//				op.insertSource(n, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+//				op.insertSink(node, index, Utility.COUNTER_GLOBAL, Block.STATEMENTS_PROPERTY, method);
+				nodeChanges.add(new SinkNodeChangeContainers(n, 0, Utility.COUNTER_GLOBAL, Block.STATEMENTS_PROPERTY, method, 1));
+				nodeChanges.add(new SinkNodeChangeContainers(node, index, Utility.COUNTER_GLOBAL, Block.STATEMENTS_PROPERTY, method, 0));
 				try {
 					inStaticContext = Modifier.isStatic(((TypeDeclaration) n).getModifiers());
 				} catch (NullPointerException e) {
@@ -126,8 +138,10 @@ public class SinkSchema extends ASTVisitor {
 				break;
 			case ASTNode.ANONYMOUS_CLASS_DECLARATION:
 				Utility.COUNTER_GLOBAL++;
-				op.insertSource(n, 0, AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY);
-				op.insertSink(node, index, Utility.COUNTER_GLOBAL, Block.STATEMENTS_PROPERTY, method);
+//				op.insertSource(n, 0, AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY);
+//				op.insertSink(node, index, Utility.COUNTER_GLOBAL, Block.STATEMENTS_PROPERTY, method);
+				nodeChanges.add(new SinkNodeChangeContainers(n, 0, Utility.COUNTER_GLOBAL, AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY, method, 1));
+				nodeChanges.add(new SinkNodeChangeContainers(node, index, Utility.COUNTER_GLOBAL, Block.STATEMENTS_PROPERTY, method, 0));
 				break;
 			}
 			n = n.getParent();
