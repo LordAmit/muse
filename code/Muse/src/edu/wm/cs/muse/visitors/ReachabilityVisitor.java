@@ -1,6 +1,5 @@
 package edu.wm.cs.muse.visitors;
 
-import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
@@ -23,6 +22,7 @@ public class ReachabilityVisitor extends ASTVisitor{
 	
 	protected void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 //		AST ast = node.getAST();
+		//Creates and returns a new rewriter for describing modifications to the given list property of the given node.
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 
 		String source = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
