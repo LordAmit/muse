@@ -14,9 +14,6 @@ import org.apache.commons.io.FileUtils;
  *
  */
 public class FileUtility {
-	
-	public static int COUNTER_GLOBAL = 0;
-
 	/**
 	 * reads a text file and returns the contents through StringBuffer
 	 * 
