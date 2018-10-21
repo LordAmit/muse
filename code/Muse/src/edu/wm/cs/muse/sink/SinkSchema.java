@@ -28,7 +28,7 @@ public class SinkSchema extends ASTVisitor {
 
 	private ArrayList<SinkNodeChangeContainers> nodeChanges;
 
-	public SinkSchema(ASTRewrite rewriter) {
+	public SinkSchema() {
 		nodeChanges = new ArrayList<SinkNodeChangeContainers>();
 	}
 	

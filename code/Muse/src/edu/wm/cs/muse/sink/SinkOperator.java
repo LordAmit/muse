@@ -38,7 +38,7 @@ public class SinkOperator {
 
 		for (SinkNodeChangeContainers nodeChange : nodeChanges) {
 		
-			if (nodeChange.insertion == 0)
+			if (nodeChange.insertionType == 0)
 			{
 				insertSink(nodeChange.node, nodeChange.index, nodeChange.count, nodeChange.propertyDescriptor, nodeChange.method);
 			}

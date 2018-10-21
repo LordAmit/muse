@@ -16,7 +16,7 @@ public class SinkNodeChangeContainers {
 	ChildListPropertyDescriptor propertyDescriptor;
 	int count;
 	ASTNode method;
-	int insertion;
+	int insertionType;
 	
 	public SinkNodeChangeContainers(ASTNode node, int index, int count,
 			ChildListPropertyDescriptor childListPropertyDescriptor, ASTNode method, int insertion)
@@ -26,6 +26,6 @@ public class SinkNodeChangeContainers {
 		this.count = count;
 		propertyDescriptor = childListPropertyDescriptor;
 		this.method = method;
-		this.insertion = insertion;
+		this.insertionType = insertion;
 	}
 }
