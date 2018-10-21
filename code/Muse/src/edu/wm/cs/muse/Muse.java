@@ -16,6 +16,8 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
 
 import edu.wm.cs.muse.mdroid.ASTHelper;
+import edu.wm.cs.muse.reachability.ReachabilityOperator;
+import edu.wm.cs.muse.reachability.ReachabilitySchema;
 import edu.wm.cs.muse.utility.Arguments;
 import edu.wm.cs.muse.utility.FileUtility;
 import edu.wm.cs.muse.utility.Utility;
@@ -72,10 +74,24 @@ public class Muse {
 					rewriter = ASTRewrite.create(root.getAST());
 					
 					//Accepts the given visitor on a visit of the current node, which is root here.
-					root.accept(new ReachabilityVisitor(rewriter));
-
+					//rewriter also records the required edits necessary 
+					/*
+					 * this is commented out for adopting new changes
+					 * */
+					//root.accept(new ReachabilityVisitor(rewriter));
+					ReachabilitySchema reachabilitySchema = new ReachabilitySchema();
+					root.accept(reachabilitySchema);
+					ReachabilityOperator operator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
+					rewriter = operator.InsertChanges();
+					
 					Document sourceDoc = new Document(source);
+					/*Converts all modifications recorded by this rewriter into 
+					 * an object representing the the corresponding text edits 
+					 * to the source of a ITypeRoot from which the AST was 
+					 * created from. 
+					 * The type root's source itself is not modified by this method call.*/
 					TextEdit edits = rewriter.rewriteAST(sourceDoc, null);
+					//Applies the edit tree rooted by this edit to the given document. 
 					edits.apply(sourceDoc);
 					FileUtils.writeStringToFile(file, sourceDoc.get(), false);
 					rewriter = null;
