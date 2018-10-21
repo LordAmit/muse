@@ -1,6 +1,5 @@
 package edu.wm.cs.muse.visitors;
 
-import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
@@ -13,6 +12,7 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
 import edu.wm.cs.muse.utility.Utility;
+import edu.wm.cs.muse.operators.DataLeak;
 
 public class ReachabilityVisitor extends ASTVisitor{
 	
@@ -22,19 +22,18 @@ public class ReachabilityVisitor extends ASTVisitor{
 	}
 	
 	protected void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
-//		AST ast = node.getAST();
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
+		
+		DataLeak dataLeak = new DataLeak("String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
+				                         "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);");
 
-		String source = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
-		String sink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
-		String leak = String.format(source, Utility.COUNTER_GLOBAL) + "\n" + String.format(sink, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL);
 		Utility.COUNTER_GLOBAL++;
 		
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(leak, ASTNode.EMPTY_STATEMENT);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(dataLeak.getLeak(), ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 	}
 
-	//@Override
+	@Override
 	public boolean visit(TypeDeclaration node) {
 		// Classes and Interfaces
 		if (node.isInterface()) {
@@ -46,6 +45,7 @@ public class ReachabilityVisitor extends ASTVisitor{
 		return true;
 	}
 
+	@Override
 	public boolean visit(AnonymousClassDeclaration node) {
 		// Anonymous classes
 		String loc = "1.<init>";

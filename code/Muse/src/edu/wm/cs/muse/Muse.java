@@ -1,9 +1,6 @@
 package edu.wm.cs.muse;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -18,10 +15,7 @@ import org.eclipse.text.edits.TextEdit;
 import edu.wm.cs.muse.mdroid.ASTHelper;
 import edu.wm.cs.muse.utility.Arguments;
 import edu.wm.cs.muse.utility.FileUtility;
-import edu.wm.cs.muse.utility.Utility;
 import edu.wm.cs.muse.visitors.ReachabilityVisitor;
-import edu.wm.cs.muse.visitors.SinkVisitor;
-
 /**
  *
  * @author Richard Bonett
