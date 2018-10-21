@@ -67,11 +67,11 @@ public class Muse {
 					/*
 					 * this is commented out for adopting new changes
 					 * */
-					//root.accept(new ReachabilityVisitor(rewriter));
-					ReachabilitySchema reachabilitySchema = new ReachabilitySchema();
-					root.accept(reachabilitySchema);
-					ReachabilityOperator operator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
-					rewriter = operator.InsertChanges();
+					root.accept(new ReachabilityVisitor(rewriter));
+//					ReachabilitySchema reachabilitySchema = new ReachabilitySchema();
+//					root.accept(reachabilitySchema);
+//					ReachabilityOperator operator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
+//					rewriter = operator.InsertChanges();
 					
 					Document sourceDoc = new Document(source);
 					/*Converts all modifications recorded by this rewriter into 
