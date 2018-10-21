@@ -15,6 +15,7 @@ import org.eclipse.text.edits.TextEdit;
 import edu.wm.cs.muse.mdroid.ASTHelper;
 import edu.wm.cs.muse.reachability.ReachabilityOperator;
 import edu.wm.cs.muse.reachability.ReachabilitySchema;
+import edu.wm.cs.muse.sink.SinkOperator;
 import edu.wm.cs.muse.sink.SinkSchema;
 import edu.wm.cs.muse.utility.Arguments;
 import edu.wm.cs.muse.utility.FileUtility;
@@ -72,8 +73,8 @@ public class Muse {
 //					root.accept(new ReachabilityVisitor(rewriter));
 					ReachabilitySchema reachabilitySchema = new ReachabilitySchema();
 					root.accept(reachabilitySchema);
-//					ReachabilityOperator operator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
-//					rewriter = operator.InsertChanges();
+					ReachabilityOperator operator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
+					rewriter = operator.InsertChanges();
 					
 					Document sourceDoc = new Document(source);
 					/*Converts all modifications recorded by this rewriter into 
@@ -86,18 +87,21 @@ public class Muse {
 					edits.apply(sourceDoc);
 					FileUtils.writeStringToFile(file, sourceDoc.get(), false);
 					rewriter = null;
-					
-//					SinkSchema sinkschema = new SinkSchema(rewriter);
-//					root.accept(sinkschema);
 
 //					source = readSourceFile(file.getAbsolutePath()).toString();
 //					root = ASTHelper.getAST(source, binariesFolder, rootPath);
 					
 					/*
 					 * Uses the rewriter to create an AST for the SinkSchema to utilize
+					 * Then creates a new instance to manipulate the AST
+					 * The root node then accepts the schema visitor on the visit
+					 * The rewriter implements the specified changes made by the sink operator
 					 */
+					SinkSchema sinkScheme = new SinkSchema();
 					rewriter = ASTRewrite.create(root.getAST());
-					root.accept(new SinkSchema(rewriter));
+					root.accept(new SinkSchema());
+					SinkOperator sinkOp = new SinkOperator(rewriter, sinkScheme.getNodeChanges());
+					rewriter = sinkOp.InsertChanges();
 
 					// sourceDoc = new Document(source);
 					// edits = rewriter.rewriteAST(sourceDoc, null);

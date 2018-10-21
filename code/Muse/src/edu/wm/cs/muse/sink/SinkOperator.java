@@ -31,14 +31,14 @@ public class SinkOperator {
 	}
 	
 	/**
-	 * modifies the ASTRewrite based on the nodeChanges and returns it.
+	 * Modifies the ASTRewrite to swap between insertions based on the nodeChanges and returns it.
 	 * @return
 	 */
 	public ASTRewrite InsertChanges() {
 
 		for (SinkNodeChangeContainers nodeChange : nodeChanges) {
 		
-			if (nodeChange.insertion == 0)
+			if (nodeChange.insertionType == 0)
 			{
 				insertSink(nodeChange.node, nodeChange.index, nodeChange.count, nodeChange.propertyDescriptor, nodeChange.method);
 			}
