@@ -15,9 +15,11 @@ import org.eclipse.text.edits.TextEdit;
 import edu.wm.cs.muse.mdroid.ASTHelper;
 import edu.wm.cs.muse.reachability.ReachabilityOperator;
 import edu.wm.cs.muse.reachability.ReachabilitySchema;
+import edu.wm.cs.muse.sink.SinkSchema;
 import edu.wm.cs.muse.utility.Arguments;
 import edu.wm.cs.muse.utility.FileUtility;
 import edu.wm.cs.muse.visitors.ReachabilityVisitor;
+import edu.wm.cs.muse.visitors.SinkVisitor;
 /**
  *
  * @author Richard Bonett
@@ -67,11 +69,11 @@ public class Muse {
 					/*
 					 * this is commented out for adopting new changes
 					 * */
-					//root.accept(new ReachabilityVisitor(rewriter));
+//					root.accept(new ReachabilityVisitor(rewriter));
 					ReachabilitySchema reachabilitySchema = new ReachabilitySchema();
 					root.accept(reachabilitySchema);
-					ReachabilityOperator operator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
-					rewriter = operator.InsertChanges();
+//					ReachabilityOperator operator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
+//					rewriter = operator.InsertChanges();
 					
 					Document sourceDoc = new Document(source);
 					/*Converts all modifications recorded by this rewriter into 
@@ -84,11 +86,18 @@ public class Muse {
 					edits.apply(sourceDoc);
 					FileUtils.writeStringToFile(file, sourceDoc.get(), false);
 					rewriter = null;
+					
+//					SinkSchema sinkschema = new SinkSchema(rewriter);
+//					root.accept(sinkschema);
 
 //					source = readSourceFile(file.getAbsolutePath()).toString();
 //					root = ASTHelper.getAST(source, binariesFolder, rootPath);
-//					rewriter = ASTRewrite.create(root.getAST());
-//					root.accept(new SinkVisitor(rewriter));
+					
+					/*
+					 * Uses the rewriter to create an AST for the SinkSchema to utilize
+					 */
+					rewriter = ASTRewrite.create(root.getAST());
+					root.accept(new SinkSchema(rewriter));
 
 					// sourceDoc = new Document(source);
 					// edits = rewriter.rewriteAST(sourceDoc, null);
