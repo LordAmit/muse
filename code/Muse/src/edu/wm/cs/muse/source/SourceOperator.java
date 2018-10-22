@@ -8,6 +8,7 @@ import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
+import edu.wm.cs.muse.utility.OperatorType;
 import edu.wm.cs.muse.utility.Utility;
 import edu.wm.cs.muse.operators.DataLeak;
 
@@ -35,7 +36,6 @@ public class SourceOperator {
 	 * Modifies the ASTRewrite to swap between insertions based on the nodeChanges and returns it.
 	 * @return
 	 */
-		
 	public ASTRewrite InsertChanges() {
 
 		for (SourceNodeChangeContainers nodeChange : nodeChanges) {
@@ -55,12 +55,11 @@ public class SourceOperator {
 	
 	protected void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		DataLeak dataLeak = new DataLeak(/*source*/ String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-				Utility.COUNTER_GLOBAL), /*sink*/ "");
+		// old source code
 //		String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
 //				Utility.COUNTER_GLOBAL);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getSource(OperatorType.SOURCE, Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
 		Utility.COUNTER_GLOBAL++;
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(dataLeak.getSource(), ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 	}
 

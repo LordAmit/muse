@@ -10,6 +10,7 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
+import edu.wm.cs.muse.utility.OperatorType;
 import edu.wm.cs.muse.utility.Utility;
 import edu.wm.cs.muse.operators.DataLeak;
 
@@ -21,6 +22,7 @@ import edu.wm.cs.muse.operators.DataLeak;
 public class SinkOperator {
 	ArrayList<SinkNodeChangeContainers> nodeChanges;
 	ASTRewrite rewriter;
+	HashMap<Integer, Integer> repeatCounts = new HashMap<Integer, Integer>();
 
 	public SinkOperator(ASTRewrite rewriter) {
 		this.rewriter = rewriter;
@@ -52,18 +54,16 @@ public class SinkOperator {
 		return rewriter;
 	}
 	
-	HashMap<Integer, Integer> repeatCounts = new HashMap<Integer, Integer>();
-	
 	void insertSink(ASTNode node, int index, int count, ChildListPropertyDescriptor nodeProperty,
 			ASTNode method) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		int cur = repeatCounts.containsKey(count) ? repeatCounts.get(count) : -1;
 		repeatCounts.put(count, cur + 1);
-		DataLeak dataLeak = new DataLeak(/*source*/ "", /*sink*/ String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", count, 
-				repeatCounts.get(count), count));
+		// old sink code
 //		String sink = String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", count, repeatCounts.get(count),
 //				count);
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(dataLeak.getSink(), ASTNode.EMPTY_STATEMENT);
+		
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getSink(OperatorType.SINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 		String methodName = ((MethodDeclaration) method).getName().toString();
 		String className = "";
@@ -83,13 +83,11 @@ public class SinkOperator {
 
 	void insertSource(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		DataLeak dataLeak = new DataLeak(/*source*/ String.format(
-				"final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-				Utility.COUNTER_GLOBAL), /*sink*/ "");
+		// old source code
 //		String source = String.format(
 //				"final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
 //				Utility.COUNTER_GLOBAL);
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(dataLeak.getSource(), ASTNode.EMPTY_STATEMENT);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getSource(OperatorType.SINK, Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 	}
 

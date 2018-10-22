@@ -35,9 +35,6 @@ public class ReachabilityOperator {
 		for (int i = 0; i < nodeChanges.size(); i++) {
 
 			ReachabilityNodeChangeContainers nodeChange = nodeChanges.get(i);
-
-			DataLeak dataLeak = new DataLeak(/*source*/ "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-					/*sink*/ "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);");
 			
 			// old code from when the data leak info was not part of the DataLeak class
 //			String source = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
@@ -47,10 +44,10 @@ public class ReachabilityOperator {
 			
 			System.out.println(String.format(nodeChange.changedSource, Utility.COUNTER_GLOBAL));
 
+			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getLeak(Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
+
 			Utility.COUNTER_GLOBAL++;
-
-			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(dataLeak.getLeak(), ASTNode.EMPTY_STATEMENT);
-
+			
 			ListRewrite listRewrite = rewriter.getListRewrite(nodeChange.node, nodeChange.propertyDescriptor);
 			listRewrite.insertAt(placeHolder, nodeChange.index, null);
 		}

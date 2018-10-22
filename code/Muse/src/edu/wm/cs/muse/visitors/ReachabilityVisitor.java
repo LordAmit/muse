@@ -26,16 +26,14 @@ public class ReachabilityVisitor extends ASTVisitor{
 //		AST ast = node.getAST();
 		// Creates and returns a new rewriter for describing modifications to the given list property of the given node.
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		
-		DataLeak dataLeak = new DataLeak("String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-				                         "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);");
 
 		// String source = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
 		// String sink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
 		// String leak = String.format(source, Utility.COUNTER_GLOBAL) + "\n" + String.format(sink, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL);
-		Utility.COUNTER_GLOBAL++;
+		// Utility.COUNTER_GLOBAL++;
 		
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(dataLeak.getLeak(), ASTNode.EMPTY_STATEMENT);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getLeak(Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
+		Utility.COUNTER_GLOBAL++;
 		listRewrite.insertAt(placeHolder, index, null);
 	}
 
