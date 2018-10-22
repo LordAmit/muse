@@ -12,37 +12,43 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import edu.wm.cs.muse.utility.Utility;
 
 /**
- * Reachability Schema goes through the AST tree for reachability, analyzes the nodes and prepares a list of nodes to be changed.
+ * Reachability Schema goes through the AST tree for reachability, analyzes the
+ * nodes and prepares a list of nodes to be changed.
+ * 
  * @author amit
  */
-public class ReachabilitySchema extends ASTVisitor{
-	
+public class ReachabilitySchema extends ASTVisitor {
+
 	private ArrayList<ReachabilityNodeChangeContainers> nodeChanges;
-	
-	public ReachabilitySchema () {
+
+	public ReachabilitySchema() {
 		nodeChanges = new ArrayList<ReachabilityNodeChangeContainers>();
 	}
-	
-	public ArrayList<ReachabilityNodeChangeContainers> getNodeChanges(){
+
+	public ArrayList<ReachabilityNodeChangeContainers> getNodeChanges() {
 		return this.nodeChanges;
 	};
-	
+
 	public boolean visit(TypeDeclaration node) {
 		// Classes and Interfaces
 		if (node.isInterface()) {
 			return false;
 		}
 		String loc = node.getName().toString() + ".<init>";
-		System.out.println(String.format("leak-%d: <%s>", Utility.COUNTER_GLOBAL, loc));
-		nodeChanges.add(new ReachabilityNodeChangeContainers(node, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY));
+		String logMessage = "leak-%d: <" + loc + ">";
+//		System.out.println(String.format("leak-%d: <%s>", Utility.COUNTER_GLOBAL, loc));
+		nodeChanges.add(
+				new ReachabilityNodeChangeContainers(node, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, logMessage));
 		return true;
 	}
 
 	public boolean visit(AnonymousClassDeclaration node) {
 		// Anonymous classes
 		String loc = "1.<init>";
-		System.out.println(String.format("leak-%d: <%s>", Utility.COUNTER_GLOBAL, loc));
-		nodeChanges.add(new ReachabilityNodeChangeContainers(node, 0, AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY));
+		String logMessage = "leak-%d: <" + loc + ">";
+//		System.out.println(String.format("leak-%d: <%s>", Utility.COUNTER_GLOBAL, loc));
+		nodeChanges.add(new ReachabilityNodeChangeContainers(node, 0,
+				AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY, logMessage));
 		return true;
 	}
 
@@ -70,8 +76,9 @@ public class ReachabilitySchema extends ASTVisitor{
 			trace = trace.getParent();
 		}
 		String loc = className + "." + methodName;
-		System.out.println(String.format("leak-%d: %s", Utility.COUNTER_GLOBAL, loc));
-		nodeChanges.add(new ReachabilityNodeChangeContainers(node, index, Block.STATEMENTS_PROPERTY));
+		String logMessage = "leak-%d: "+ loc ;
+//		System.out.println(String.format("leak-%d: %s", Utility.COUNTER_GLOBAL, loc));
+		nodeChanges.add(new ReachabilityNodeChangeContainers(node, index, Block.STATEMENTS_PROPERTY, logMessage));
 		return true;
 	}
 }

@@ -97,11 +97,11 @@ public class Muse {
 					 * The root node then accepts the schema visitor on the visit
 					 * The rewriter implements the specified changes made by the sink operator
 					 */
-					SinkSchema sinkScheme = new SinkSchema();
-					rewriter = ASTRewrite.create(root.getAST());
-					root.accept(new SinkSchema());
-					SinkOperator sinkOp = new SinkOperator(rewriter, sinkScheme.getNodeChanges());
-					rewriter = sinkOp.InsertChanges();
+//					SinkSchema sinkScheme = new SinkSchema();
+//					rewriter = ASTRewrite.create(root.getAST());
+//					root.accept(new SinkSchema());
+//					SinkOperator sinkOp = new SinkOperator(rewriter, sinkScheme.getNodeChanges());
+//					rewriter = sinkOp.InsertChanges();
 
 					// sourceDoc = new Document(source);
 					// edits = rewriter.rewriteAST(sourceDoc, null);

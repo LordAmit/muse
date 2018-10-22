@@ -13,11 +13,14 @@ public class ReachabilityNodeChangeContainers {
 	ASTNode node;
 	int index;
 	ChildListPropertyDescriptor propertyDescriptor;
-
+	String changedSource = null;
 	public ReachabilityNodeChangeContainers(ASTNode node, int index,
-			ChildListPropertyDescriptor childListPropertyDescriptor) {
+			ChildListPropertyDescriptor childListPropertyDescriptor, String changedSource) {
 		this.node = node;
 		this.index = index;
 		propertyDescriptor = childListPropertyDescriptor;
+		this.changedSource = changedSource;
+		
+		
 	}
 }
