@@ -11,6 +11,7 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
 import edu.wm.cs.muse.utility.Utility;
+import edu.wm.cs.muse.operators.DataLeak;
 
 /**
  * The SinkOperator class formats and inserts the string-based sink markers according to the Sink Schema
@@ -58,9 +59,11 @@ public class SinkOperator {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		int cur = repeatCounts.containsKey(count) ? repeatCounts.get(count) : -1;
 		repeatCounts.put(count, cur + 1);
-		String sink = String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", count, repeatCounts.get(count),
-				count);
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
+		DataLeak dataLeak = new DataLeak(/*source*/ "", /*sink*/ String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", count, 
+				repeatCounts.get(count), count));
+//		String sink = String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", count, repeatCounts.get(count),
+//				count);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(dataLeak.getSink(), ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 		String methodName = ((MethodDeclaration) method).getName().toString();
 		String className = "";
@@ -80,10 +83,13 @@ public class SinkOperator {
 
 	void insertSource(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		String source = String.format(
+		DataLeak dataLeak = new DataLeak(/*source*/ String.format(
 				"final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-				Utility.COUNTER_GLOBAL);
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
+				Utility.COUNTER_GLOBAL), /*sink*/ "");
+//		String source = String.format(
+//				"final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
+//				Utility.COUNTER_GLOBAL);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(dataLeak.getSource(), ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 	}
 

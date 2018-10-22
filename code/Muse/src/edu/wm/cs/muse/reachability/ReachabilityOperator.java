@@ -8,6 +8,7 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.jdt.internal.compiler.lookup.VariableBinding;
 
+import edu.wm.cs.muse.operators.DataLeak;
 import edu.wm.cs.muse.utility.Utility;
 
 /**
@@ -35,16 +36,20 @@ public class ReachabilityOperator {
 
 			ReachabilityNodeChangeContainers nodeChange = nodeChanges.get(i);
 
-			String source = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
-			String sink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
-			String leak = String.format(source, Utility.COUNTER_GLOBAL) + "\n"
-					+ String.format(sink, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL);
+			DataLeak dataLeak = new DataLeak(/*source*/ "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
+					/*sink*/ "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);");
+			
+			// old code from when the data leak info was not part of the DataLeak class
+//			String source = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+//			String sink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
+//			String leak = String.format(source, Utility.COUNTER_GLOBAL) + "\n"
+//					+ String.format(sink, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL);
 			
 			System.out.println(String.format(nodeChange.changedSource, Utility.COUNTER_GLOBAL));
 
 			Utility.COUNTER_GLOBAL++;
 
-			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(leak, ASTNode.EMPTY_STATEMENT);
+			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(dataLeak.getLeak(), ASTNode.EMPTY_STATEMENT);
 
 			ListRewrite listRewrite = rewriter.getListRewrite(nodeChange.node, nodeChange.propertyDescriptor);
 			listRewrite.insertAt(placeHolder, nodeChange.index, null);

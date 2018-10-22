@@ -12,13 +12,10 @@ public class DataLeak {
 	
 	private String source = "";
 	private String sink = "";
-	private String leak = "";
 	
 	public DataLeak(String source, String sink) {
 		this.source = source;
 		this.sink = sink;
-		leak = String.format(source, Utility.COUNTER_GLOBAL) + "\n" 
-	           + String.format(sink, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL);
 	}
 	
 	public String getSource() {
@@ -30,7 +27,8 @@ public class DataLeak {
 	}
 	
 	public String getLeak() {
-		return leak;
+		return String.format(source, Utility.COUNTER_GLOBAL) + "\n" 
+		           + String.format(sink, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL);
 	}
 			
 }

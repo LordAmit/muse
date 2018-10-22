@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
 import edu.wm.cs.muse.utility.Utility;
+import edu.wm.cs.muse.operators.DataLeak;
 
 /**
  * The SourceOperator class formats and inserts the string data source markers according to the Source 
@@ -54,10 +55,12 @@ public class SourceOperator {
 	
 	protected void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-				Utility.COUNTER_GLOBAL);
+		DataLeak dataLeak = new DataLeak(/*source*/ String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
+				Utility.COUNTER_GLOBAL), /*sink*/ "");
+//		String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
+//				Utility.COUNTER_GLOBAL);
 		Utility.COUNTER_GLOBAL++;
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(dataLeak.getSource(), ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 	}
 
