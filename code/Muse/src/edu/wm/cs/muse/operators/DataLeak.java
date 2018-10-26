@@ -41,9 +41,9 @@ public class DataLeak {
 	 *  
 	 * @returns the appropriate sink for the operator type specified. 
 	 */
-	public static String getSink(OperatorType op, int counterOne, int counterTwo) {
+	public static String getSink(OperatorType op, int sourceCounter, int sinkCounter) {
 		if (op == OperatorType.SINK) {
-			return String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", counterOne, counterTwo, counterOne);
+			return String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", sourceCounter, sinkCounter, sourceCounter);
 		}
 		if (op == OperatorType.REACHABILITY) {
 			return reachabilitySink;

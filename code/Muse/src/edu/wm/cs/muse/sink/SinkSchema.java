@@ -77,7 +77,8 @@ public class SinkSchema extends ASTVisitor {
 						Matcher matcher = variablePattern.matcher(field.toString());
 						if (matcher.find() && field.toString().trim().startsWith("String dataLeAk")) {
 							count = Integer.valueOf(matcher.group(2));
-							nodeChanges.add(new SinkNodeChangeContainers(node, index, count, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, method, 0));
+//							nodeChanges.add(new SinkNodeChangeContainers(node, index, count, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, method, 0));
+							nodeChanges.add(new SinkNodeChangeContainers(node, index, count, Block.STATEMENTS_PROPERTY, method, 0));
 //							op.insertSink(node, index, count, Block.STATEMENTS_PROPERTY, method);
 						}
 					}
@@ -126,7 +127,7 @@ public class SinkSchema extends ASTVisitor {
 				Utility.COUNTER_GLOBAL++;
 //				op.insertSource(n, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
 //				op.insertSink(node, index, Utility.COUNTER_GLOBAL, Block.STATEMENTS_PROPERTY, method);
-				nodeChanges.add(new SinkNodeChangeContainers(n, 0, Utility.COUNTER_GLOBAL, Block.STATEMENTS_PROPERTY, method, 1));
+				nodeChanges.add(new SinkNodeChangeContainers(n, 0, Utility.COUNTER_GLOBAL, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, method, 1));
 				nodeChanges.add(new SinkNodeChangeContainers(node, index, Utility.COUNTER_GLOBAL, Block.STATEMENTS_PROPERTY, method, 0));
 				try {
 					inStaticContext = Modifier.isStatic(((TypeDeclaration) n).getModifiers());
