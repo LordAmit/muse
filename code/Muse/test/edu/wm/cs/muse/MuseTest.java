@@ -1,0 +1,75 @@
+package edu.wm.cs.muse;
+
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.eclipse.core.internal.watson.ElementTreeWriter;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.TextEdit;
+import org.junit.Test;
+
+import edu.wm.cs.muse.mdroid.ASTHelper;
+import edu.wm.cs.muse.utility.Arguments;
+import edu.wm.cs.muse.utility.FileUtility;
+
+/*
+ * We will be focusing on creating behavior based test cases. AAA pattern, i.e. 
+ * Arrange the preconditions
+ * Act on test Object
+ * Assert the results
+ * will be utilized.
+ */
+
+/**
+ * Unit test file of Muse. 
+ * @author Amit Seal Ami
+ *
+ */
+public class MuseTest {
+	
+	private Muse muse;
+	String expectedOutput;
+
+	@Test
+	public void reachability_operation_on_hello_world() {
+		String content = null;
+		String output;
+		
+		try {
+			content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
+			expectedOutput = FileUtility.readSourceFile("test/output/sample_hello_world_reachability.txt").toString();
+			Arguments.extractArguments(new File("test/input/runtime_argument.txt"));
+			Muse muse = new Muse();
+			CompilationUnit root = ASTHelper.getAST(content, Arguments.getBinariesFolder(),
+					Arguments.getRootPath());			
+			ASTRewrite rewriter = ASTRewrite.create(root.getAST());
+			rewriter = muse.reachabilityExecution(root, rewriter);
+			Document sourceDoc = new Document(content);
+
+			TextEdit edits = rewriter.rewriteAST(sourceDoc, null);
+			// Applies the edit tree rooted by this edit to the given document.
+			edits.apply(sourceDoc);
+			String process_output = sourceDoc.get();
+			assertEquals(expectedOutput, process_output);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTreeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+
+}
