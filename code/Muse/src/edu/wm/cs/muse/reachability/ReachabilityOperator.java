@@ -6,15 +6,13 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
-import org.eclipse.jdt.internal.compiler.lookup.VariableBinding;
-
 import edu.wm.cs.muse.operators.DataLeak;
 import edu.wm.cs.muse.utility.Utility;
 
 /**
- * This operates on the list of nodes coming from ReachabilitySchema
+ * Operates on the list of nodes coming from ReachabilitySchema
  * 
- * @author amit
+ * @author Amit Seal Ami
  *
  */
 public class ReachabilityOperator {
@@ -35,19 +33,25 @@ public class ReachabilityOperator {
 		for (int i = 0; i < nodeChanges.size(); i++) {
 
 			ReachabilityNodeChangeContainers nodeChange = nodeChanges.get(i);
-			
+
 			// old code from when the data leak info was not part of the DataLeak class
 //			String source = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
 //			String sink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
 //			String leak = String.format(source, Utility.COUNTER_GLOBAL) + "\n"
 //					+ String.format(sink, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL);
-			
+
 			System.out.println(String.format(nodeChange.changedSource, Utility.COUNTER_GLOBAL));
 
-			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getLeak(Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
+			Statement placeHolder = (Statement) rewriter
+					.createStringPlaceholder(DataLeak.getLeak(Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
 
 			Utility.COUNTER_GLOBAL++;
-			
+			/*
+			 * Uses the rewriter to create an AST for the SinkSchema to utilize Then
+			 * creates a new instance to manipulate the AST The root node then accepts the
+			 * schema visitor on the visit The rewriter implements the specified changes
+			 * made by the sink operator
+			 */
 			ListRewrite listRewrite = rewriter.getListRewrite(nodeChange.node, nodeChange.propertyDescriptor);
 			listRewrite.insertAt(placeHolder, nodeChange.index, null);
 		}
