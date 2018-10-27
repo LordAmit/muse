@@ -10,7 +10,7 @@ import org.apache.commons.io.FileUtils;
 
 /**
  *  File utility contains different utility methods used to read and manipulate files and directories
- * @author amit
+ * @author Amit Seal Ami
  *
  */
 public class FileUtility {
