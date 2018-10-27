@@ -3,6 +3,7 @@ package edu.wm.cs.muse;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.eclipse.core.internal.watson.ElementTreeWriter;
@@ -33,30 +34,24 @@ import edu.wm.cs.muse.utility.FileUtility;
  */
 public class MuseTest {
 	
-	private Muse muse;
 	String expectedOutput;
-
+	String content = null;
+	String output;
+	Muse muse;CompilationUnit root;
+	Document sourceDoc;
+	ASTRewrite rewriter;
+	TextEdit edits;
+	String processedOutput;
 	@Test
 	public void reachability_operation_on_hello_world() {
-		String content = null;
-		String output;
-		
+	
 		try {
-			content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
-			expectedOutput = FileUtility.readSourceFile("test/output/sample_hello_world_reachability.txt").toString();
-			Arguments.extractArguments(new File("test/input/runtime_argument.txt"));
-			Muse muse = new Muse();
-			CompilationUnit root = ASTHelper.getAST(content, Arguments.getBinariesFolder(),
-					Arguments.getRootPath());			
-			ASTRewrite rewriter = ASTRewrite.create(root.getAST());
-			rewriter = muse.reachabilityExecution(root, rewriter);
-			Document sourceDoc = new Document(content);
-
-			TextEdit edits = rewriter.rewriteAST(sourceDoc, null);
-			// Applies the edit tree rooted by this edit to the given document.
-			edits.apply(sourceDoc);
-			String process_output = sourceDoc.get();
-			assertEquals(expectedOutput, process_output);
+			arrange_reachability();			
+			
+			act_reachability();
+			
+			assertEquals(expectedOutput, processedOutput);
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,6 +64,27 @@ public class MuseTest {
 		}
 		
 		
+	}
+
+	private void act_reachability() throws BadLocationException {
+		rewriter = ASTRewrite.create(root.getAST());
+		rewriter = muse.reachabilityExecution(root, rewriter);
+		sourceDoc = new Document(content);
+
+		edits = rewriter.rewriteAST(sourceDoc, null);
+		// Applies the edit tree rooted by this edit to the given document.
+		edits.apply(sourceDoc);
+		
+		processedOutput = sourceDoc.get();
+	}
+
+	private void arrange_reachability() throws FileNotFoundException, IOException {
+		content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
+		expectedOutput = FileUtility.readSourceFile("test/output/sample_hello_world_reachability.txt").toString();
+		Arguments.extractArguments(new File("test/input/runtime_argument.txt"));
+		muse = new Muse();
+		root = ASTHelper.getAST(content, Arguments.getBinariesFolder(),
+				Arguments.getRootPath());
 	}
 	
 

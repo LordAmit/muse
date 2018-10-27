@@ -5,7 +5,7 @@ import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 
 /**
  * It acts as a container for storing node, change, and property descriptor.
- * @author amit
+ * @author Amit Seal Ami
  *
  */
 public class ReachabilityNodeChangeContainers {
