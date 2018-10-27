@@ -21,6 +21,7 @@ import edu.wm.cs.muse.utility.Arguments;
 import edu.wm.cs.muse.utility.FileUtility;
 import edu.wm.cs.muse.visitors.ReachabilityVisitor;
 import edu.wm.cs.muse.visitors.SinkVisitor;
+
 /**
  *
  * @author Richard Bonett
@@ -36,16 +37,16 @@ public class Muse {
 			printArgumentError();
 			return;
 		}
-		
+
 		Arguments.extractArguments(args);
 
 		FileUtility.setMutantsDirectory();
 
 		System.out.println(Arguments.getRootPath());
-		
+
 		Collection<File> files = FileUtils.listFiles(new File(Arguments.getRootPath()), TrueFileFilter.INSTANCE,
 				TrueFileFilter.INSTANCE);
-		
+
 		for (File file : files) {
 			try {
 				if (file.getName().endsWith(".java")
@@ -56,46 +57,38 @@ public class Muse {
 						&& !file.getName().contains("SMSInstrumentedReceiver.java")) {
 
 					// System.out.println("PROCESSING: " + file.getAbsolutePath());
-
 					String source = FileUtility.readSourceFile(file.getAbsolutePath()).toString();
-					
-					//Creates an abstract syntax tree.
-					CompilationUnit root = ASTHelper.getAST(source, Arguments.getBinariesFolder(), Arguments.getRootPath());
 
-					//Creates a new instance for describing manipulations of the given AST.
+					// Creates an abstract syntax tree.
+					CompilationUnit root = ASTHelper.getAST(source, Arguments.getBinariesFolder(),
+							Arguments.getRootPath());
+
+					// Creates a new instance for describing manipulations of the given AST.
 					rewriter = ASTRewrite.create(root.getAST());
-					
-					//Accepts the given visitor on a visit of the current node, which is root here.
-					//rewriter also records the required edits necessary 
+
+					// Accepts the given visitor on a visit of the current node, which is root here.
+					// rewriter also records the required edits necessary
 					/*
 					 * this is commented out for adopting new changes
-					 * */
+					 */
 //					root.accept(new ReachabilityVisitor(rewriter));
-					ReachabilitySchema reachabilitySchema = new ReachabilitySchema();
-					root.accept(reachabilitySchema);
-					ReachabilityOperator operator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
-					rewriter = operator.InsertChanges();
-					
-					Document sourceDoc = new Document(source);
-					/*Converts all modifications recorded by this rewriter into 
-					 * an object representing the the corresponding text edits 
-					 * to the source of a ITypeRoot from which the AST was 
-					 * created from. 
-					 * The type root's source itself is not modified by this method call.*/
-					TextEdit edits = rewriter.rewriteAST(sourceDoc, null);
-					//Applies the edit tree rooted by this edit to the given document. 
-					edits.apply(sourceDoc);
-					FileUtils.writeStringToFile(file, sourceDoc.get(), false);
-					rewriter = null;
+//					reachabilityExecution(file, source, root);
+//					ReachabilitySchema reachabilitySchema = new ReachabilitySchema();
+//					root.accept(reachabilitySchema);
+//					ReachabilityOperator operator = new ReachabilityOperator(rewriter,
+//							reachabilitySchema.getNodeChanges());
+//					rewriter = operator.InsertChanges();
+					rewriter = reachabilityExecution(root, rewriter);
+					applyChangesToFile(file, source);
 
 //					source = readSourceFile(file.getAbsolutePath()).toString();
 //					root = ASTHelper.getAST(source, binariesFolder, rootPath);
-					
+
 					/*
-					 * Uses the rewriter to create an AST for the SinkSchema to utilize
-					 * Then creates a new instance to manipulate the AST
-					 * The root node then accepts the schema visitor on the visit
-					 * The rewriter implements the specified changes made by the sink operator
+					 * Uses the rewriter to create an AST for the SinkSchema to utilize Then creates
+					 * a new instance to manipulate the AST The root node then accepts the schema
+					 * visitor on the visit The rewriter implements the specified changes made by
+					 * the sink operator
 					 */
 //					SinkSchema sinkScheme = new SinkSchema();
 //					rewriter = ASTRewrite.create(root.getAST());
@@ -119,6 +112,42 @@ public class Muse {
 				return;
 			}
 		}
+	}
+
+	
+	/**
+	 * Converts all modifications recorded by this rewriter into an object
+	 * representing the the corresponding text edits to the source of a ITypeRoot
+	 * from which the AST was created from. The type root's source itself is not
+	 * modified by this method call.
+	 * @author Amit Seal Ami
+	 * @param file is file where it will be written
+	 * @param source is the content of source
+	 * @throws BadLocationException
+	 * @throws IOException
+	 */
+	private void applyChangesToFile(File file, String source) throws BadLocationException, IOException {
+		Document sourceDoc = new Document(source);
+
+		TextEdit edits = rewriter.rewriteAST(sourceDoc, null);
+		// Applies the edit tree rooted by this edit to the given document.
+		edits.apply(sourceDoc);
+		FileUtils.writeStringToFile(file, sourceDoc.get(), false);
+		rewriter = null;
+	}
+
+	/**
+	 * Reachability Schema and Operator operation container
+	 * 
+	 * @param root is the compilation unit based root of AST tree
+	 */
+	public ASTRewrite reachabilityExecution(CompilationUnit root, ASTRewrite rewriter) {
+
+		ReachabilitySchema reachabilitySchema = new ReachabilitySchema();
+		root.accept(reachabilitySchema);
+		ReachabilityOperator operator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
+		rewriter = operator.InsertChanges();
+		return rewriter;
 	}
 
 	private void printArgumentError() {
