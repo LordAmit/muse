@@ -29,6 +29,10 @@ public class DataLeak {
 			return String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
                    count);
 		}
+		if (op == OperatorType.TAINT) {
+			return String.format("Object tainted_LeAk%d = android.util.Log.d(\\\"taint-leak-%d\\\", dataLeAk%d);",
+	                   count);
+		}
 		if (op == OperatorType.REACHABILITY) {
 			return reachabilitySource;
 		}

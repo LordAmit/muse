@@ -23,9 +23,9 @@ public class SourceOperator {
 	ArrayList<SourceNodeChangeContainers> nodeChanges;
 	ASTRewrite rewriter;
 
-	public SourceOperator(ASTRewrite rewriter) {
-		this.rewriter = rewriter;
-	}
+//	public SourceOperator(ASTRewrite rewriter) {
+//		this.rewriter = rewriter;
+//	}
 	
 	public SourceOperator(ASTRewrite rewriter, ArrayList<SourceNodeChangeContainers> nodeChanges) {
 		this.rewriter = rewriter;
