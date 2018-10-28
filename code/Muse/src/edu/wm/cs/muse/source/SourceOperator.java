@@ -53,7 +53,7 @@ public class SourceOperator {
 		return rewriter;
 	}
 	
-	protected void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
+	public void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		// old source code
 //		String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",

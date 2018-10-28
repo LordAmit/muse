@@ -1,1 +1,4 @@
-/home/amit/workspaces/muse/libs4ast /home/amit/AndroidStudioProjects/HelloWorld/app/src/ HelloWorld /home/amit/workspaces/muse/test
+/users/yangzhang/git/MDroidPlus/libs4ast 
+/users/yangzhang/AMazeByYang/app/src 
+AMazeByYang 
+/users/yangzhang/security
