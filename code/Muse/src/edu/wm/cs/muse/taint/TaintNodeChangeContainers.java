@@ -1,4 +1,4 @@
-package edu.wm.cs.muse.source;
+package edu.wm.cs.muse.taint;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
@@ -9,22 +9,20 @@ import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
  *
  */
 
-public class SourceNodeChangeContainers {
+public class TaintNodeChangeContainers {
 	
 	ASTNode node;
 	int index;
 	ChildListPropertyDescriptor propertyDescriptor;
 	int count;
 	ASTNode method;
-	int insertionType;
 	
-	public SourceNodeChangeContainers(ASTNode node, int index, 
-			ChildListPropertyDescriptor childListPropertyDescriptor, int insertionType)
+	public TaintNodeChangeContainers(ASTNode node, int index, 
+			ChildListPropertyDescriptor childListPropertyDescriptor)
 	{
 		this.node = node;
 		this.index = index;
 		propertyDescriptor = childListPropertyDescriptor;
-		this.insertionType = insertionType;
 	}
 
 }
