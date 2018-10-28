@@ -3,15 +3,11 @@ package edu.wm.cs.muse.taint;
 import java.util.ArrayList;
 
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
 import edu.wm.cs.muse.operators.DataLeak;
-import edu.wm.cs.muse.reachability.ReachabilityNodeChangeContainers;
-import edu.wm.cs.muse.sink.SinkNodeChangeContainers;
-import edu.wm.cs.muse.source.SourceNodeChangeContainers;
 import edu.wm.cs.muse.utility.OperatorType;
 import edu.wm.cs.muse.utility.Utility;
 

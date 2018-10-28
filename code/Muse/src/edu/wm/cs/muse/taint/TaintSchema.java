@@ -4,14 +4,8 @@ import java.util.ArrayList;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
-
-import edu.wm.cs.muse.source.SourceNodeChangeContainers;
-import edu.wm.cs.muse.source.SourceOperator;
-import edu.wm.cs.muse.utility.Utility;;
+import edu.wm.cs.muse.source.SourceNodeChangeContainers;;
 
 public class TaintSchema {
 	
