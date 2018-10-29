@@ -3,11 +3,12 @@ package edu.wm.cs.muse.taint;
 import java.util.ArrayList;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import edu.wm.cs.muse.source.SourceNodeChangeContainers;;
 
-public class TaintSchema {
+public class TaintSchema extends ASTVisitor{
 	
 	/**
 	 * The TaintSchema will traverse the nodes of the AST, and when it reaches a method, it will locate
@@ -29,7 +30,7 @@ public class TaintSchema {
 		nodeChanges = new ArrayList<SourceNodeChangeContainers>();
 	}
 
-	public ArrayList<TaintNodeChangeContainers> getTaintNodeChanges1(){
+	public ArrayList<TaintNodeChangeContainers> getTaintNodeChanges(){
 		return this.taintNodeChanges;
 	};
 	
