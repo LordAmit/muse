@@ -17,6 +17,8 @@ import edu.wm.cs.muse.reachability.ReachabilityOperator;
 import edu.wm.cs.muse.reachability.ReachabilitySchema;
 import edu.wm.cs.muse.sink.SinkOperator;
 import edu.wm.cs.muse.sink.SinkSchema;
+import edu.wm.cs.muse.taint.TaintOperator;
+import edu.wm.cs.muse.taint.TaintSchema;
 import edu.wm.cs.muse.utility.Arguments;
 import edu.wm.cs.muse.utility.FileUtility;
 import edu.wm.cs.muse.visitors.ReachabilityVisitor;
@@ -78,7 +80,8 @@ public class Muse {
 //					ReachabilityOperator operator = new ReachabilityOperator(rewriter,
 //							reachabilitySchema.getNodeChanges());
 //					rewriter = operator.InsertChanges();
-					rewriter = reachabilityExecution(root, rewriter);
+//					rewriter = reachabilityExecution(root, rewriter);
+					rewriter = taintExecution(root, rewriter);
 					applyChangesToFile(file, source);
 
 //					source = readSourceFile(file.getAbsolutePath()).toString();
@@ -114,14 +117,14 @@ public class Muse {
 		}
 	}
 
-	
 	/**
 	 * Converts all modifications recorded by this rewriter into an object
 	 * representing the the corresponding text edits to the source of a ITypeRoot
 	 * from which the AST was created from. The type root's source itself is not
 	 * modified by this method call.
+	 * 
 	 * @author Amit Seal Ami
-	 * @param file is file where it will be written
+	 * @param file   is file where it will be written
 	 * @param source is the content of source
 	 * @throws BadLocationException
 	 * @throws IOException
@@ -146,6 +149,15 @@ public class Muse {
 		ReachabilitySchema reachabilitySchema = new ReachabilitySchema();
 		root.accept(reachabilitySchema);
 		ReachabilityOperator operator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
+		rewriter = operator.InsertChanges();
+		return rewriter;
+	}
+
+	public ASTRewrite taintExecution(CompilationUnit root, ASTRewrite rewriter) {
+
+		TaintSchema taintSchema = new TaintSchema();
+		root.accept(taintSchema);
+		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getTaintNodeChanges());
 		rewriter = operator.InsertChanges();
 		return rewriter;
 	}
