@@ -28,30 +28,33 @@ import edu.wm.cs.muse.utility.FileUtility;
  */
 
 /**
- * Unit test file of Muse. 
+ * Unit test file of Muse.
+ * 
  * @author Amit Seal Ami
  *
  */
 public class MuseTest {
-	
+
 	String expectedOutput;
 	String content = null;
 	String output;
-	Muse muse;CompilationUnit root;
+	Muse muse;
+	CompilationUnit root;
 	Document sourceDoc;
 	ASTRewrite rewriter;
 	TextEdit edits;
 	String processedOutput;
+
 	@Test
 	public void reachability_operation_on_hello_world() {
-	
+
 		try {
-			arrange_reachability();			
-			
+			arrange();
+
 			act_reachability();
-			
+
 			assertEquals(expectedOutput, processedOutput);
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -62,8 +65,29 @@ public class MuseTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
+	}
+	@Test
+	public void taint_operation_on_hello_world() {
+
+		try {
+			arrange();
+
+			act_taint();
+
+			assertEquals(expectedOutput, processedOutput);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTreeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	private void act_reachability() throws BadLocationException {
@@ -74,18 +98,28 @@ public class MuseTest {
 		edits = rewriter.rewriteAST(sourceDoc, null);
 		// Applies the edit tree rooted by this edit to the given document.
 		edits.apply(sourceDoc);
-		
+
 		processedOutput = sourceDoc.get();
 	}
 
-	private void arrange_reachability() throws FileNotFoundException, IOException {
+	private void act_taint() throws BadLocationException {
+		rewriter = ASTRewrite.create(root.getAST());
+		rewriter = muse.taintExecution(root, rewriter);
+		sourceDoc = new Document(content);
+
+		edits = rewriter.rewriteAST(sourceDoc, null);
+		// Applies the edit tree rooted by this edit to the given document.
+		edits.apply(sourceDoc);
+
+		processedOutput = sourceDoc.get();
+	}
+
+	private void arrange() throws FileNotFoundException, IOException {
 		content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
 		expectedOutput = FileUtility.readSourceFile("test/output/sample_hello_world_reachability.txt").toString();
 		Arguments.extractArguments(new File("test/input/runtime_argument.txt"));
 		muse = new Muse();
-		root = ASTHelper.getAST(content, Arguments.getBinariesFolder(),
-				Arguments.getRootPath());
+		root = ASTHelper.getAST(content, Arguments.getBinariesFolder(), Arguments.getRootPath());
 	}
-	
 
 }
