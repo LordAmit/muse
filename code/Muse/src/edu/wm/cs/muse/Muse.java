@@ -81,8 +81,10 @@ public class Muse {
 //							reachabilitySchema.getNodeChanges());
 //					rewriter = operator.InsertChanges();
 //					rewriter = reachabilityExecution(root, rewriter);
+//					rewriter = tempExecution(root, rewriter);
 					rewriter = taintExecution(root, rewriter);
-					applyChangesToFile(file, source);
+
+//					applyChangesToFile(file, source);
 
 //					source = readSourceFile(file.getAbsolutePath()).toString();
 //					root = ASTHelper.getAST(source, binariesFolder, rootPath);
@@ -110,9 +112,6 @@ public class Muse {
 						.println(String.format("ERROR PROCESSING \"%s\": %s", file.getAbsolutePath(), e.getMessage()));
 				return;
 //			} catch (MalformedTreeException | BadLocationException e) {
-			} catch (BadLocationException e) {
-				System.err.println("ERROR EDITING AST: " + e.getMessage());
-				return;
 			}
 		}
 	}
@@ -150,6 +149,15 @@ public class Muse {
 		root.accept(reachabilitySchema);
 		ReachabilityOperator operator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
 		rewriter = operator.InsertChanges();
+		return rewriter;
+	}
+	
+	public ASTRewrite tempExecution(CompilationUnit root, ASTRewrite rewriter) {
+
+		TempSchema tempSchema = new TempSchema();
+		root.accept(tempSchema);
+//		TaintOperator operator = new TaintOperator(rewriter, tempSchema.getTaintNodeChanges());
+//		rewriter = operator.InsertChanges();
 		return rewriter;
 	}
 
