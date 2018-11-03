@@ -18,6 +18,7 @@ import org.junit.Test;
 import edu.wm.cs.muse.mdroid.ASTHelper;
 import edu.wm.cs.muse.utility.Arguments;
 import edu.wm.cs.muse.utility.FileUtility;
+import edu.wm.cs.muse.utility.OperatorType;
 
 /*
  * We will be focusing on creating behavior based test cases. AAA pattern, i.e. 
@@ -68,7 +69,7 @@ public class MuseTest {
 
 	private void act_reachability() throws BadLocationException {
 		rewriter = ASTRewrite.create(root.getAST());
-		rewriter = muse.reachabilityExecution(root, rewriter);
+		rewriter = muse.operatorExecution(root, rewriter, OperatorType.REACHABILITY);
 		sourceDoc = new Document(content);
 
 		edits = rewriter.rewriteAST(sourceDoc, null);
