@@ -5,6 +5,7 @@ import java.util.Stack;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
@@ -22,7 +23,7 @@ import edu.wm.cs.muse.utility.Utility;;
  */
 
 public class TaintSchema extends ASTVisitor {
-
+	ASTNode parent;
 	private ArrayList<TaintNodeChangeContainers> taintNodeChanges;
 	private ArrayList<SourceNodeChangeContainers> nodeChanges;
 	// for source of taint.
@@ -47,13 +48,13 @@ public class TaintSchema extends ASTVisitor {
 	};
 
 	public boolean visit(MethodDeclaration node) {
-
-		ASTNode parent = node.getParent();
+		
 		Stack<ASTNode> ancestorStack = new Stack<ASTNode>();
 
 		System.out.println(node.getName());
 		// for method body code
-//		nodeChanges.add(new SourceNodeChangeContainers(methodBody, index, Block.STATEMENTS_PROPERTY, 0));
+//		nodeChanges.add(new SourceNodeChangeContainers(node.getBody(), index, Block.STATEMENTS_PROPERTY, 0));
+		parent = node.getParent();
 
 		while (true) {
 			if (parent.getNodeType() == ASTNode.TYPE_DECLARATION) {
@@ -71,10 +72,14 @@ public class TaintSchema extends ASTVisitor {
 //		System.out.println(parentStack.size());
 //
 		for (ASTNode ancestorNode : ancestorStack) {
-			// for insertion
+			// for declaration
 			nodeChanges.add(
 					new SourceNodeChangeContainers(ancestorNode, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, 1));
+			nodeChanges.add(new SourceNodeChangeContainers(node.getBody(), index, Block.STATEMENTS_PROPERTY, 0));
+			index++;
+			
 		}
+		
 
 //		ASTNode temp = node.getParent();
 

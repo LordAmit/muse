@@ -51,7 +51,7 @@ public class TaintOperator {
 //		}
 		for (SourceNodeChangeContainers nodeChange : nodeChanges) {
 			if (nodeChange.insertionType == 0) {
-//				insertion(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
+				insertion(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
 			} else {
 				insertVariable(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
 			}
@@ -60,14 +60,13 @@ public class TaintOperator {
 
 	}
 
-	// for method body
+	// for inserting source inside methodBody
 	public void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		Statement placeHolder = (Statement) rewriter
-				.createStringPlaceholder("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();"
-						.format(Integer.toString(Utility.COUNTER_GLOBAL)), ASTNode.EMPTY_STATEMENT);
-		Utility.COUNTER_GLOBAL++;
-		listRewrite.insertAt(placeHolder, index, null);
+		String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();", index);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
+		//listRewrite.insertAt(placeHolder, index, null);
+		listRewrite.insertAt(placeHolder, 0, null);
 	}
 
 	// for declaration.
