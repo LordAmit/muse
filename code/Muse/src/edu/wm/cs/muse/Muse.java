@@ -23,6 +23,7 @@ import edu.wm.cs.muse.taint.TaintOperator;
 import edu.wm.cs.muse.taint.TaintSchema;
 import edu.wm.cs.muse.utility.Arguments;
 import edu.wm.cs.muse.utility.FileUtility;
+import edu.wm.cs.muse.utility.OperatorType;
 import edu.wm.cs.muse.visitors.ReachabilityVisitor;
 import edu.wm.cs.muse.visitors.SinkVisitor;
 
@@ -83,7 +84,7 @@ public class Muse {
 //							reachabilitySchema.getNodeChanges());
 //					rewriter = operator.InsertChanges();
 //					rewriter = reachabilityExecution(root, rewriter);
-					rewriter = taintExecution(root, rewriter);
+					rewriter = operatorExecution(root, rewriter, OperatorType.TAINT);
 					applyChangesToFile(file, source);
 
 //					source = readSourceFile(file.getAbsolutePath()).toString();
@@ -142,44 +143,48 @@ public class Muse {
 	}
 
 	/**
-	 * Reachability Schema and Operator operation container
+	 *  executes the specified operator's modifications to the AST
 	 * 
-	 * @param root is the compilation unit based root of AST tree
+	 * @param root is the compilation unit based root of the AST
+	 * @param rewriter ASTRewrite object that holds the changes to the AST
+	 * @param operatorType is the type of operator being executed: sink, source, reachability, or taint
 	 */
-	public ASTRewrite reachabilityExecution(CompilationUnit root, ASTRewrite rewriter) {
-
-		ReachabilitySchema reachabilitySchema = new ReachabilitySchema();
-		root.accept(reachabilitySchema);
-		ReachabilityOperator operator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
-		rewriter = operator.InsertChanges();
-		return rewriter;
+	public ASTRewrite operatorExecution(CompilationUnit root, ASTRewrite rewriter, OperatorType operatorType) {
+		switch (operatorType) {
+			case SINK:
+				SinkSchema sinkSchema = new SinkSchema();
+				root.accept(sinkSchema);
+				SinkOperator sinkOperator = new SinkOperator(rewriter, sinkSchema.getNodeChanges());
+				rewriter = sinkOperator.InsertChanges();
+				return rewriter;
+				
+			case SOURCE: 
+				SourceSchema sourceSchema = new SourceSchema();
+				root.accept(sourceSchema);
+				SourceOperator sourceOperator = new SourceOperator(rewriter, sourceSchema.getNodeChanges());
+				rewriter = sourceOperator.InsertChanges();
+				return rewriter;
+				
+			case REACHABILITY: 
+				ReachabilitySchema reachabilitySchema = new ReachabilitySchema();
+				root.accept(reachabilitySchema);
+				ReachabilityOperator reachabilityOperator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
+				rewriter = reachabilityOperator.InsertChanges();
+				return rewriter;
+				
+			case TAINT: 
+				TaintSchema taintSchema = new TaintSchema();
+				root.accept(taintSchema);
+				TaintOperator taintOperator = new TaintOperator(rewriter, taintSchema.getTaintNodeChanges());
+				rewriter = taintOperator.InsertChanges();
+				return rewriter;
+				
+			default: 
+				return null;
+				
+		}
 	}
 	
-	public ASTRewrite sourceExecution(CompilationUnit root, ASTRewrite rewriter) {
-		SourceSchema sourceSchema = new SourceSchema();
-		root.accept(sourceSchema);
-		SourceOperator operator = new SourceOperator(rewriter, sourceSchema.getNodeChanges());
-		rewriter = operator.InsertChanges();
-		return rewriter;
-	}
-	
-	public ASTRewrite sinkExecution(CompilationUnit root, ASTRewrite rewriter) {
-		SinkSchema sinkSchema = new SinkSchema();
-		root.accept(sinkSchema);
-		SinkOperator operator = new SinkOperator(rewriter, sinkSchema.getNodeChanges());
-		rewriter = operator.InsertChanges();
-		return rewriter;
-	}
-
-	public ASTRewrite taintExecution(CompilationUnit root, ASTRewrite rewriter) {
-
-		TaintSchema taintSchema = new TaintSchema();
-		root.accept(taintSchema);
-		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getTaintNodeChanges());
-		rewriter = operator.InsertChanges();
-		return rewriter;
-	}
-
 	private void printArgumentError() {
 		System.out.println("******* ERROR: INCORRECT USAGE *******");
 		System.out.println("Argument List:");
