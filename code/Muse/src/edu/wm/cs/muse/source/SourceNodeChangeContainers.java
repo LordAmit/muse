@@ -16,6 +16,8 @@ public class SourceNodeChangeContainers {
 	ChildListPropertyDescriptor propertyDescriptor;
 	int count;
 	ASTNode method;
+	// insertionType = 0 for inserting a source
+	// insertionType = 1 for inserting a variable
 	int insertionType;
 	
 	public SourceNodeChangeContainers(ASTNode node, int index, 

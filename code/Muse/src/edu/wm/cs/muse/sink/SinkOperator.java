@@ -48,7 +48,7 @@ public class SinkOperator {
 			
 			else
 			{
-				insertSource(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
+				insertSource(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor, nodeChange.count);
 			}
 		}
 		return rewriter;
@@ -81,13 +81,13 @@ public class SinkOperator {
 		System.out.println(String.format("leak-%d-%d: %s.%s", count, repeatCounts.get(count), className, methodName));
 	}
 
-	void insertSource(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
+	void insertSource(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty, int count) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		// old source code
 //		String source = String.format(
 //				"final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
 //				Utility.COUNTER_GLOBAL);
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getSource(OperatorType.SINK, Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getSource(OperatorType.SINK, count), ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 	}
 

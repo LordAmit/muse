@@ -17,6 +17,8 @@ import edu.wm.cs.muse.reachability.ReachabilityOperator;
 import edu.wm.cs.muse.reachability.ReachabilitySchema;
 import edu.wm.cs.muse.sink.SinkOperator;
 import edu.wm.cs.muse.sink.SinkSchema;
+import edu.wm.cs.muse.source.SourceOperator;
+import edu.wm.cs.muse.source.SourceSchema;
 import edu.wm.cs.muse.taint.TaintOperator;
 import edu.wm.cs.muse.taint.TaintSchema;
 import edu.wm.cs.muse.utility.Arguments;
@@ -149,6 +151,22 @@ public class Muse {
 		ReachabilitySchema reachabilitySchema = new ReachabilitySchema();
 		root.accept(reachabilitySchema);
 		ReachabilityOperator operator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
+		rewriter = operator.InsertChanges();
+		return rewriter;
+	}
+	
+	public ASTRewrite sourceExecution(CompilationUnit root, ASTRewrite rewriter) {
+		SourceSchema sourceSchema = new SourceSchema();
+		root.accept(sourceSchema);
+		SourceOperator operator = new SourceOperator(rewriter, sourceSchema.getNodeChanges());
+		rewriter = operator.InsertChanges();
+		return rewriter;
+	}
+	
+	public ASTRewrite sinkExecution(CompilationUnit root, ASTRewrite rewriter) {
+		SinkSchema sinkSchema = new SinkSchema();
+		root.accept(sinkSchema);
+		SinkOperator operator = new SinkOperator(rewriter, sinkSchema.getNodeChanges());
 		rewriter = operator.InsertChanges();
 		return rewriter;
 	}

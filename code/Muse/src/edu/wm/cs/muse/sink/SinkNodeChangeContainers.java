@@ -16,6 +16,7 @@ public class SinkNodeChangeContainers {
 	ChildListPropertyDescriptor propertyDescriptor;
 	int count;
 	ASTNode method;
+	// insertionType = 0 for sink, insertionType != 0 for source 
 	int insertionType;
 	
 	public SinkNodeChangeContainers(ASTNode node, int index, int count,
