@@ -18,7 +18,7 @@ import edu.wm.cs.muse.utility.Utility;
  * that will create the appropriate object when given a class or method by the
  * TaintSchema.
  * 
- * @author yang
+ * @author yang, amit
  */
 
 public class TaintOperator {

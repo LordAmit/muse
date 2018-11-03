@@ -75,6 +75,7 @@ public class TaintSchema extends ASTVisitor {
 			// for declaration
 			nodeChanges.add(
 					new SourceNodeChangeContainers(ancestorNode, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, 1));
+			//for method body
 			nodeChanges.add(new SourceNodeChangeContainers(node.getBody(), index, Block.STATEMENTS_PROPERTY, 0));
 			index++;
 			
