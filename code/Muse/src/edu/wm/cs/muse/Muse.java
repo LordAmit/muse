@@ -17,6 +17,7 @@ import edu.wm.cs.muse.reachability.ReachabilityOperator;
 import edu.wm.cs.muse.reachability.ReachabilitySchema;
 import edu.wm.cs.muse.sink.SinkOperator;
 import edu.wm.cs.muse.sink.SinkSchema;
+import edu.wm.cs.muse.source.SourceOperator;
 import edu.wm.cs.muse.taint.TaintOperator;
 import edu.wm.cs.muse.taint.TaintSchema;
 import edu.wm.cs.muse.utility.Arguments;
@@ -84,7 +85,7 @@ public class Muse {
 //					rewriter = tempExecution(root, rewriter);
 					rewriter = taintExecution(root, rewriter);
 
-//					applyChangesToFile(file, source);
+					applyChangesToFile(file, source);
 
 //					source = readSourceFile(file.getAbsolutePath()).toString();
 //					root = ASTHelper.getAST(source, binariesFolder, rootPath);
@@ -112,6 +113,9 @@ public class Muse {
 						.println(String.format("ERROR PROCESSING \"%s\": %s", file.getAbsolutePath(), e.getMessage()));
 				return;
 //			} catch (MalformedTreeException | BadLocationException e) {
+			} catch (BadLocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
@@ -151,7 +155,7 @@ public class Muse {
 		rewriter = operator.InsertChanges();
 		return rewriter;
 	}
-	
+
 	public ASTRewrite tempExecution(CompilationUnit root, ASTRewrite rewriter) {
 
 		TempSchema tempSchema = new TempSchema();
@@ -165,7 +169,9 @@ public class Muse {
 
 		TaintSchema taintSchema = new TaintSchema();
 		root.accept(taintSchema);
-		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getTaintNodeChanges());
+		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getNodeChanges(),
+				taintSchema.getTaintNodeChanges());
+//		SourceOperator operator = new SourceOperator(rewriter, taintSchema.getNodeChanges());
 		rewriter = operator.InsertChanges();
 		return rewriter;
 	}
