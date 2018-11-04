@@ -1,10 +1,13 @@
 package edu.wm.cs.muse.taint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
@@ -23,15 +26,17 @@ import edu.wm.cs.muse.utility.Utility;
 
 public class TaintOperator {
 
-	ArrayList<TaintNodeChangeContainers> taintNodeChanges;
+//	ArrayList<TaintNodeChangeContainers> taintNodeChanges;
 	ArrayList<SourceNodeChangeContainers> nodeChanges;
 	ASTRewrite rewriter;
+	ArrayList<Integer> global = new ArrayList<Integer>();
 
-	public TaintOperator(ASTRewrite rewriter, ArrayList<SourceNodeChangeContainers> nodeChanges,
-			ArrayList<TaintNodeChangeContainers> taintNodeChanges) {
+	public TaintOperator(ASTRewrite rewriter, ArrayList<SourceNodeChangeContainers> nodeChanges) {
 		this.rewriter = rewriter;
 		this.nodeChanges = nodeChanges;
-		this.taintNodeChanges = taintNodeChanges;
+		
+		//need array to keep track of sink data as changes are made with source and declaration.
+//		taintNodeChanges = new ArrayList<TaintNodeChangeContainers>();
 	}
 
 	/**
@@ -56,6 +61,7 @@ public class TaintOperator {
 				insertVariable(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
 			}
 		}
+		InsertSinkChanges();
 		return rewriter;
 
 	}
@@ -67,6 +73,7 @@ public class TaintOperator {
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
 		//listRewrite.insertAt(placeHolder, index, null);
 		listRewrite.insertAt(placeHolder, 0, null);
+		System.out.println(String.format("source-%d", index));
 	}
 
 	// for declaration.
@@ -75,7 +82,42 @@ public class TaintOperator {
 		String variable = String.format("String dataLeAk%d = \"\";", Utility.COUNTER_GLOBAL);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
+		
+		//keep track of the number that the declaration is
+		global.add(Utility.COUNTER_GLOBAL);
+		System.out.println(String.format("declaration-%d", Utility.COUNTER_GLOBAL));
 		Utility.COUNTER_GLOBAL += 1;
+	}
+	
+	//sink must only be done after both declaration and source inserts, since it relies on both the index
+	//and the global counter.
+	
+	//package the stuff you need from declaration, then when source comes along you send it to a container
+	//which is then used by another function to do sink.
+	//sink is basically declaration's number of times and utility counter + source's placement
+	
+	
+	public ASTRewrite InsertSinkChanges() {
+
+		for (SourceNodeChangeContainers nodeChange : nodeChanges) {
+			int i = 0;
+			if (nodeChange.insertionType == 0) {
+				insertSink(nodeChange.node, nodeChange.index, global.get(i), nodeChange.propertyDescriptor);
+				i++;
+			}
+		}
+		return rewriter;
+
+	}
+	
+	// for sink insertion
+	void insertSink(ASTNode node, int index, int global_counter, ChildListPropertyDescriptor nodeProperty) {
+		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
+		String sink = String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", global_counter, index,
+				Utility.COUNTER_GLOBAL);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
+		listRewrite.insertAt(placeHolder, index, null);
+		System.out.println(String.format("leak-%d-%d", global_counter, index));
 	}
 
 }

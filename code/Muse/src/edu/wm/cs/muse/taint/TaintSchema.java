@@ -24,24 +24,24 @@ import edu.wm.cs.muse.utility.Utility;;
 
 public class TaintSchema extends ASTVisitor {
 	ASTNode parent;
-	private ArrayList<TaintNodeChangeContainers> taintNodeChanges;
+//	private ArrayList<TaintNodeChangeContainers> taintNodeChanges;
 	private ArrayList<SourceNodeChangeContainers> nodeChanges;
 	// for source of taint.
 	int index = 0;
-	ASTNode outermost_class;
+	// ASTNode outermost_class;
 
 	/**
 	 * TaintSchema should use the source node container array since they occur at
 	 * the same time and use the same parameters
 	 */
 	public TaintSchema() {
-		taintNodeChanges = new ArrayList<TaintNodeChangeContainers>();
+//		taintNodeChanges = new ArrayList<TaintNodeChangeContainers>();
 		nodeChanges = new ArrayList<SourceNodeChangeContainers>();
 	}
-
-	public ArrayList<TaintNodeChangeContainers> getTaintNodeChanges() {
-		return this.taintNodeChanges;
-	};
+//
+//	public ArrayList<TaintNodeChangeContainers> getTaintNodeChanges() {
+//		return this.taintNodeChanges;
+//	};
 
 	public ArrayList<SourceNodeChangeContainers> getNodeChanges() {
 		return this.nodeChanges;
@@ -51,7 +51,7 @@ public class TaintSchema extends ASTVisitor {
 		
 		Stack<ASTNode> ancestorStack = new Stack<ASTNode>();
 
-		System.out.println(node.getName());
+		System.out.println(node.getName() + " ok");
 		// for method body code
 //		nodeChanges.add(new SourceNodeChangeContainers(node.getBody(), index, Block.STATEMENTS_PROPERTY, 0));
 		parent = node.getParent();
@@ -59,7 +59,7 @@ public class TaintSchema extends ASTVisitor {
 		while (true) {
 			if (parent.getNodeType() == ASTNode.TYPE_DECLARATION) {
 				ancestorStack.add(parent);
-				// for declaraion
+				// for declaration
 //				nodeChanges
 //						.add(new SourceNodeChangeContainers(parent, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, 1));
 				parent = parent.getParent();

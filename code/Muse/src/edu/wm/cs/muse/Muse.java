@@ -169,8 +169,9 @@ public class Muse {
 
 		TaintSchema taintSchema = new TaintSchema();
 		root.accept(taintSchema);
-		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getNodeChanges(),
-				taintSchema.getTaintNodeChanges());
+//		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getNodeChanges(),
+//				taintSchema.getTaintNodeChanges());
+		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getNodeChanges());
 //		SourceOperator operator = new SourceOperator(rewriter, taintSchema.getNodeChanges());
 		rewriter = operator.InsertChanges();
 		return rewriter;
