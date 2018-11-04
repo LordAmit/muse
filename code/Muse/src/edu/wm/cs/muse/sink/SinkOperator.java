@@ -11,7 +11,6 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
 import edu.wm.cs.muse.utility.OperatorType;
-import edu.wm.cs.muse.utility.Utility;
 import edu.wm.cs.muse.operators.DataLeak;
 
 /**

@@ -24,8 +24,6 @@ import edu.wm.cs.muse.taint.TaintSchema;
 import edu.wm.cs.muse.utility.Arguments;
 import edu.wm.cs.muse.utility.FileUtility;
 import edu.wm.cs.muse.utility.OperatorType;
-import edu.wm.cs.muse.visitors.ReachabilityVisitor;
-import edu.wm.cs.muse.visitors.SinkVisitor;
 
 /**
  *

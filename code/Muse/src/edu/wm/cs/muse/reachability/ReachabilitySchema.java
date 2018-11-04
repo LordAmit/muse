@@ -9,8 +9,6 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import edu.wm.cs.muse.utility.Utility;
-
 /**
  * Reachability Schema goes through the AST tree for reachability, analyzes the
  * nodes and prepares a list of nodes to be changed.
