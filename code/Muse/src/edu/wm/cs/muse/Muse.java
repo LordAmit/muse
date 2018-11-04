@@ -20,6 +20,7 @@ import edu.wm.cs.muse.sink.SinkSchema;
 import edu.wm.cs.muse.source.SourceOperator;
 import edu.wm.cs.muse.taint.TaintOperator;
 import edu.wm.cs.muse.taint.TaintSchema;
+import edu.wm.cs.muse.taint.TaintSinkSchema;
 import edu.wm.cs.muse.utility.Arguments;
 import edu.wm.cs.muse.utility.FileUtility;
 import edu.wm.cs.muse.visitors.ReachabilityVisitor;
@@ -84,6 +85,7 @@ public class Muse {
 //					rewriter = reachabilityExecution(root, rewriter);
 //					rewriter = tempExecution(root, rewriter);
 					rewriter = taintExecution(root, rewriter);
+//					rewriter = taintSinkExecution(root, rewriter);
 
 					applyChangesToFile(file, source);
 
@@ -174,8 +176,30 @@ public class Muse {
 		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getNodeChanges());
 //		SourceOperator operator = new SourceOperator(rewriter, taintSchema.getNodeChanges());
 		rewriter = operator.InsertChanges();
+		
+//		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
+//		root.accept(taintSinkSchema);
+//		rewriter = operator.InsertSinkChanges();
 		return rewriter;
 	}
+	
+//	public ASTRewrite taintSinkExecution(CompilationUnit root, ASTRewrite rewriter) {
+//
+//		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
+//		root.accept(taintSinkSchema);
+////		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getNodeChanges(),
+////				taintSchema.getTaintNodeChanges());
+//		TaintOperator operator = new TaintOperator(rewriter, taintSinkSchema.getNodeChanges());
+////		SourceOperator operator = new SourceOperator(rewriter, taintSchema.getNodeChanges());
+//		rewriter = operator.InsertChanges();
+//		
+////		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
+////		root.accept(taintSinkSchema);
+////		rewriter = operator.InsertSinkChanges();
+//		return rewriter;
+//	}
+	
+	
 
 	private void printArgumentError() {
 		System.out.println("******* ERROR: INCORRECT USAGE *******");

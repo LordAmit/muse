@@ -61,7 +61,7 @@ public class TaintOperator {
 				insertVariable(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
 			}
 		}
-		InsertSinkChanges();
+//		InsertSinkChanges();
 		return rewriter;
 
 	}
@@ -97,27 +97,27 @@ public class TaintOperator {
 	//sink is basically declaration's number of times and utility counter + source's placement
 	
 	
-	public ASTRewrite InsertSinkChanges() {
-
-		for (SourceNodeChangeContainers nodeChange : nodeChanges) {
-			int i = 0;
-			if (nodeChange.insertionType == 0) {
-				insertSink(nodeChange.node, nodeChange.index, global.get(i), nodeChange.propertyDescriptor);
-				i++;
-			}
-		}
-		return rewriter;
-
-	}
-	
-	// for sink insertion
-	void insertSink(ASTNode node, int index, int global_counter, ChildListPropertyDescriptor nodeProperty) {
-		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		String sink = String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", global_counter, index,
-				Utility.COUNTER_GLOBAL);
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
-		listRewrite.insertAt(placeHolder, index, null);
-		System.out.println(String.format("leak-%d-%d", global_counter, index));
-	}
+//	public ASTRewrite InsertSinkChanges() {
+//
+//		for (SourceNodeChangeContainers nodeChange : nodeChanges) {
+//			int i = 0;
+//			if (nodeChange.insertionType == 0) {
+//				insertSink(nodeChange.node, nodeChange.index, global.get(i), nodeChange.propertyDescriptor);
+//				i++;
+//			}
+//		}
+//		return rewriter;
+//
+//	}
+//	
+//	// for sink insertion
+//	void insertSink(ASTNode node, int index, int global_counter, ChildListPropertyDescriptor nodeProperty) {
+//		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
+//		String sink = String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", global_counter, index,
+//				Utility.COUNTER_GLOBAL);
+//		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
+//		listRewrite.insertAt(placeHolder, index, null);
+//		System.out.println(String.format("leak-%d-%d", global_counter, index));
+//	}
 
 }
