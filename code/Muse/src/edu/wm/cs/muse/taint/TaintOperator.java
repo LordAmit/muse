@@ -29,7 +29,6 @@ public class TaintOperator {
 //	ArrayList<TaintNodeChangeContainers> taintNodeChanges;
 	ArrayList<SourceNodeChangeContainers> nodeChanges;
 	ASTRewrite rewriter;
-	ArrayList<Integer> global = new ArrayList<Integer>();
 
 	public TaintOperator(ASTRewrite rewriter, ArrayList<SourceNodeChangeContainers> nodeChanges) {
 		this.rewriter = rewriter;
@@ -73,7 +72,6 @@ public class TaintOperator {
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
 		//listRewrite.insertAt(placeHolder, index, null);
 		listRewrite.insertAt(placeHolder, 0, null);
-		System.out.println(String.format("source-%d", index));
 	}
 
 	// for declaration.
@@ -82,10 +80,6 @@ public class TaintOperator {
 		String variable = String.format("String dataLeAk%d = \"\";", Utility.COUNTER_GLOBAL);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
-		
-		//keep track of the number that the declaration is
-		global.add(Utility.COUNTER_GLOBAL);
-		System.out.println(String.format("declaration-%d", Utility.COUNTER_GLOBAL));
 		Utility.COUNTER_GLOBAL += 1;
 	}
 	

@@ -75,7 +75,10 @@ public class TaintSinkSchema extends ASTVisitor {
 			if (classRetainer != null)
 			{
 				//check for strings of the declaration "String dataLeAk%d"
-				fieldBoys.add(field);
+				if (field.toString().substring(0, 15) == "String dataLeAk")
+				{
+					fieldBoys.add(field);
+				}
 				taintNodeChanges.add(new TaintNodeChangeContainers(parent, fieldBoys, index, Block.STATEMENTS_PROPERTY, 0));
 				//keep track of outer classes
 				fieldBoys.clear();
@@ -83,7 +86,10 @@ public class TaintSinkSchema extends ASTVisitor {
 			}
 			
 			//check for strings of the declaration "String dataLeAk%d"
-			fieldBoys.add(field);
+			if (field.toString().substring(0, 15) == "String dataLeAk")
+			{
+				fieldBoys.add(field);
+			}
 			classRetainer = parent;
 		}
 
@@ -99,11 +105,14 @@ public class TaintSinkSchema extends ASTVisitor {
 			else
 			{
 				//check for strings of the declaration "String dataLeAk%d"
-				fieldBoys.add(field);
+				if (field.toString().substring(0, 15) == "String dataLeAk")
+				{
+					fieldBoys.add(field);
+				}
 				//gets the fields, then compounds with outer class fields if in a 
 				//subclass
-				System.out.println(parent.toString().substring(0, 16));
-				System.out.println(field.toString().substring(0, 16));
+//				System.out.println(parent.toString().substring(0, 16));
+//				System.out.println(field.toString().substring(0, 16));
 				//parent = parent.getParent();
 			}
 		}
