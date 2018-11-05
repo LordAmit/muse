@@ -50,11 +50,11 @@ public class TaintSinkOperator {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		for (int i = 0; i < fieldBoys.size(); i++)
 		{
-			String sink = String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", fieldBoys.get(i), index,
+			String sink = String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", fieldBoys.get(i).toString().substring(16), index,
 					Utility.COUNTER_GLOBAL);
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
 			listRewrite.insertAt(placeHolder, index, null);
-			System.out.println(String.format("leak-%d-%d", fieldBoys.get(i), index));
+			System.out.println(String.format("leak-%d-%d", fieldBoys.get(i).toString().substring(16), index));
 		}
 
 	}

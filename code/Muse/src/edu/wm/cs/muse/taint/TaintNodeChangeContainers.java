@@ -7,7 +7,8 @@ import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 
 /**
- * A container for storing nodes, index, property descriptor, and insertion type for taint operators.
+ * A container for storing nodes, index, property descriptor, and field declaration arrays 
+ * for taint operators.
  * @author yang
  *
  */
