@@ -86,6 +86,12 @@ public class Muse {
 //					rewriter = reachabilityExecution(root, rewriter);
 //					rewriter = tempExecution(root, rewriter);
 					rewriter = taintExecution(root, rewriter);
+					Document tempDocument = new Document(source);
+					TextEdit tempEdits = rewriter.rewriteAST(tempDocument, null);
+					tempEdits.apply(tempDocument);
+					root = ASTHelper.getAST(tempDocument.get(), Arguments.getBinariesFolder(),
+								Arguments.getRootPath());
+					rewriter = ASTRewrite.create(root.getAST());
 					rewriter = taintSinkExecution(root, rewriter);
 
 					applyChangesToFile(file, source);
