@@ -183,21 +183,21 @@ public class Muse {
 		return rewriter;
 	}
 	
-//	public ASTRewrite taintSinkExecution(CompilationUnit root, ASTRewrite rewriter) {
-//
-//		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
-//		root.accept(taintSinkSchema);
-////		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getNodeChanges(),
-////				taintSchema.getTaintNodeChanges());
-//		TaintOperator operator = new TaintOperator(rewriter, taintSinkSchema.getNodeChanges());
+	public ASTRewrite taintSinkExecution(CompilationUnit root, ASTRewrite rewriter) {
+
+		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
+		root.accept(taintSinkSchema);
+//		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getNodeChanges(),
+//				taintSchema.getTaintNodeChanges());
+//		TaintOperator operator = new TaintOperator(rewriter, taintSinkSchema.getTaintNodeChanges());
 ////		SourceOperator operator = new SourceOperator(rewriter, taintSchema.getNodeChanges());
 //		rewriter = operator.InsertChanges();
-//		
-////		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
-////		root.accept(taintSinkSchema);
-////		rewriter = operator.InsertSinkChanges();
-//		return rewriter;
-//	}
+		
+//		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
+//		root.accept(taintSinkSchema);
+//		rewriter = operator.InsertSinkChanges();
+		return rewriter;
+	}
 	
 	
 
