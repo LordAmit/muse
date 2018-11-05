@@ -37,7 +37,7 @@ public class TaintSinkOperator {
 			for (SinkNodeChangeContainers methodChanges: methodChanges) {
 				if (methodChanges.node == fieldChanges.node)
 				{
-					insertSink(methodChanges.node, methodChanges.index, fieldChanges.fieldBoys, methodChanges.propertyDescriptor);
+					insertSink(methodChanges.method, methodChanges.index, fieldChanges.fieldBoys, methodChanges.propertyDescriptor);
 				}
 			}
 		}
@@ -47,10 +47,15 @@ public class TaintSinkOperator {
 
 	// for sink insertion
 	void insertSink(ASTNode node, int index, ArrayList<FieldDeclaration> fieldBoys, ChildListPropertyDescriptor nodeProperty) {
-		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		for (int i = 0; i < fieldBoys.size(); i++)
 		{
-			String sink = String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", fieldBoys.get(i).toString().substring(16), index,
+			ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
+			int index_equal = fieldBoys.get(i).toString().indexOf("=");
+			String tempString = fieldBoys.get(i).toString().substring(15, index_equal);
+			tempString = tempString.trim();
+
+			System.out.println(tempString +" "+ fieldBoys.get(i));
+			String sink = String.format("android.util.Log.d(\"leak-%s-%s\", dataLeAk%s);", tempString, index,
 					Utility.COUNTER_GLOBAL);
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
 			listRewrite.insertAt(placeHolder, index, null);

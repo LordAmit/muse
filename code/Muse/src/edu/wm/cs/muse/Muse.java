@@ -86,11 +86,24 @@ public class Muse {
 //					rewriter = reachabilityExecution(root, rewriter);
 //					rewriter = tempExecution(root, rewriter);
 					rewriter = taintExecution(root, rewriter);
+					File temp_file = new File("test/temp/temp_file.java");
+					
+//					Document sourceDoc = new Document(source);
+//
+//					TextEdit edits = rewriter.rewriteAST(sourceDoc, null);
+//					// Applies the edit tree rooted by this edit to the given document.
+//					edits.apply(sourceDoc);
+//					FileUtils.writeStringToFile(file, sourceDoc.get(), false);
+//					rewriter = null;
+					
 					Document tempDocument = new Document(source);
 					TextEdit tempEdits = rewriter.rewriteAST(tempDocument, null);
 					tempEdits.apply(tempDocument);
-					root = ASTHelper.getAST(tempDocument.get(), Arguments.getBinariesFolder(),
-								Arguments.getRootPath());
+					FileUtils.writeStringToFile(temp_file, tempDocument.get(), false);
+					rewriter = null;
+//					root = ASTHelper.getAST(tempDocument.get(), Arguments.getBinariesFolder(),
+//								Arguments.getRootPath());
+					root = ASTHelper.getAST(tempDocument.get(), Arguments.getBinariesFolder(), "test/temp/");
 					rewriter = ASTRewrite.create(root.getAST());
 					rewriter = taintSinkExecution(root, rewriter);
 
@@ -183,13 +196,13 @@ public class Muse {
 		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getNodeChanges());
 //		SourceOperator operator = new SourceOperator(rewriter, taintSchema.getNodeChanges());
 		rewriter = operator.InsertChanges();
-		
+
 //		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
 //		root.accept(taintSinkSchema);
 //		rewriter = operator.InsertSinkChanges();
 		return rewriter;
 	}
-	
+
 	public ASTRewrite taintSinkExecution(CompilationUnit root, ASTRewrite rewriter) {
 
 		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
@@ -197,14 +210,12 @@ public class Muse {
 		TaintSinkOperator operator = new TaintSinkOperator(rewriter, taintSinkSchema.getFieldNodeChanges(),
 				taintSinkSchema.getMethodNodeChanges());
 		rewriter = operator.InsertChanges();
-		
+
 //		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
 //		root.accept(taintSinkSchema);
 //		rewriter = operator.InsertSinkChanges();
 		return rewriter;
 	}
-	
-	
 
 	private void printArgumentError() {
 		System.out.println("******* ERROR: INCORRECT USAGE *******");
