@@ -47,9 +47,8 @@ public class MuseTest {
 	public void reachability_operation_on_hello_world() {
 	
 		try {
-			arrange_reachability();			
-			
-			act_reachability();
+			prepare_test_files(OperatorType.REACHABILITY);			
+			execute_muse(OperatorType.REACHABILITY);
 			
 			assertEquals(expectedOutput, processedOutput);
 			
@@ -63,17 +62,15 @@ public class MuseTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+			
 	}
 	
 	@Test
 	public void source_operation_on_hello_world() {
 	
 		try {
-			arrange_source();			
-			
-			act_source();
+			prepare_test_files(OperatorType.SOURCE);
+			execute_muse(OperatorType.SOURCE);
 			
 			assertEquals(expectedOutput, processedOutput);
 			
@@ -87,14 +84,35 @@ public class MuseTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+			
+	}
+	
+	@Test
+	public void sink_operation_on_hello_world() {
+	
+		try {
+			prepare_test_files(OperatorType.SINK);
+			execute_muse(OperatorType.SINK);
+			
+			assertEquals(expectedOutput, processedOutput);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTreeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
 	}
 	
 
-	private void act_reachability() throws BadLocationException {
+	private void execute_muse(OperatorType operator) throws BadLocationException {
 		rewriter = ASTRewrite.create(root.getAST());
-		rewriter = muse.operatorExecution(root, rewriter, OperatorType.REACHABILITY);
+		rewriter = muse.operatorExecution(root, rewriter, operator);
 		sourceDoc = new Document(content);
 
 		edits = rewriter.rewriteAST(sourceDoc, null);
@@ -104,35 +122,30 @@ public class MuseTest {
 		processedOutput = sourceDoc.get();
 	}
 
-	private void arrange_reachability() throws FileNotFoundException, IOException {
-		content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
-		expectedOutput = FileUtility.readSourceFile("test/output/sample_hello_world_reachability.txt").toString();
+	private void prepare_test_files(OperatorType operator) throws FileNotFoundException, IOException {
+		switch (operator) {
+			case SINK:
+				// the input for the sink test is the output from the source operator
+				// this is because the sink operator relies on sources already being inserted in the code base
+				content = FileUtility.readSourceFile("test/output/sample_hello_world_source.txt").toString();
+				expectedOutput = FileUtility.readSourceFile("test/output/sample_hello_world_sink.txt").toString();
+				
+			case REACHABILITY:
+				content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
+				expectedOutput = FileUtility.readSourceFile("test/output/sample_hello_world_reachability.txt").toString();
+				
+			case SOURCE:
+				content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
+				expectedOutput = FileUtility.readSourceFile("test/output/sample_hello_world_source.txt").toString();
+			
+			case TAINT:
+				// not implemented yet
+				// do nothing
+				
+		}
 		Arguments.extractArguments(new File("test/input/runtime_argument.txt"));
 		muse = new Muse();
 		root = ASTHelper.getAST(content, Arguments.getBinariesFolder(),
 				Arguments.getRootPath());
 	}
-	
-	private void act_source() throws BadLocationException {
-		rewriter = ASTRewrite.create(root.getAST());
-		rewriter = muse.operatorExecution(root, rewriter, OperatorType.SOURCE);
-		sourceDoc = new Document(content);
-
-		edits = rewriter.rewriteAST(sourceDoc, null);
-		// Applies the edit tree rooted by this edit to the given document.
-		edits.apply(sourceDoc);
-		
-		processedOutput = sourceDoc.get();
-	}
-	
-	private void arrange_source() throws FileNotFoundException, IOException {
-		content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
-		expectedOutput = FileUtility.readSourceFile("test/output/sample_hello_world_reachability.txt").toString();
-		Arguments.extractArguments(new File("test/input/runtime_argument.txt"));
-		muse = new Muse();
-		root = ASTHelper.getAST(content, Arguments.getBinariesFolder(),
-				Arguments.getRootPath());
-	}
-	
-
 }
