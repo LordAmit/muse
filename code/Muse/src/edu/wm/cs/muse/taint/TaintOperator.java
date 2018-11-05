@@ -60,7 +60,7 @@ public class TaintOperator {
 				insertVariable(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
 			}
 		}
-//		InsertSinkChanges();
+		
 		return rewriter;
 
 	}

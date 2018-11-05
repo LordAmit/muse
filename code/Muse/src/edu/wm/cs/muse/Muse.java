@@ -20,6 +20,7 @@ import edu.wm.cs.muse.sink.SinkSchema;
 import edu.wm.cs.muse.source.SourceOperator;
 import edu.wm.cs.muse.taint.TaintOperator;
 import edu.wm.cs.muse.taint.TaintSchema;
+import edu.wm.cs.muse.taint.TaintSinkOperator;
 import edu.wm.cs.muse.taint.TaintSinkSchema;
 import edu.wm.cs.muse.utility.Arguments;
 import edu.wm.cs.muse.utility.FileUtility;
@@ -85,7 +86,7 @@ public class Muse {
 //					rewriter = reachabilityExecution(root, rewriter);
 //					rewriter = tempExecution(root, rewriter);
 					rewriter = taintExecution(root, rewriter);
-//					rewriter = taintSinkExecution(root, rewriter);
+					rewriter = taintSinkExecution(root, rewriter);
 
 					applyChangesToFile(file, source);
 
@@ -187,11 +188,9 @@ public class Muse {
 
 		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
 		root.accept(taintSinkSchema);
-//		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getNodeChanges(),
-//				taintSchema.getTaintNodeChanges());
-//		TaintOperator operator = new TaintOperator(rewriter, taintSinkSchema.getTaintNodeChanges());
-////		SourceOperator operator = new SourceOperator(rewriter, taintSchema.getNodeChanges());
-//		rewriter = operator.InsertChanges();
+		TaintSinkOperator operator = new TaintSinkOperator(rewriter, taintSinkSchema.getFieldNodeChanges(),
+				taintSinkSchema.getMethodNodeChanges());
+		rewriter = operator.InsertChanges();
 		
 //		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
 //		root.accept(taintSinkSchema);

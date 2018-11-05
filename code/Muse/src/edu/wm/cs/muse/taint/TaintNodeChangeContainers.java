@@ -14,11 +14,11 @@ import org.eclipse.jdt.core.dom.FieldDeclaration;
 
 public class TaintNodeChangeContainers {
 	
-	ASTNode node;
-	int index;
-	ChildListPropertyDescriptor propertyDescriptor;
-	int count;
-	ArrayList<FieldDeclaration> fieldBoys;
+	public ASTNode node;
+	public int index;
+	public ChildListPropertyDescriptor propertyDescriptor;
+	public int count;
+	public ArrayList<FieldDeclaration> fieldBoys;
 	
 	//Uses the class node to check which fields go with which methods, then adds all the sink-fields
 	//to those methods

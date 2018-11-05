@@ -7,12 +7,7 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
-
-import edu.wm.cs.muse.sink.SinkNodeChangeContainers;
-import edu.wm.cs.muse.source.SourceNodeChangeContainers;
-import edu.wm.cs.muse.utility.Utility;;
+import edu.wm.cs.muse.sink.SinkNodeChangeContainers;;
 
 /**
  * The TaintSinkSchema will traverse the nodes of the rewritten AST for declarations, then correctly implement
