@@ -25,6 +25,7 @@ public class TaintSinkSchema extends ASTVisitor {
 	private ArrayList<TaintNodeChangeContainers> taintNodeChanges;
 	private ArrayList<SinkNodeChangeContainers> nodeChanges;
 	int index = 0;
+	int methodIndex = 0;
 	ArrayList<FieldDeclaration> fieldBoys = new ArrayList<FieldDeclaration>();
 
 	public TaintSinkSchema() {
@@ -52,11 +53,14 @@ public class TaintSinkSchema extends ASTVisitor {
 
 		if (parent.getNodeType() == ASTNode.TYPE_DECLARATION) {
 
-			nodeChanges.add(new SinkNodeChangeContainers(parent, index, throwaway, Block.STATEMENTS_PROPERTY,
+			nodeChanges.add(new SinkNodeChangeContainers(parent, methodIndex, throwaway, Block.STATEMENTS_PROPERTY,
 					method.getBody(), 0));
 			// get parent's fields with findField
 			parent = parent.getParent();
+			methodIndex++;
+			
 		}
+		
 		return true;
 	}
 
