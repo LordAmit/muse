@@ -87,7 +87,7 @@ public class Muse {
 //					rewriter = tempExecution(root, rewriter);
 					rewriter = taintExecution(root, rewriter);
 					File temp_file = new File("test/temp/temp_file.java");
-					
+
 //					Document sourceDoc = new Document(source);
 //
 //					TextEdit edits = rewriter.rewriteAST(sourceDoc, null);
@@ -95,19 +95,27 @@ public class Muse {
 //					edits.apply(sourceDoc);
 //					FileUtils.writeStringToFile(file, sourceDoc.get(), false);
 //					rewriter = null;
-					
+					//TaintSchema
 					Document tempDocument = new Document(source);
 					TextEdit tempEdits = rewriter.rewriteAST(tempDocument, null);
 					tempEdits.apply(tempDocument);
 					FileUtils.writeStringToFile(temp_file, tempDocument.get(), false);
+					//TaintSinkSchema
+					source = FileUtility.readSourceFile(temp_file.getAbsolutePath()).toString();
 					rewriter = null;
 //					root = ASTHelper.getAST(tempDocument.get(), Arguments.getBinariesFolder(),
 //								Arguments.getRootPath());
+					
 					root = ASTHelper.getAST(tempDocument.get(), Arguments.getBinariesFolder(), "test/temp/");
 					rewriter = ASTRewrite.create(root.getAST());
 					rewriter = taintSinkExecution(root, rewriter);
 
-					applyChangesToFile(file, source);
+					try {
+						applyChangesToFile(temp_file, source);
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+
+					}
 
 //					source = readSourceFile(file.getAbsolutePath()).toString();
 //					root = ASTHelper.getAST(source, binariesFolder, rootPath);
