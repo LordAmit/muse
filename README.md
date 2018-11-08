@@ -1,8 +1,10 @@
 # Muse
 Muse (alternatively µSE) is a mutation-based soundness evaluation framework which systematically evaluates Android static analysis tools to discover, document, and fix, flaws, by leveraging the well-founded practice of mutation analysis. More information about Muse can be found in our [USENIX Security'18 paper](http://www.cs.wm.edu/~rfbonett/pubs/usenix18.pdf) and on our [website](https://muse-security-evaluation.github.io/#overview). 
 
+This repository is a refactoring of the original Muse tool written by Richie Bonnett, done as a part of W&M's Software Engineering course, CSCI 435.
+
 # Compilation
-Muse can be downloaded from this git repository, with a Maven Eclipse project found in the Muse directory. After downloading, Muse can be compiled with the following commands:
+Muse can be downloaded from this git repository, with a Maven Eclipse project found in the code directory. After downloading, navigate into the code subdirectory. Then Muse can be compiled with the following commands:
 ```
 mvn clean
 mvn package
@@ -16,6 +18,9 @@ To run Muse, use the following command, specifying the required arguments:
 ```
 java -jar Muse-1.0.0.jar <libs4ast> <AppSourceCode> <AppName> <OutputPath>
 ```
+
+If running Muse within a IDE like Eclipse, import only the Muse folder within the code subdirectory, or else you might get a java.lang.SecurityException error when running Muse.java
+
 ### Arguments
 Provide the following list of required arguments when running Muse: 
 1. ``libs4ast``:  path of the lib4ast folder, inherited from [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus/tree/master/libs4ast);
