@@ -2,8 +2,6 @@ package edu.wm.cs.muse.taint;
 
 import java.util.ArrayList;
 
-import javax.activation.FileDataSource;
-
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Block;
@@ -85,7 +83,8 @@ public class TaintSinkSchema extends ASTVisitor {
 			if (field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
 				fieldBoys.add(field);
 			}
-			taintNodeChanges.add(new TaintNodeChangeContainers(parent, fieldBoys, index, Block.STATEMENTS_PROPERTY, 0));
+			ArrayList<FieldDeclaration> fieldDecl = new ArrayList<FieldDeclaration>(fieldBoys);
+			taintNodeChanges.add(new TaintNodeChangeContainers(parent, fieldDecl, index, Block.STATEMENTS_PROPERTY, 0));
 			// keep track of outer classes
 			fieldBoys.clear();
 			classRetainer = parent;
@@ -101,8 +100,9 @@ public class TaintSinkSchema extends ASTVisitor {
 //		if (parent.getNodeType() == ASTNode.TYPE_DECLARATION) {
 		// it has switched to a subclass, must push all fields to keep correct hierarchy
 		if (parent != classRetainer) {
+			ArrayList<FieldDeclaration> fieldDecl = new ArrayList<FieldDeclaration>(fieldBoys);
 			taintNodeChanges
-					.add(new TaintNodeChangeContainers(classRetainer, fieldBoys, index, Block.STATEMENTS_PROPERTY, 0));
+					.add(new TaintNodeChangeContainers(classRetainer, fieldDecl, index, Block.STATEMENTS_PROPERTY, 0));
 			classRetainer = parent;
 		}
 

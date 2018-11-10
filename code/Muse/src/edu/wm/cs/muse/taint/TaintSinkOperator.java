@@ -51,18 +51,18 @@ public class TaintSinkOperator {
 			ChildListPropertyDescriptor nodeProperty) {
 		System.out.println("");
 		for (int i = 0; i < fieldBoys.size(); i++) {
-			System.out.println("index: " + index);
-			if (index == 5)
-				System.out.println("stop");
-			if (index == 6)
-				System.out.println("stop");
+//			System.out.println("index: " + index);
+//			if (index == 5)
+//				System.out.println("stop");
+//			if (index == 6)
+//				System.out.println("stop");
 
 			ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 			int index_equal = fieldBoys.get(i).toString().indexOf("=");
 			String tempString = fieldBoys.get(i).toString().substring(15, index_equal);
 			tempString = tempString.trim();
 
-			System.out.println(tempString + "tempstring" + fieldBoys.get(i));
+//			System.out.println(tempString + "tempstring" + fieldBoys.get(i));
 			String sink = String.format("android.util.Log.d(\"leak-%s-%s\", dataLeAk%s);", tempString, index,
 					Utility.COUNTER_GLOBAL);
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
