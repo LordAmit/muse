@@ -67,7 +67,7 @@ public class TaintSinkOperator {
 					tempString);
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
 
-			listRewrite.insertAt(placeHolder, -1, null);
+			listRewrite.insertAt(placeHolder, 0, null);
 //			System.out.println(String.format("leak-%d-%d", fieldBoys.get(i).toString().substring(16), index));
 		}
 
