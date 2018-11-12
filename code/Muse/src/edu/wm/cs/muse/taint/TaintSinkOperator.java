@@ -64,7 +64,7 @@ public class TaintSinkOperator {
 
 //			System.out.println(tempString + "tempstring" + fieldBoys.get(i));
 			String sink = String.format("android.util.Log.d(\"leak-%s-%s\", dataLeAk%s);", tempString, index,
-					Utility.COUNTER_GLOBAL);
+					tempString);
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
 
 			listRewrite.insertAt(placeHolder, -1, null);

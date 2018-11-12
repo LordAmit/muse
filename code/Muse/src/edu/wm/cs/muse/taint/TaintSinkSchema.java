@@ -24,7 +24,8 @@ public class TaintSinkSchema extends ASTVisitor {
 	private ArrayList<SinkNodeChangeContainers> nodeChanges;
 	int index = 0;
 	int methodIndex = 0;
-	ArrayList<FieldDeclaration> fieldBoys = new ArrayList<FieldDeclaration>();
+	ArrayList<FieldDeclaration> fieldHolder = new ArrayList<FieldDeclaration>();
+	ArrayList<FieldDeclaration> previousFieldHolder = new ArrayList<FieldDeclaration>();
 
 	public TaintSinkSchema() {
 		taintNodeChanges = new ArrayList<TaintNodeChangeContainers>();
@@ -67,58 +68,63 @@ public class TaintSinkSchema extends ASTVisitor {
 	// the taintNodeChanges container, then in conjunction with the methods part
 	// insert the sinks
 	public boolean visit(FieldDeclaration field) {
-
-		while (true) {
-			parent = field.getParent();
-			if (parent.getNodeType() == ASTNode.TYPE_DECLARATION)
-				break;
-			parent = parent.getParent();
-		}
-//		parent = field.getParent();
+		
+// The getParent loop was found unnecessary, getParent will always find a TYPE_DECLARATION
+		parent = field.getParent();
 
 //		if (parent.getNodeType() == ASTNode.TYPE_DECLARATION && parent.getParent() == null) {
 		// some class segment was completed before this one. This is a new class chain
-		if (classRetainer != null) {
+		if (parent == classRetainer) {
 			// check for strings of the declaration "String dataLeAk%d"
 			if (field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
-				fieldBoys.add(field);
+				fieldHolder.add(field);
+				previousFieldHolder.add(field);
 			}
-			ArrayList<FieldDeclaration> fieldDecl = new ArrayList<FieldDeclaration>(fieldBoys);
+
+			ArrayList<FieldDeclaration> fieldDecl = new ArrayList<FieldDeclaration>(fieldHolder);
+			
 			taintNodeChanges.add(new TaintNodeChangeContainers(parent, fieldDecl, index, Block.STATEMENTS_PROPERTY, 0));
 			// keep track of outer classes
-			fieldBoys.clear();
+			fieldHolder.clear();
 			classRetainer = parent;
 		}
 
-		// check for strings of the declaration "String dataLeAk%d"
-		if (field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
-			fieldBoys.add(field);
-		}
-		classRetainer = parent;
-//		}
-
-//		if (parent.getNodeType() == ASTNode.TYPE_DECLARATION) {
 		// it has switched to a subclass, must push all fields to keep correct hierarchy
+		
+		// A new FieldDeclaration ArrayList called previousFieldHolder was made in order
+		// 	to add all the sink strings from an earlier outer class into the subclass. It
+		//	will add the same field as fieldBoys(now called fieldHolder) as it traverses
+		//	the tree, but does NOT get cleared if the parent of the method is in the same
+		//	class as the previous method.
 		if (parent != classRetainer) {
-			ArrayList<FieldDeclaration> fieldDecl = new ArrayList<FieldDeclaration>(fieldBoys);
+			
+			if (classRetainer != null) {
+				if (field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
+//					fieldHolder.add(field);
+					previousFieldHolder.add(field);
+				}
+				classRetainer = parent;
+			}
+			
+			if (classRetainer == null) {
+				if (field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
+					previousFieldHolder.add(field);
+				}
+				classRetainer = parent;
+			}
+			
+			ArrayList<FieldDeclaration> fieldDecl = new ArrayList<FieldDeclaration>(fieldHolder);
+			
 			taintNodeChanges
 					.add(new TaintNodeChangeContainers(classRetainer, fieldDecl, index, Block.STATEMENTS_PROPERTY, 0));
 			classRetainer = parent;
-		}
-
-		else {
-			// check for strings of the declaration "String dataLeAk%d"
-			if (field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
-				fieldBoys.add(field);
+			
+			
+			for (int fieldCount = 0; fieldCount < previousFieldHolder.size(); fieldCount++) {
+				fieldHolder.add(previousFieldHolder.get(fieldCount));
 			}
-			// gets the fields, then compounds with outer class fields if in a
-			// subclass
-//				System.out.println(parent.toString().substring(0, 16));
-//				System.out.println(field.toString().substring(0, 16));
-			// parent = parent.getParent();
 		}
-//		}
-
+		
 		index++;
 
 		return true;
