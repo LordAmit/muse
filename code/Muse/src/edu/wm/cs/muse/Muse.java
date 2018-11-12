@@ -2,6 +2,7 @@ package edu.wm.cs.muse;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
@@ -15,17 +16,12 @@ import org.eclipse.text.edits.TextEdit;
 import edu.wm.cs.muse.mdroid.ASTHelper;
 import edu.wm.cs.muse.reachability.ReachabilityOperator;
 import edu.wm.cs.muse.reachability.ReachabilitySchema;
-import edu.wm.cs.muse.sink.SinkOperator;
-import edu.wm.cs.muse.sink.SinkSchema;
-import edu.wm.cs.muse.source.SourceOperator;
 import edu.wm.cs.muse.taint.TaintOperator;
 import edu.wm.cs.muse.taint.TaintSchema;
 import edu.wm.cs.muse.taint.TaintSinkOperator;
 import edu.wm.cs.muse.taint.TaintSinkSchema;
 import edu.wm.cs.muse.utility.Arguments;
 import edu.wm.cs.muse.utility.FileUtility;
-import edu.wm.cs.muse.visitors.ReachabilityVisitor;
-import edu.wm.cs.muse.visitors.SinkVisitor;
 
 /**
  *
@@ -100,6 +96,7 @@ public class Muse {
 					TextEdit tempEdits = rewriter.rewriteAST(tempDocument, null);
 					tempEdits.apply(tempDocument);
 					FileUtils.writeStringToFile(temp_file, tempDocument.get(), false);
+					FileUtils.writeStringToFile(file, tempDocument.get(), false);
 					//TaintSinkSchema
 					source = FileUtility.readSourceFile(temp_file.getAbsolutePath()).toString();
 					rewriter = null;
@@ -109,13 +106,20 @@ public class Muse {
 					root = ASTHelper.getAST(tempDocument.get(), Arguments.getBinariesFolder(), "test/temp/");
 					rewriter = ASTRewrite.create(root.getAST());
 					rewriter = taintSinkExecution(root, rewriter);
+					Files.delete(temp_file.toPath());
 
 					try {
-						applyChangesToFile(temp_file, source);
+						applyChangesToFile(file, source);
 					} catch (IllegalArgumentException e) {
 						e.printStackTrace();
 
 					}
+					
+					// copies the code from temp_file to the correct folder and file
+					// taint should be inserting into, then deletes the temp_file.
+//					Path finishedTaint = temp_file.toPath();
+//					Path mutantsFolder = Paths.get(file.toString());
+//					Files.copy(finishedTaint, mutantsFolder, StandardCopyOption.REPLACE_EXISTING);
 
 //					source = readSourceFile(file.getAbsolutePath()).toString();
 //					root = ASTHelper.getAST(source, binariesFolder, rootPath);
