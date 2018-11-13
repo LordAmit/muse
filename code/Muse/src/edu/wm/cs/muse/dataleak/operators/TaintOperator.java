@@ -1,73 +1,69 @@
-package edu.wm.cs.muse.source;
+package edu.wm.cs.muse.dataleak.operators;
 
 import java.util.ArrayList;
-
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
-import edu.wm.cs.muse.utility.OperatorType;
-import edu.wm.cs.muse.utility.Utility;
-import edu.wm.cs.muse.operators.DataLeak;
+import edu.wm.cs.muse.dataleak.support.Utility;
+import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;
 
 /**
- * The SourceOperator class formats and inserts the string data source markers according to the Source 
- * Schema
- * @author yang
+ * The TaintOperator class has two methods, insertDeclaration and insertSource,
+ * that will create the appropriate object when given a class or method by the
+ * TaintSchema.
+ * 
+ * @author yang, amit
  */
 
-public class SourceOperator {
-	
+public class TaintOperator {
+
 	ArrayList<SourceNodeChangeContainers> nodeChanges;
 	ASTRewrite rewriter;
 
-//	public SourceOperator(ASTRewrite rewriter) {
-//		this.rewriter = rewriter;
-//	}
-	
-	public SourceOperator(ASTRewrite rewriter, ArrayList<SourceNodeChangeContainers> nodeChanges) {
+	public TaintOperator(ASTRewrite rewriter, ArrayList<SourceNodeChangeContainers> nodeChanges) {
 		this.rewriter = rewriter;
 		this.nodeChanges = nodeChanges;
 	}
-	
+
 	/**
-	 * Modifies the ASTRewrite to swap between insertions based on the nodeChanges and returns it.
+	 * Modifies the ASTRewrite to insert a taint declaration and a source string
+	 * in the method, then returns it.
+	 * 
 	 * @return
 	 */
 	public ASTRewrite InsertChanges() {
 
 		for (SourceNodeChangeContainers nodeChange : nodeChanges) {
-			
-			if (nodeChange.insertionType == 0)
-			{
+			if (nodeChange.insertionType == 0) {
 				insertion(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
-			}
-				
-			else
-			{
+			} else {
 				insertVariable(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
 			}
 		}
+		
 		return rewriter;
-	}
-	
-	public void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
-		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		// old source code
-//		String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-//				Utility.COUNTER_GLOBAL);
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getSource(OperatorType.SOURCE, Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
-		Utility.COUNTER_GLOBAL++;
-		listRewrite.insertAt(placeHolder, index, null);
+
 	}
 
+	// for inserting source inside methodBody
+	public void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
+		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
+		String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();", index);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
+		//listRewrite.insertAt(placeHolder, index, null);
+		listRewrite.insertAt(placeHolder, 0, null);
+	}
+
+	// for declaration.
 	private void insertVariable(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		String variable = String.format("String dataLeAk%d = \"\";", Utility.COUNTER_GLOBAL);
-		Statement placeHolder = (Statement)rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
+		Utility.COUNTER_GLOBAL += 1;
 	}
-
+	
 }

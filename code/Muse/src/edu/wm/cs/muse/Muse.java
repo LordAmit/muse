@@ -13,20 +13,20 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
 
+import edu.wm.cs.muse.dataleak.operators.ReachabilityOperator;
+import edu.wm.cs.muse.dataleak.operators.SinkOperator;
+import edu.wm.cs.muse.dataleak.operators.SourceOperator;
+import edu.wm.cs.muse.dataleak.operators.TaintOperator;
+import edu.wm.cs.muse.dataleak.operators.TaintSinkOperator;
+import edu.wm.cs.muse.dataleak.schemas.ReachabilitySchema;
+import edu.wm.cs.muse.dataleak.schemas.SinkSchema;
+import edu.wm.cs.muse.dataleak.schemas.SourceSchema;
+import edu.wm.cs.muse.dataleak.schemas.TaintSchema;
+import edu.wm.cs.muse.dataleak.schemas.TaintSinkSchema;
+import edu.wm.cs.muse.dataleak.support.Arguments;
+import edu.wm.cs.muse.dataleak.support.FileUtility;
+import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.mdroid.ASTHelper;
-import edu.wm.cs.muse.reachability.ReachabilityOperator;
-import edu.wm.cs.muse.reachability.ReachabilitySchema;
-import edu.wm.cs.muse.sink.SinkOperator;
-import edu.wm.cs.muse.sink.SinkSchema;
-import edu.wm.cs.muse.source.SourceOperator;
-import edu.wm.cs.muse.source.SourceSchema;
-import edu.wm.cs.muse.taint.TaintOperator;
-import edu.wm.cs.muse.taint.TaintSchema;
-import edu.wm.cs.muse.taint.TaintSinkOperator;
-import edu.wm.cs.muse.taint.TaintSinkSchema;
-import edu.wm.cs.muse.utility.Arguments;
-import edu.wm.cs.muse.utility.FileUtility;
-import edu.wm.cs.muse.utility.OperatorType;
 
 /**
  *

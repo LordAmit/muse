@@ -1,4 +1,4 @@
-package edu.wm.cs.muse.taint;
+package edu.wm.cs.muse.dataleak.schemas;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -9,7 +9,7 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import edu.wm.cs.muse.source.SourceNodeChangeContainers;;
+import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;;
 
 /**
  * The TaintSchema will traverse the nodes of the AST, and when it reaches a

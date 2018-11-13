@@ -1,4 +1,4 @@
-package edu.wm.cs.muse.taint;
+package edu.wm.cs.muse.dataleak.schemas;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,9 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import edu.wm.cs.muse.sink.SinkNodeChangeContainers;;
+
+import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
+import edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers;;
 
 /**
  * The TaintSinkSchema will traverse the nodes of the rewritten AST for

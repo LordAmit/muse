@@ -1,6 +1,6 @@
-package edu.wm.cs.muse.operators;
+package edu.wm.cs.muse.dataleak;
 
-import edu.wm.cs.muse.utility.OperatorType;
+import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 /**
  * @author liz

@@ -1,4 +1,4 @@
-package edu.wm.cs.muse.reachability;
+package edu.wm.cs.muse.dataleak.operators;
 
 import java.util.ArrayList;
 
@@ -6,8 +6,10 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
-import edu.wm.cs.muse.operators.DataLeak;
-import edu.wm.cs.muse.utility.Utility;
+
+import edu.wm.cs.muse.dataleak.DataLeak;
+import edu.wm.cs.muse.dataleak.support.Utility;
+import edu.wm.cs.muse.dataleak.support.node_containers.ReachabilityNodeChangeContainers;
 
 /**
  * Operates on the list of nodes coming from ReachabilitySchema

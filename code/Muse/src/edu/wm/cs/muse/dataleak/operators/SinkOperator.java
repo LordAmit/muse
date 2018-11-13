@@ -1,4 +1,4 @@
-package edu.wm.cs.muse.sink;
+package edu.wm.cs.muse.dataleak.operators;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,8 +10,9 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
-import edu.wm.cs.muse.utility.OperatorType;
-import edu.wm.cs.muse.operators.DataLeak;
+import edu.wm.cs.muse.dataleak.DataLeak;
+import edu.wm.cs.muse.dataleak.support.OperatorType;
+import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 
 /**
  * The SinkOperator class formats and inserts the string-based sink markers according to the Sink Schema

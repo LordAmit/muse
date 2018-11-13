@@ -12,8 +12,8 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
-import edu.wm.cs.muse.utility.Utility;
-import edu.wm.cs.muse.operators.DataLeak;
+import edu.wm.cs.muse.dataleak.DataLeak;
+import edu.wm.cs.muse.dataleak.support.Utility;
 
 public class ReachabilityVisitor extends ASTVisitor{
 	

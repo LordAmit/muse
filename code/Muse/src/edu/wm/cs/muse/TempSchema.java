@@ -6,8 +6,8 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.omg.CORBA.DynAnyPackage.TypeMismatch;
 
-import edu.wm.cs.muse.taint.TaintSchema;
-import edu.wm.cs.muse.utility.SchemaUtility;
+import edu.wm.cs.muse.dataleak.schemas.TaintSchema;
+import edu.wm.cs.muse.dataleak.support.SchemaUtility;
 
 public class TempSchema extends ASTVisitor {
 

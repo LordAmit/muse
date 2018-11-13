@@ -1,4 +1,4 @@
-package edu.wm.cs.muse.reachability;
+package edu.wm.cs.muse.dataleak.support.node_containers;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
@@ -10,10 +10,10 @@ import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
  */
 public class ReachabilityNodeChangeContainers {
 
-	ASTNode node;
-	int index;
-	ChildListPropertyDescriptor propertyDescriptor;
-	String changedSource = null;
+	public ASTNode node;
+	public int index;
+	public ChildListPropertyDescriptor propertyDescriptor;
+	public String changedSource = null;
 	public ReachabilityNodeChangeContainers(ASTNode node, int index,
 			ChildListPropertyDescriptor childListPropertyDescriptor, String changedSource) {
 		this.node = node;

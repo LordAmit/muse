@@ -1,4 +1,4 @@
-package edu.wm.cs.muse.source;
+package edu.wm.cs.muse.dataleak.schemas;
 
 import java.util.ArrayList;
 
@@ -9,6 +9,8 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+
+import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;
 
 /**
  * The SourceSchema visits each node the AST tree to find data sources, then inserts a placeholder string 

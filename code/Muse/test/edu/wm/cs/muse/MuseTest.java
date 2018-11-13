@@ -15,10 +15,10 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.junit.Test;
 
+import edu.wm.cs.muse.dataleak.support.Arguments;
+import edu.wm.cs.muse.dataleak.support.FileUtility;
+import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.mdroid.ASTHelper;
-import edu.wm.cs.muse.utility.Arguments;
-import edu.wm.cs.muse.utility.FileUtility;
-import edu.wm.cs.muse.utility.OperatorType;
 
 /*
  * We will be focusing on creating behavior based test cases. AAA pattern, i.e. 

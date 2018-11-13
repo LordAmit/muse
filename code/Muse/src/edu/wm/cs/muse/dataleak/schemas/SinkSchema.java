@@ -1,4 +1,4 @@
-package edu.wm.cs.muse.sink;
+package edu.wm.cs.muse.dataleak.schemas;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -13,7 +13,9 @@ import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import edu.wm.cs.muse.utility.Utility;
+
+import edu.wm.cs.muse.dataleak.support.Utility;
+import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 
 /**
  * The SinkSchema visits each node the AST tree to find data sinks, then calls on SinkOperator to insert a

@@ -1,4 +1,4 @@
-package edu.wm.cs.muse.taint;
+package edu.wm.cs.muse.dataleak.operators;
 
 import java.util.ArrayList;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -8,8 +8,9 @@ import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
-import edu.wm.cs.muse.sink.SinkNodeChangeContainers;
-import edu.wm.cs.muse.utility.Utility;
+import edu.wm.cs.muse.dataleak.support.Utility;
+import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
+import edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers;
 
 public class TaintSinkOperator {
 

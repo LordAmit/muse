@@ -1,4 +1,4 @@
-package edu.wm.cs.muse.reachability;
+package edu.wm.cs.muse.dataleak.schemas;
 
 import java.util.ArrayList;
 
@@ -8,6 +8,8 @@ import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+
+import edu.wm.cs.muse.dataleak.support.node_containers.ReachabilityNodeChangeContainers;
 
 /**
  * Reachability Schema goes through the AST tree for reachability, analyzes the
