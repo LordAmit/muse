@@ -11,13 +11,13 @@ import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 
 public class SinkNodeChangeContainers {
 	
-	ASTNode node;
-	int index;
-	ChildListPropertyDescriptor propertyDescriptor;
-	int count;
-	ASTNode method;
-	// insertionType = 0 for sink, insertionType != 0 for source 
-	int insertionType;
+
+	public ASTNode node;
+	public int index;
+	public ChildListPropertyDescriptor propertyDescriptor;
+	public int count;
+	public ASTNode method;
+	public int insertionType;
 	
 	public SinkNodeChangeContainers(ASTNode node, int index, int count,
 			ChildListPropertyDescriptor childListPropertyDescriptor, ASTNode method, int insertion)

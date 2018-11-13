@@ -38,14 +38,15 @@ public class MuseTest {
 	String expectedOutput;
 	String content = null;
 	String output;
-	Muse muse;CompilationUnit root;
+	Muse muse;
+	CompilationUnit root;
 	Document sourceDoc;
 	ASTRewrite rewriter;
 	TextEdit edits;
 	String processedOutput;
 	@Test
 	public void reachability_operation_on_hello_world() {
-	
+
 		try {
 			prepare_test_files(OperatorType.REACHABILITY);			
 			execute_muse(OperatorType.REACHABILITY);
@@ -107,6 +108,28 @@ public class MuseTest {
 			e.printStackTrace();
 		}
 			
+	}
+	
+		@Test
+	public void taint_operation_on_hello_world() {
+
+		try {
+			prepare_test_files(OperatorType.TAINT);
+			execute_muse(OperatorType.TAINT);
+
+			assertEquals(expectedOutput, processedOutput);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTreeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 	
 

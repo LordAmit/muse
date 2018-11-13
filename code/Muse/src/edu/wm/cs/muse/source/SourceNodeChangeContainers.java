@@ -11,14 +11,13 @@ import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 
 public class SourceNodeChangeContainers {
 	
-	ASTNode node;
-	int index;
-	ChildListPropertyDescriptor propertyDescriptor;
-	int count;
-	ASTNode method;
-	// insertionType = 0 for inserting a source
-	// insertionType = 1 for inserting a variable
-	int insertionType;
+
+	public ASTNode node;
+	public int index;
+	public ChildListPropertyDescriptor propertyDescriptor;
+	public int count;
+	public ASTNode method;
+	public int insertionType;
 	
 	public SourceNodeChangeContainers(ASTNode node, int index, 
 			ChildListPropertyDescriptor childListPropertyDescriptor, int insertionType)
