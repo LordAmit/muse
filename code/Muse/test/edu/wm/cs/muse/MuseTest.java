@@ -164,6 +164,8 @@ public class MuseTest {
 			case TAINT:
 				// not implemented yet
 				// do nothing
+			case TAINTSINK: 
+				// also not implemented yet
 				
 		}
 		Arguments.extractArguments(new File("test/input/runtime_argument.txt"));

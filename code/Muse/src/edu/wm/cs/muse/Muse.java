@@ -85,7 +85,7 @@ public class Muse {
 //							reachabilitySchema.getNodeChanges());
 //					rewriter = operator.InsertChanges();
 //					rewriter = reachabilityExecution(root, rewriter);
-					rewriter = taintExecution(root, rewriter);
+					rewriter = operatorExecution(root, rewriter, OperatorType.TAINT);
 //					rewriter = tempExecution(root, rewriter);
 					File temp_file = new File("test/temp/temp_file.java");
 
@@ -110,7 +110,7 @@ public class Muse {
 					
 					root = ASTHelper.getAST(tempDocument.get(), Arguments.getBinariesFolder(), "test/temp/");
 					rewriter = ASTRewrite.create(root.getAST());
-					rewriter = taintSinkExecution(root, rewriter);
+					rewriter = operatorExecution(root, rewriter, OperatorType.TAINTSINK);
 					Files.delete(temp_file.toPath());
 
 					try {
@@ -217,6 +217,14 @@ public class Muse {
 				TaintOperator taintOperator = new TaintOperator(rewriter, taintSchema.getNodeChanges());
 				rewriter = taintOperator.InsertChanges();
 				return rewriter;
+			
+			case TAINTSINK:
+				TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
+				root.accept(taintSinkSchema);
+				TaintSinkOperator operator = new TaintSinkOperator(rewriter, taintSinkSchema.getFieldNodeChanges(),
+						taintSinkSchema.getMethodNodeChanges());
+				rewriter = operator.InsertChanges();
+				return rewriter;
 				
 			default: 
 				return null;
@@ -231,36 +239,6 @@ public class Muse {
 		root.accept(tempSchema);
 //		TaintOperator operator = new TaintOperator(rewriter, tempSchema.getTaintNodeChanges());
 //		rewriter = operator.InsertChanges();
-		return rewriter;
-	}
-
-	public ASTRewrite taintExecution(CompilationUnit root, ASTRewrite rewriter) {
-
-		TaintSchema taintSchema = new TaintSchema();
-		root.accept(taintSchema);
-//		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getNodeChanges(),
-//				taintSchema.getTaintNodeChanges());
-		TaintOperator operator = new TaintOperator(rewriter, taintSchema.getNodeChanges());
-//		SourceOperator operator = new SourceOperator(rewriter, taintSchema.getNodeChanges());
-		rewriter = operator.InsertChanges();
-
-//		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
-//		root.accept(taintSinkSchema);
-//		rewriter = operator.InsertSinkChanges();
-		return rewriter;
-	}
-
-	public ASTRewrite taintSinkExecution(CompilationUnit root, ASTRewrite rewriter) {
-
-		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
-		root.accept(taintSinkSchema);
-		TaintSinkOperator operator = new TaintSinkOperator(rewriter, taintSinkSchema.getFieldNodeChanges(),
-				taintSinkSchema.getMethodNodeChanges());
-		rewriter = operator.InsertChanges();
-
-//		TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
-//		root.accept(taintSinkSchema);
-//		rewriter = operator.InsertSinkChanges();
 		return rewriter;
 	}
 

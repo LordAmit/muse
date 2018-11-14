@@ -9,6 +9,7 @@ import org.omg.CORBA.DynAnyPackage.TypeMismatch;
 import edu.wm.cs.muse.dataleak.schemas.TaintSchema;
 import edu.wm.cs.muse.dataleak.support.SchemaUtility;
 
+// class for experimenting with and understanding other schemas
 public class TempSchema extends ASTVisitor {
 
 	@Override
