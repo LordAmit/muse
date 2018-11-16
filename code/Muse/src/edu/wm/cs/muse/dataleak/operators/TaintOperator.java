@@ -63,7 +63,7 @@ public class TaintOperator {
 		String variable = String.format("String dataLeAk%d = \"\";", Utility.COUNTER_GLOBAL);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
-		Utility.COUNTER_GLOBAL += 1;
+		Utility.COUNTER_GLOBAL++;
 	}
 	
 }

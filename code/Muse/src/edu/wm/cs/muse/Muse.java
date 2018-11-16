@@ -232,6 +232,12 @@ public class Muse {
 		}
 	}
 	
+	//method to merge the Taint and TaintSink cases into one Taint case
+	public ASTRewrite taintExecution(CompilationUnit root, ASTRewrite rewriter) {
+		
+		
+		return rewriter;
+	}
 
 	public ASTRewrite tempExecution(CompilationUnit root, ASTRewrite rewriter) {
 

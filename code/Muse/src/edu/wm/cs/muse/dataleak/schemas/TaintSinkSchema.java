@@ -8,6 +8,7 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
+import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 import edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers;;
 
@@ -54,11 +55,12 @@ public class TaintSinkSchema extends ASTVisitor {
 
 		if (parent.getNodeType() == ASTNode.TYPE_DECLARATION) {
 
-			nodeChanges.add(new SinkNodeChangeContainers(parent, methodIndex, throwaway, Block.STATEMENTS_PROPERTY,
+			nodeChanges.add(new SinkNodeChangeContainers(parent, Utility.COUNTER_GLOBAL_TSINK++, throwaway, Block.STATEMENTS_PROPERTY,
 					method.getBody(), 0));
 			// get parent's fields with findField
 			parent = parent.getParent();
-			methodIndex++;
+//			methodIndex++;
+			Utility.COUNTER_GLOBAL_TSINK++;
 			
 		}
 		
