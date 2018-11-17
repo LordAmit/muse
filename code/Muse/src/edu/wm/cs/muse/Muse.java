@@ -74,7 +74,7 @@ public class Muse {
 					// Creates a new instance for describing manipulations of the given AST.
 					rewriter = ASTRewrite.create(root.getAST());
 
-					rewriter = operatorExecution(root, rewriter, source, file, OperatorType.TAINTSINK);
+					operatorExecution(root, rewriter, source, file, OperatorType.TAINT);
 					// rewriter = tempExecution(root, rewriter);
 
 
@@ -126,7 +126,7 @@ public class Muse {
 	 * @throws MalformedTreeException 
 	 */
 	//candidate for template pattern, TBD later.
-	public ASTRewrite operatorExecution(CompilationUnit root, ASTRewrite rewriter, String source, File file, OperatorType operatorType) throws MalformedTreeException, BadLocationException, IOException {
+	public void operatorExecution(CompilationUnit root, ASTRewrite rewriter, String source, File file, OperatorType operatorType) throws MalformedTreeException, BadLocationException, IOException {
 		switch (operatorType) {
 			case SINK:
 				
@@ -144,13 +144,12 @@ public class Muse {
 				source = newSource;
 				
 				rewriter = ASTRewrite.create(root.getAST());
-
 				SinkSchema sinkSchema = new SinkSchema();
 				root.accept(sinkSchema);
 				SinkOperator sinkOperator = new SinkOperator(rewriter, sinkSchema.getNodeChanges());
 				rewriter = sinkOperator.InsertChanges();
 				applyChangesToFile(temp_file, source, rewriter);
-				return rewriter;
+				break;
 				
 			case SOURCE: 
 				SourceSchema sourceSchema = new SourceSchema();
@@ -158,7 +157,7 @@ public class Muse {
 				SourceOperator sourceOperator = new SourceOperator(rewriter, sourceSchema.getNodeChanges());
 				rewriter = sourceOperator.InsertChanges();
 				applyChangesToFile(file, source, rewriter);
-				return rewriter;
+				break;
 				
 			case REACHABILITY: 
 				ReachabilitySchema reachabilitySchema = new ReachabilitySchema();
@@ -166,14 +165,15 @@ public class Muse {
 				ReachabilityOperator reachabilityOperator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
 				rewriter = reachabilityOperator.InsertChanges();
 				applyChangesToFile(file, source, rewriter);
-				return rewriter;
+				break;
 				
 			case TAINT:
 				TaintSchema taintSchema = new TaintSchema();
 				root.accept(taintSchema);
 				TaintOperator taintOperator = new TaintOperator(rewriter, taintSchema.getNodeChanges());
 				rewriter = taintOperator.InsertChanges();
-				return rewriter;
+				applyChangesToFile(file, source, rewriter);
+				break;
 			
 			case TAINTSINK:
 				taintExecution(root, rewriter);
@@ -183,11 +183,8 @@ public class Muse {
 				TaintSinkOperator operator = new TaintSinkOperator(rewriter, taintSinkSchema.getFieldNodeChanges(),
 						taintSinkSchema.getMethodNodeChanges());
 				rewriter = operator.InsertChanges();
-				return rewriter;
-				
-			default: 
-				return null;
-				
+				break;
+			
 		}
 	}
 	
