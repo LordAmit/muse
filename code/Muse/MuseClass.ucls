@@ -1,72 +1,242 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class-diagram version="1.2.2" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
-  associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
-  <class id="1" language="java" name="edu.wm.cs.muse.Muse.SinkVisitor" project="Muse" 
-    file="/Muse/src/edu/wm/cs/muse/Muse.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="230" y="58"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="2" language="java" name="edu.wm.cs.muse.Muse.ComplexVisitor" project="Muse" 
-    file="/Muse/src/edu/wm/cs/muse/Muse.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="818" y="418"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="3" language="java" name="edu.wm.cs.muse.Muse" project="Muse" file="/Muse/src/edu/wm/cs/muse/Muse.java" 
+  associations="true" dependencies="true" nesting-relationships="true" router="FAN">  
+  <class id="1" language="java" name="edu.wm.cs.muse.Muse" project="Muse" file="/Muse/src/edu/wm/cs/muse/Muse.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="169" width="196" x="828" y="-99"/>    
+    <position height="205" width="391" x="45" y="37"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="edu.wm.cs.muse.Muse.ReachabilityVisitor" project="Muse" 
-    file="/Muse/src/edu/wm/cs/muse/Muse.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="418" y="367"/>    
+  <class id="2" language="java" name="edu.wm.cs.muse.dataleak.operators.TaintSinkOperator" project="Muse" 
+    file="/Muse/src/edu/wm/cs/muse/dataleak/operators/TaintSinkOperator.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="133" width="576" x="1732" y="37"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="edu.wm.cs.muse.Muse.SourceVisitor" project="Muse" 
-    file="/Muse/src/edu/wm/cs/muse/Muse.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="133" width="320" x="868" y="110"/>    
+  <class id="3" language="java" name="edu.wm.cs.muse.dataleak.operators.SinkOperator" project="Muse" 
+    file="/Muse/src/edu/wm/cs/muse/dataleak/operators/SinkOperator.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="187" width="366" x="2704" y="37"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <generalization id="6">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="4"/>  
-  </generalization>  
-  <nesting id="7">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="1"/>  
-  </nesting>  
-  <nesting id="8">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="5"/>  
-  </nesting>  
-  <nesting id="9">    
-    <bendpoint x="837" y="110"/>    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="2"/>  
-  </nesting>  
-  <nesting id="10">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="4"/>  
-  </nesting>  
+  <class id="4" language="java" name="edu.wm.cs.muse.dataleak.operators.ReachabilityOperator" project="Muse" 
+    file="/Muse/src/edu/wm/cs/muse/dataleak/operators/ReachabilityOperator.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="115" width="430" x="870" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="edu.wm.cs.muse.dataleak.operators.SourceOperator" project="Muse" 
+    file="/Muse/src/edu/wm/cs/muse/dataleak/operators/SourceOperator.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="151" width="382" x="4260" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="6" language="java" name="edu.wm.cs.muse.dataleak.operators.TaintOperator" project="Muse" 
+    file="/Muse/src/edu/wm/cs/muse/dataleak/operators/TaintOperator.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="151" width="370" x="3850" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="7" language="java" name="edu.wm.cs.muse.dataleak.schemas.ReachabilitySchema" project="Muse" 
+    file="/Muse/src/edu/wm/cs/muse/dataleak/schemas/ReachabilitySchema.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="151" width="354" x="476" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="8" language="java" name="edu.wm.cs.muse.dataleak.schemas.SinkSchema" project="Muse" 
+    file="/Muse/src/edu/wm/cs/muse/dataleak/schemas/SinkSchema.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="133" width="316" x="2348" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="9" language="java" name="edu.wm.cs.muse.dataleak.schemas.TaintSinkSchema" project="Muse" 
+    file="/Muse/src/edu/wm/cs/muse/dataleak/schemas/TaintSinkSchema.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="259" width="352" x="1340" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="10" language="java" name="edu.wm.cs.muse.dataleak.schemas.SourceSchema" project="Muse" 
+    file="/Muse/src/edu/wm/cs/muse/dataleak/schemas/SourceSchema.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="115" width="330" x="3110" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="11" language="java" name="edu.wm.cs.muse.dataleak.schemas.TaintSchema" project="Muse" 
+    file="/Muse/src/edu/wm/cs/muse/dataleak/schemas/TaintSchema.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="151" width="330" x="3480" y="37"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="12" language="java" name="edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers" 
+    project="Muse" file="/Muse/src/edu/wm/cs/muse/dataleak/support/node_containers/SourceNodeChangeContainers.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="187" width="397" x="3675" y="336"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="13" language="java" name="edu.wm.cs.muse.dataleak.support.node_containers.ReachabilityNodeChangeContainers" 
+    project="Muse" 
+    file="/Muse/src/edu/wm/cs/muse/dataleak/support/node_containers/ReachabilityNodeChangeContainers.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="151" width="438" x="673" y="336"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="14" language="java" name="edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers" 
+    project="Muse" file="/Muse/src/edu/wm/cs/muse/dataleak/support/node_containers/TaintNodeChangeContainers.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="169" width="522" x="1492" y="336"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="15" language="java" name="edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers" 
+    project="Muse" file="/Muse/src/edu/wm/cs/muse/dataleak/support/node_containers/SinkNodeChangeContainers.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="187" width="447" x="2054" y="336"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <association id="16">    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="17" name="fieldChanges"/>      
+      <multiplicity id="18" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="14" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="19">    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="20" name="nodeChanges"/>      
+      <multiplicity id="21" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="22">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="23" name="nodeChanges"/>      
+      <multiplicity id="24" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="25">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="26" name="nodeChanges"/>      
+      <multiplicity id="27" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="12" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="28">    
+    <end type="SOURCE" refId="11" navigable="false">      
+      <attribute id="29" name="nodeChanges"/>      
+      <multiplicity id="30" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="12" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="31">    
+    <end type="SOURCE" refId="8" navigable="false">      
+      <attribute id="32" name="nodeChanges"/>      
+      <multiplicity id="33" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="15" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="34">    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="35" name="nodeChanges"/>      
+      <multiplicity id="36" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="12" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="37">    
+    <end type="SOURCE" refId="10" navigable="false">      
+      <attribute id="38" name="nodeChanges"/>      
+      <multiplicity id="39" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="12" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="40">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="41" name="nodeChanges"/>      
+      <multiplicity id="42" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="15" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="43">    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="44" name="methodChanges"/>      
+      <multiplicity id="45" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="15" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="46">    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="47" name="nodeChanges"/>      
+      <multiplicity id="48" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="15" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="49">    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="50" name="taintNodeChanges"/>      
+      <multiplicity id="51" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="14" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    
     <attributes public="true" package="true" protected="true" private="true" static="true"/>    
