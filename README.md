@@ -1,18 +1,13 @@
 # Muse
 Muse (alternatively µSE) is a mutation-based soundness evaluation framework which systematically evaluates Android static analysis tools to discover, document, and fix, flaws, by leveraging the well-founded practice of mutation analysis. More information about Muse can be found in our [USENIX Security'18 paper](http://www.cs.wm.edu/~rfbonett/pubs/usenix18.pdf) and on our [website](https://muse-security-evaluation.github.io/#overview). 
 
-This repository is a refactoring of the original Muse tool written by Richie Bonnett, done as a part of W&M's Software Engineering course, CSCI 435.
+This repository is a refactoring of the original Muse tool written by Richie Bonnett, done as a part of W&M's Software Engineering course, CSCI 435, year 2018.
 
 # Compilation
-Muse can be downloaded from this git repository, with a Maven Eclipse project found in the code directory. After downloading, navigate into the code subdirectory. Then Muse can be compiled with the following commands:
-```
-mvn clean
-mvn package
-```
-The generated runnable jar can be found in: ``target/Muse-1.0.0.jar``
+The source code of Muse is available in [Code](Code) section of this repository, as a Java Project maintained using the open source IDE, Eclipse. To compile, simply clone this repo, and then import this project as a Java project in Eclipse.
 
 # Usage
-Muse relies on [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus). You will need the libs4ast folder of that project in order to run Muse. 
+Muse relies on [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus). You will need the `libs4ast` folder of that project in order to run Muse. 
 
 To run Muse, use the following command, specifying the required arguments:
 ```
@@ -23,18 +18,17 @@ If running Muse within a IDE like Eclipse, import only the Muse folder within th
 
 ### Arguments
 Provide the following list of required arguments when running Muse: 
-1. ``libs4ast``:  path of the lib4ast folder, inherited from [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus/tree/master/libs4ast);
-2. ``AppSourceCode``: path of the Android app source code folder;
-3. ``AppName``: App main package name;
-4. ``Output``: path of the folder where the mutants will be created;
+1. ``libs4ast``:  path of the lib4ast folder, from [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus/tree/master/libs4ast);
+2. ``AppSourceCode``: path of the Android app source code folder, which you want to apply mutation on;
+3. ``AppName``:  Name of the App;
+4. ``Output``: Path of the folder where the mutants will be created;
 
 ### Example
 ```
 java -jar Muse-1.0.0.jar MDroidPlus/libs4ast/ /tmp/AppFoo/src/ AppFoo /tmp/mutants/
 ```
 
-### Output
-The output directory will contain a folder with the source code for each generated mutant. 
+This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored. 
 
 # Cite
 If you use Muse for academic purposes, please cite: 
