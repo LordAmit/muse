@@ -1,6 +1,9 @@
 package edu.wm.cs.muse.dataleak.operators;
 
 import java.util.ArrayList;
+
+import javax.swing.text.Utilities;
+
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.Statement;
@@ -51,7 +54,7 @@ public class TaintOperator {
 	// for inserting source inside methodBody
 	public void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();", index);
+		String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();", Utility.COUNTER_GLOBAL - 1);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
 		//listRewrite.insertAt(placeHolder, index, null);
 		listRewrite.insertAt(placeHolder, 0, null);
