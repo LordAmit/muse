@@ -37,7 +37,7 @@ public class FileUtility {
 	 * 
 	 * sets up the directory where the mutated source codes will be kept
 	 */
-	public static void setMutantsDirectory() {
+	public static void setupMutantsDirectory() {
 
 		try {
 			String newRoot = Arguments.getMutantsFolder() + File.separator + Arguments.getAppName();
@@ -45,6 +45,7 @@ public class FileUtility {
 				FileUtils.deleteDirectory(new File(newRoot));
 			}
 			FileUtils.copyDirectory(new File(Arguments.getRootPath()), new File(newRoot));
+			//why was this done? no idea.
 			Arguments.setRootPath(newRoot);
 		} catch (IOException e) {
 			return;
