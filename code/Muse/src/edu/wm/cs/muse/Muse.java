@@ -1,6 +1,7 @@
 package edu.wm.cs.muse;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Collection;
@@ -11,6 +12,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
+import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 
 import edu.wm.cs.muse.dataleak.operators.ReachabilityOperator;
@@ -37,7 +39,7 @@ public class Muse {
 
 	ASTRewrite rewriter;
 
-	public void runMuse(String[] args) {
+	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
 		// Usage Error
 		if (args.length != 4) {
 			printArgumentError();
@@ -72,88 +74,15 @@ public class Muse {
 					// Creates a new instance for describing manipulations of the given AST.
 					rewriter = ASTRewrite.create(root.getAST());
 
-					// Accepts the given visitor on a visit of the current node, which is root here.
-					// rewriter also records the required edits necessary
-					/*
-					 * this is commented out for adopting new changes
-					 */
-//					root.accept(new ReachabilityVisitor(rewriter));
-//					reachabilityExecution(file, source, root);
-//					ReachabilitySchema reachabilitySchema = new ReachabilitySchema();
-//					root.accept(reachabilitySchema);
-//					ReachabilityOperator operator = new ReachabilityOperator(rewriter,
-//							reachabilitySchema.getNodeChanges());
-//					rewriter = operator.InsertChanges();
-//					rewriter = reachabilityExecution(root, rewriter);
-					rewriter = operatorExecution(root, rewriter, OperatorType.TAINT);
-//					rewriter = tempExecution(root, rewriter);
-					File temp_file = new File("test/temp/temp_file.java");
+					rewriter = operatorExecution(root, rewriter, source, file, OperatorType.TAINTSINK);
+					// rewriter = tempExecution(root, rewriter);
 
-//					Document sourceDoc = new Document(source);
-//
-//					TextEdit edits = rewriter.rewriteAST(sourceDoc, null);
-//					// Applies the edit tree rooted by this edit to the given document.
-//					edits.apply(sourceDoc);
-//					FileUtils.writeStringToFile(file, sourceDoc.get(), false);
-//					rewriter = null;
-					//TaintSchema
-					Document tempDocument = new Document(source);
-					TextEdit tempEdits = rewriter.rewriteAST(tempDocument, null);
-					tempEdits.apply(tempDocument);
-					FileUtils.writeStringToFile(temp_file, tempDocument.get(), false);
-					FileUtils.writeStringToFile(file, tempDocument.get(), false);
-					//TaintSinkSchema
-					source = FileUtility.readSourceFile(temp_file.getAbsolutePath()).toString();
-					rewriter = null;
-//					root = ASTHelper.getAST(tempDocument.get(), Arguments.getBinariesFolder(),
-//								Arguments.getRootPath());
-					
-					root = ASTHelper.getAST(tempDocument.get(), Arguments.getBinariesFolder(), "test/temp/");
-					rewriter = ASTRewrite.create(root.getAST());
-					rewriter = operatorExecution(root, rewriter, OperatorType.TAINTSINK);
-					Files.delete(temp_file.toPath());
 
-					try {
-						applyChangesToFile(file, source);
-					} catch (IllegalArgumentException e) {
-						e.printStackTrace();
 
-					}
-					
-					// copies the code from temp_file to the correct folder and file
-					// taint should be inserting into, then deletes the temp_file.
-//					Path finishedTaint = temp_file.toPath();
-//					Path mutantsFolder = Paths.get(file.toString());
-//					Files.copy(finishedTaint, mutantsFolder, StandardCopyOption.REPLACE_EXISTING);
-
-//					source = readSourceFile(file.getAbsolutePath()).toString();
-//					root = ASTHelper.getAST(source, binariesFolder, rootPath);
-
-					/*
-					 * Uses the rewriter to create an AST for the SinkSchema to utilize Then creates
-					 * a new instance to manipulate the AST The root node then accepts the schema
-					 * visitor on the visit The rewriter implements the specified changes made by
-					 * the sink operator
-					 */
-//					SinkSchema sinkScheme = new SinkSchema();
-//					rewriter = ASTRewrite.create(root.getAST());
-//					root.accept(new SinkSchema());
-//					SinkOperator sinkOp = new SinkOperator(rewriter, sinkScheme.getNodeChanges());
-//					rewriter = sinkOp.InsertChanges();
-
-					// sourceDoc = new Document(source);
-					// edits = rewriter.rewriteAST(sourceDoc, null);
-					// edits.apply(sourceDoc);
-					// FileUtils.writeStringToFile(file, sourceDoc.get(), false);
-					// rewriter = null;
 				}
 			} catch (IOException e) {
 				System.err
 						.println(String.format("ERROR PROCESSING \"%s\": %s", file.getAbsolutePath(), e.getMessage()));
-				return;
-//			} catch (MalformedTreeException | BadLocationException e) {
-			} catch (BadLocationException e) {
-				System.err.println("ERROR EDITING AST: " + e.getMessage());
 				return;
 			}
 		}
@@ -171,7 +100,7 @@ public class Muse {
 	 * @throws BadLocationException
 	 * @throws IOException
 	 */
-	private void applyChangesToFile(File file, String source) throws BadLocationException, IOException {
+	private void applyChangesToFile(File file, String source, ASTRewrite rewriter) throws BadLocationException, IOException {
 		Document sourceDoc = new Document(source);
 
 		TextEdit edits = rewriter.rewriteAST(sourceDoc, null);
@@ -182,19 +111,45 @@ public class Muse {
 	}
 
 	/**
-	 *  executes the specified operator's modifications to the AST
+	 * Uses the rewriter to create an AST for the schema to utilize then creates
+	 * a new instance to manipulate the AST. The root node then accepts the schema
+	 * visitor on the visit. The rewriter implements the modifications changes made by
+	 * the operator to the AST
 	 * 
 	 * @param root is the compilation unit based root of the AST
 	 * @param rewriter ASTRewrite object that holds the changes to the AST
+	 * @param file 
+	 * @param source 
 	 * @param operatorType is the type of operator being executed: sink, source, reachability, or taint
+	 * @throws IOException 
+	 * @throws BadLocationException 
+	 * @throws MalformedTreeException 
 	 */
-	public ASTRewrite operatorExecution(CompilationUnit root, ASTRewrite rewriter, OperatorType operatorType) {
+	//candidate for template pattern, TBD later.
+	public ASTRewrite operatorExecution(CompilationUnit root, ASTRewrite rewriter, String source, File file, OperatorType operatorType) throws MalformedTreeException, BadLocationException, IOException {
 		switch (operatorType) {
 			case SINK:
+				
+				sourceExecution(root, rewriter);
+				applyChangesToFile(file, source, rewriter);				
+				
+				File temp_file = new File("test/temp/temp_file.java");
+				tempFileWriter(root, rewriter, source, temp_file);				
+				
+				String newSource = FileUtility.readSourceFile("test/temp/temp_file.java").toString();
+				CompilationUnit newRoot = ASTHelper.getAST(newSource, Arguments.getBinariesFolder(),
+						"test/temp/");
+				
+				root = newRoot;
+				source = newSource;
+				
+				rewriter = ASTRewrite.create(root.getAST());
+
 				SinkSchema sinkSchema = new SinkSchema();
 				root.accept(sinkSchema);
 				SinkOperator sinkOperator = new SinkOperator(rewriter, sinkSchema.getNodeChanges());
 				rewriter = sinkOperator.InsertChanges();
+				applyChangesToFile(temp_file, source, rewriter);
 				return rewriter;
 				
 			case SOURCE: 
@@ -202,6 +157,7 @@ public class Muse {
 				root.accept(sourceSchema);
 				SourceOperator sourceOperator = new SourceOperator(rewriter, sourceSchema.getNodeChanges());
 				rewriter = sourceOperator.InsertChanges();
+				applyChangesToFile(file, source, rewriter);
 				return rewriter;
 				
 			case REACHABILITY: 
@@ -209,9 +165,10 @@ public class Muse {
 				root.accept(reachabilitySchema);
 				ReachabilityOperator reachabilityOperator = new ReachabilityOperator(rewriter, reachabilitySchema.getNodeChanges());
 				rewriter = reachabilityOperator.InsertChanges();
+				applyChangesToFile(file, source, rewriter);
 				return rewriter;
 				
-			case TAINT: 
+			case TAINT:
 				TaintSchema taintSchema = new TaintSchema();
 				root.accept(taintSchema);
 				TaintOperator taintOperator = new TaintOperator(rewriter, taintSchema.getNodeChanges());
@@ -219,6 +176,8 @@ public class Muse {
 				return rewriter;
 			
 			case TAINTSINK:
+				taintExecution(root, rewriter);
+				tempFileWriter(root, rewriter, source, file);
 				TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
 				root.accept(taintSinkSchema);
 				TaintSinkOperator operator = new TaintSinkOperator(rewriter, taintSinkSchema.getFieldNodeChanges(),
@@ -232,19 +191,49 @@ public class Muse {
 		}
 	}
 	
+	public ASTRewrite sourceExecution(CompilationUnit root, ASTRewrite rewriter) throws BadLocationException, IOException {
+		
+		SourceSchema sourceSchema = new SourceSchema();
+		root.accept(sourceSchema);
+		SourceOperator sourceOperator = new SourceOperator(rewriter, sourceSchema.getNodeChanges());
+		rewriter = sourceOperator.InsertChanges();
+		return rewriter;
+	}
+	
 	//method to merge the Taint and TaintSink cases into one Taint case
 	public ASTRewrite taintExecution(CompilationUnit root, ASTRewrite rewriter) {
 		
+		TaintSchema taintSchema = new TaintSchema();
+		root.accept(taintSchema);
+		TaintOperator taintOperator = new TaintOperator(rewriter, taintSchema.getNodeChanges());
+		rewriter = taintOperator.InsertChanges();
 		
 		return rewriter;
+	}
+	
+	public ASTRewrite tempFileWriter(CompilationUnit root, ASTRewrite rewriter, String source, File file) throws MalformedTreeException, BadLocationException, IOException {
+		File temp_file = new File("test/temp/temp_file.java");
+
+		//Applies the edit tree rooted by this edit to the given document.
+		//edits.apply(sourceDoc);
+		Document tempDocument = new Document(source);
+		TextEdit tempEdits = rewriter.rewriteAST(tempDocument, null);
+
+		tempEdits.apply(tempDocument);
+		FileUtils.writeStringToFile(temp_file, tempDocument.get(), false);
+		FileUtils.writeStringToFile(file, tempDocument.get(), false);
+
+		//TaintSinkSchema
+		source = FileUtility.readSourceFile(temp_file.getAbsolutePath()).toString();
+		rewriter = null;
+		root = ASTHelper.getAST(tempDocument.get(), Arguments.getBinariesFolder(), "test/temp/");
+		return rewriter = ASTRewrite.create(root.getAST());
 	}
 
 	public ASTRewrite tempExecution(CompilationUnit root, ASTRewrite rewriter) {
 
 		TempSchema tempSchema = new TempSchema();
 		root.accept(tempSchema);
-//		TaintOperator operator = new TaintOperator(rewriter, tempSchema.getTaintNodeChanges());
-//		rewriter = operator.InsertChanges();
 		return rewriter;
 	}
 
@@ -257,19 +246,7 @@ public class Muse {
 		System.out.println("4. Mutants path");
 	}
 
-//	private StringBuffer readSourceFile(String filePath) throws FileNotFoundException, IOException {
-//		StringBuffer source = new StringBuffer();
-//		BufferedReader reader = new BufferedReader(new FileReader(filePath));
-//		String line = null;
-//
-//		while ((line = reader.readLine()) != null) {
-//			source.append(line).append("\n");
-//		}
-//		reader.close();
-//		return source;
-//	}
-
-	public static void main(String[] args) {
+	public static void main(String[] args) throws MalformedTreeException, BadLocationException {
 		new Muse().runMuse(args);
 	}
 }
