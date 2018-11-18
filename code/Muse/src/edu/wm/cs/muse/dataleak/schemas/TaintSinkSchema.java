@@ -55,15 +55,13 @@ public class TaintSinkSchema extends ASTVisitor {
 
 		if (parent.getNodeType() == ASTNode.TYPE_DECLARATION) {
 
-			nodeChanges.add(new SinkNodeChangeContainers(parent, Utility.COUNTER_GLOBAL_TSINK++, throwaway, Block.STATEMENTS_PROPERTY,
-					method.getBody(), 0));
+			nodeChanges.add(new SinkNodeChangeContainers(parent, Utility.COUNTER_GLOBAL_TSINK++, throwaway,
+					Block.STATEMENTS_PROPERTY, method.getBody(), 0));
 			// get parent's fields with findField
 			parent = parent.getParent();
-//			methodIndex++;
-			Utility.COUNTER_GLOBAL_TSINK++;
-			
+
 		}
-		
+
 		return true;
 	}
 
@@ -72,7 +70,7 @@ public class TaintSinkSchema extends ASTVisitor {
 	// the taintNodeChanges container, then in conjunction with the methods part
 	// insert the sinks
 	public boolean visit(FieldDeclaration field) {
-		
+
 // The getParent loop was found unnecessary, getParent will always find a TYPE_DECLARATION
 		parent = field.getParent();
 
@@ -86,7 +84,7 @@ public class TaintSinkSchema extends ASTVisitor {
 			}
 
 			ArrayList<FieldDeclaration> fieldDecl = new ArrayList<FieldDeclaration>(fieldHolder);
-			
+
 			taintNodeChanges.add(new TaintNodeChangeContainers(parent, fieldDecl, index, Block.STATEMENTS_PROPERTY, 0));
 			// keep track of outer classes
 			fieldHolder.clear();
@@ -94,14 +92,14 @@ public class TaintSinkSchema extends ASTVisitor {
 		}
 
 		// it has switched to a subclass, must push all fields to keep correct hierarchy
-		
+
 		// A new FieldDeclaration ArrayList called previousFieldHolder was made in order
-		// 	to add all the sink strings from an earlier outer class into the subclass. It
-		//	will add the same field as fieldBoys(now called fieldHolder) as it traverses
-		//	the tree, but does NOT get cleared if the parent of the method is in the same
-		//	class as the previous method.
+		// to add all the sink strings from an earlier outer class into the subclass. It
+		// will add the same field as fieldBoys(now called fieldHolder) as it traverses
+		// the tree, but does NOT get cleared if the parent of the method is in the same
+		// class as the previous method.
 		if (parent != classRetainer) {
-			
+
 			if (classRetainer != null) {
 				if (field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
 //					fieldHolder.add(field);
@@ -109,26 +107,25 @@ public class TaintSinkSchema extends ASTVisitor {
 				}
 				classRetainer = parent;
 			}
-			
+
 			if (classRetainer == null) {
 				if (field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
 					previousFieldHolder.add(field);
 				}
 				classRetainer = parent;
 			}
-			
+
 			ArrayList<FieldDeclaration> fieldDecl = new ArrayList<FieldDeclaration>(fieldHolder);
-			
+
 			taintNodeChanges
 					.add(new TaintNodeChangeContainers(classRetainer, fieldDecl, index, Block.STATEMENTS_PROPERTY, 0));
 			classRetainer = parent;
-			
-			
+
 			for (int fieldCount = 0; fieldCount < previousFieldHolder.size(); fieldCount++) {
 				fieldHolder.add(previousFieldHolder.get(fieldCount));
 			}
 		}
-		
+
 		index++;
 
 		return true;
