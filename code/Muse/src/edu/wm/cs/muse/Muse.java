@@ -75,7 +75,7 @@ public class Muse {
 					// Creates a new instance for describing manipulations of the given AST.
 					rewriter = ASTRewrite.create(root.getAST());
 
-					operatorExecution(root, rewriter, source, file, OperatorType.SINK);
+					operatorExecution(root, rewriter, source, file, OperatorType.TAINTSINK);
 					// rewriter = tempExecution(root, rewriter);
 
 				}
@@ -190,6 +190,7 @@ public class Muse {
 
 			newSource = FileUtility.readSourceFile("test/temp/temp_file.java").toString();
 			newRoot = ASTHelper.getAST(newSource, Arguments.getBinariesFolder(), "test/temp/");
+			rewriter = null;
 			root = newRoot;
 			source = newSource;
 			rewriter = ASTRewrite.create(root.getAST());
