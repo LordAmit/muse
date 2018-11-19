@@ -78,7 +78,9 @@ public class TaintSinkSchema extends ASTVisitor {
 		// some class segment was completed before this one. This is a new class chain
 		if (parent == classRetainer) {
 			// check for strings of the declaration "String dataLeAk%d"
-			if (field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
+
+			if (field.toString().contains("dataLeAk")
+					&& field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
 				fieldHolder.add(field);
 				previousFieldHolder.add(field);
 			}
