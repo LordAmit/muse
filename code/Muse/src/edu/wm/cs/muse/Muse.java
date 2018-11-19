@@ -47,8 +47,7 @@ public class Muse {
 		}
 
 		Arguments.extractArguments(args);
-		assert Arguments.getRootPath().compareTo(
-				"/home/amit/AndroidStudioProjects/HelloWorld/app/src/main/java/com/example/amit/helloworld/test") != -1;
+		
 		FileUtility.setupMutantsDirectory();
 
 		System.out.println(Arguments.getRootPath());
@@ -63,6 +62,8 @@ public class Muse {
 						&& !file.getName().contains("EmmaInstrumentation.java")
 						&& !file.getName().contains("FinishListener.java")
 						&& !file.getName().contains("InstrumentedActivity.java")
+						&& !file.getName().contains("InstrumentedTest.java") 
+						&& !file.getName().contains("UnitTest.java")
 						&& !file.getName().contains("SMSInstrumentedReceiver.java")) {
 
 					// System.out.println("PROCESSING: " + file.getAbsolutePath());
