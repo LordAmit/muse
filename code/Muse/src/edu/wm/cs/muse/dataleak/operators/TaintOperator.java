@@ -2,8 +2,6 @@ package edu.wm.cs.muse.dataleak.operators;
 
 import java.util.ArrayList;
 
-import javax.swing.text.Utilities;
-
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.Statement;

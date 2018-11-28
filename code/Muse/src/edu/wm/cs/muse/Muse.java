@@ -1,7 +1,6 @@
 package edu.wm.cs.muse;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Collection;
@@ -76,7 +75,7 @@ public class Muse {
 					// Creates a new instance for describing manipulations of the given AST.
 					rewriter = ASTRewrite.create(root.getAST());
 
-					operatorExecution(root, rewriter, source, file, OperatorType.TAINTSINK);
+					operatorExecution(root, rewriter, source, file, OperatorType.REACHABILITY);
 					// rewriter = tempExecution(root, rewriter);
 
 				}
@@ -156,6 +155,7 @@ public class Muse {
 			SinkOperator sinkOperator = new SinkOperator(rewriter, sinkSchema.getNodeChanges());
 			rewriter = sinkOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
+			Files.delete(temp_file.toPath());
 			break;
 
 		case SOURCE:
@@ -207,7 +207,7 @@ public class Muse {
 					taintSinkSchema.getMethodNodeChanges());
 			rewriter = operator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
-			
+			Files.delete(temp_file.toPath());
 			break;
 
 		}
