@@ -1,10 +1,16 @@
 package log;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+
+import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 
 /**
@@ -70,13 +76,33 @@ public class LogAnalyzer {
 		return outputLines;
 	}
 
-	public static void main(String[] args) throws IOException, IOException {
+	/**
+	 * Iterates through the modified file directory and compares the occurrence of
+	 * "dataLeak" in the file and the runtime log to remove false positive data leaks.
+	 * @param args
+	 * @throws IOException
+	 * @author Yang Zhang
+	 */
+	public static void main(String[] args) throws IOException {
+		
 		testString = FileUtility.readSourceFile("src/log/RuntimeLogs.txt").toString();
-		sourceString = FileUtility.readSourceFile("src/log/ModifiedFile.txt").toString();
-		LogAnalyzer log = new LogAnalyzer();
+		File path = new File("src/log/modified_files");
+		File [] files = path.listFiles();
 
-		System.out.println(log.removeUnusedIndicesFromSource(LogAnalyzer.sourceString,
-				log.getIndicesFromLogs(LogAnalyzer.testString)));
+		for (File file : files) {
+			try {
+				if (file.getName().endsWith(".txt")) {
+					sourceString = FileUtility.readSourceFile(file.getAbsolutePath()).toString();
+					LogAnalyzer log = new LogAnalyzer();
+					System.out.println(log.removeUnusedIndicesFromSource(LogAnalyzer.sourceString,
+							log.getIndicesFromLogs(LogAnalyzer.testString)));	
+				}
+
+			} catch (IOException e) {
+				System.err.println(String.format("ERROR PROCESSING \"%s\": %s", file.getAbsolutePath(), e.getMessage()));
+				return;
+			}
+		}
 
 	}
 
