@@ -1,0 +1,45 @@
+package com.example.amit.helloworld;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
+public class MainActivity extends AppCompatActivity {
+
+    String dataLeAk18 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+	Object throwawayLeAk18 = android.util.Log.d("leak-18", dataLeAk18);
+
+	int intA = 0;
+
+    public int methodA(View v) {
+        String dataLeAk19 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+		Object throwawayLeAk19 = android.util.Log.d("leak-19", dataLeAk19);
+		intA = 2;
+        return 1;
+    }
+
+    int intB = 0;
+
+    int methodB() {
+        String dataLeAk20 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+		Object throwawayLeAk20 = android.util.Log.d("leak-20", dataLeAk20);
+		intB = 3;
+        return 0;
+    }
+
+    public void button_click(View view) {
+        String dataLeAk21 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+		Object throwawayLeAk21 = android.util.Log.d("leak-21", dataLeAk21);
+		android.util.Log.d("hey", "hello");
+        methodA(view);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+		String dataLeAk22 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+		Object throwawayLeAk22 = android.util.Log.d("leak-22", dataLeAk22);
+        setContentView(R.layout.activity_main);
+    }
+}
