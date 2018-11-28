@@ -136,8 +136,10 @@ public class Muse {
 		CompilationUnit newRoot;
 		switch (operatorType) {
 		case SINK:
-
-			sourceExecution(root, rewriter);
+			SourceSchema sourceSchema_sink = new SourceSchema();
+			root.accept(sourceSchema_sink);
+			SourceOperator sourceOperator_sink = new SourceOperator(rewriter, sourceSchema_sink.getNodeChanges());
+			rewriter = sourceOperator_sink.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 
 			temp_file = new File("test/temp/temp_file.java");
@@ -182,7 +184,10 @@ public class Muse {
 			break;
 
 		case TAINTSINK:
-			taintExecution(root, rewriter);
+			TaintSchema taintSchema_ts = new TaintSchema();
+			root.accept(taintSchema_ts);
+			TaintOperator taintOperator_ts = new TaintOperator(rewriter, taintSchema_ts.getNodeChanges());
+			rewriter = taintOperator_ts.InsertChanges();
 //				rewriter = tempFileWriter(root, rewriter, source, file);
 			applyChangesToFile(file, source, rewriter);
 
@@ -206,27 +211,6 @@ public class Muse {
 			break;
 
 		}
-	}
-
-	public ASTRewrite sourceExecution(CompilationUnit root, ASTRewrite rewriter)
-			throws BadLocationException, IOException {
-
-		SourceSchema sourceSchema = new SourceSchema();
-		root.accept(sourceSchema);
-		SourceOperator sourceOperator = new SourceOperator(rewriter, sourceSchema.getNodeChanges());
-		rewriter = sourceOperator.InsertChanges();
-		return rewriter;
-	}
-
-	// method to merge the Taint and TaintSink cases into one Taint case
-	public ASTRewrite taintExecution(CompilationUnit root, ASTRewrite rewriter) {
-
-		TaintSchema taintSchema = new TaintSchema();
-		root.accept(taintSchema);
-		TaintOperator taintOperator = new TaintOperator(rewriter, taintSchema.getNodeChanges());
-		rewriter = taintOperator.InsertChanges();
-
-		return rewriter;
 	}
 
 	public ASTRewrite tempFileWriter(CompilationUnit root, ASTRewrite rewriter, String source, File file)
