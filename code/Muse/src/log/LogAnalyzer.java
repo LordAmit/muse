@@ -1,16 +1,14 @@
 package log;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.eclipse.jface.text.Document;
 
-import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 
 /**
@@ -26,6 +24,59 @@ public class LogAnalyzer {
 	//ModifiedFile.txt
 	static String sourceString;
 
+	/**
+	 * Iterates through the modified file directory and compares the occurrence of
+	 * "dataLeak" in the file and the runtime log to remove false positive data leaks.
+	 * Then alters the files in mutants folder with the respective changes.
+	 * @param args
+	 * @throws IOException
+	 * @author Yang Zhang
+	 */
+	public void runLogAnalysis(String[] args) throws FileNotFoundException, IOException {
+		// Incomplete arguments
+		if (args.length != 3) {
+			printArgumentError();
+			return;
+		}
+		
+		testString = FileUtility.readSourceFile(args[0].toString()).toString();
+		//modified files directory
+		File mod_file_path = new File(args[1].toString());
+		File [] mod_files = mod_file_path.listFiles();
+		
+		//mutant folder directory
+		File mutant_file_path = new File(args[2].toString());
+		File [] mutated_files = mutant_file_path.listFiles();
+
+		for (File mod_file : mod_files) {
+			try {
+				if (mod_file.getName().endsWith(".txt")) {
+					sourceString = FileUtility.readSourceFile(mod_file.getAbsolutePath()).toString();
+					LogAnalyzer log = new LogAnalyzer();
+					String new_analyzed_file = log.removeUnusedIndicesFromSource(LogAnalyzer.sourceString,
+							log.getIndicesFromLogs(LogAnalyzer.testString));
+					System.out.println(new_analyzed_file);
+					
+					//traverse mutants folder to replace the existing modified code
+					//the mutant folder filepath should link straight to the directory 
+					//containing the mutated files being analyzed.
+					String originalName = mod_file.getName().replaceAll(".txt", ".java");
+					for (File mutated_file : mutated_files) {
+						if (mutated_file.getName().equals(originalName) == true) 
+						{
+							Document sourceDoc = new Document(new_analyzed_file);
+							FileUtils.writeStringToFile(mutated_file, sourceDoc.get(), false);
+						}
+					}
+				}
+
+			} catch (IOException e) {
+				System.err.println(String.format("ERROR PROCESSING \"%s\": %s", mod_file.getAbsolutePath(), e.getMessage()));
+				return;
+			}
+		}
+	}
+	
 	/**
 	 * Extracts indices of true positive data leaks
 	 * 
@@ -53,7 +104,6 @@ public class LogAnalyzer {
 	 * @author Amit Seal Ami
 	 */
 	public String removeUnusedIndicesFromSource(String string, Set<Integer> indicesFromLog) {
-		ArrayList<Integer> indices = new ArrayList<Integer>();
 		String[] lines = string.split("\n");
 		String outputLines = "";
 		boolean addThrowAwayLine = false;
@@ -75,34 +125,18 @@ public class LogAnalyzer {
 		}
 		return outputLines;
 	}
+	
+	private void printArgumentError() {
+		System.out.println("******* ERROR: INCORRECT USAGE *******");
+		System.out.println("Argument List:");
+		System.out.println("1. Runtime Logs File");
+		System.out.println("2. Modified Files Directory");
+		System.out.println("3. Mutants path");
+	}
 
-	/**
-	 * Iterates through the modified file directory and compares the occurrence of
-	 * "dataLeak" in the file and the runtime log to remove false positive data leaks.
-	 * @param args
-	 * @throws IOException
-	 * @author Yang Zhang
-	 */
 	public static void main(String[] args) throws IOException {
 		
-		testString = FileUtility.readSourceFile("src/log/RuntimeLogs.txt").toString();
-		File path = new File("src/log/modified_files");
-		File [] files = path.listFiles();
-
-		for (File file : files) {
-			try {
-				if (file.getName().endsWith(".txt")) {
-					sourceString = FileUtility.readSourceFile(file.getAbsolutePath()).toString();
-					LogAnalyzer log = new LogAnalyzer();
-					System.out.println(log.removeUnusedIndicesFromSource(LogAnalyzer.sourceString,
-							log.getIndicesFromLogs(LogAnalyzer.testString)));	
-				}
-
-			} catch (IOException e) {
-				System.err.println(String.format("ERROR PROCESSING \"%s\": %s", file.getAbsolutePath(), e.getMessage()));
-				return;
-			}
-		}
+		new LogAnalyzer().runLogAnalysis(args);
 
 	}
 
