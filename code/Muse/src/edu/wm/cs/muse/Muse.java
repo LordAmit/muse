@@ -76,7 +76,6 @@ public class Muse {
 					rewriter = ASTRewrite.create(root.getAST());
 
 					operatorExecution(root, rewriter, source, file, OperatorType.REACHABILITY);
-					// rewriter = tempExecution(root, rewriter);
 
 				}
 			} catch (IOException e) {
@@ -188,7 +187,6 @@ public class Muse {
 			root.accept(taintSchema_ts);
 			TaintOperator taintOperator_ts = new TaintOperator(rewriter, taintSchema_ts.getNodeChanges());
 			rewriter = taintOperator_ts.InsertChanges();
-//				rewriter = tempFileWriter(root, rewriter, source, file);
 			applyChangesToFile(file, source, rewriter);
 
 			temp_file = new File("test/temp/temp_file.java");
