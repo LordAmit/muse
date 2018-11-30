@@ -1,4 +1,0 @@
-/users/yangzhang/git/MDroidPlus/libs4ast 
-/users/yangzhang/AMazeByYang/app/src 
-AMazeByYang 
-/users/yangzhang/security

@@ -1,10 +1,15 @@
 package edu.wm.cs.muse;
 
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+
 public class LogAnalyzerTest {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	@Test
+	public void test() {
+		// TODO: actually implement tests
+		assertEquals(true, true);
 	}
 
 }

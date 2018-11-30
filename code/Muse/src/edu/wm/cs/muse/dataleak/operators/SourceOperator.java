@@ -23,10 +23,6 @@ public class SourceOperator {
 	
 	ArrayList<SourceNodeChangeContainers> nodeChanges;
 	ASTRewrite rewriter;
-
-//	public SourceOperator(ASTRewrite rewriter) {
-//		this.rewriter = rewriter;
-//	}
 	
 	public SourceOperator(ASTRewrite rewriter, ArrayList<SourceNodeChangeContainers> nodeChanges) {
 		this.rewriter = rewriter;
@@ -38,6 +34,7 @@ public class SourceOperator {
 	 * @return
 	 */
 	public ASTRewrite InsertChanges() {
+		Utility.COUNTER_GLOBAL = 0;
 
 		for (SourceNodeChangeContainers nodeChange : nodeChanges) {
 			
@@ -56,9 +53,6 @@ public class SourceOperator {
 	
 	public void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		// old source code
-//		String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-//				Utility.COUNTER_GLOBAL);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getSource(OperatorType.SOURCE, Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
 		Utility.COUNTER_GLOBAL++;
 		listRewrite.insertAt(placeHolder, index, null);
