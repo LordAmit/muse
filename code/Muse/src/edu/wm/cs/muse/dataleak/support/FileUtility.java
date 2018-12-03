@@ -52,4 +52,41 @@ public class FileUtility {
 		}
 
 	}
+	
+	public static boolean testFileEquality(File expected, File actual) {
+		try {	
+			BufferedReader br_expected = new BufferedReader(new FileReader(expected));
+			BufferedReader br_actual = new BufferedReader(new FileReader(actual));
+			String line_expected, line_actual;
+			
+			while ((line_expected = br_expected.readLine()) != null &&
+				   (line_actual = br_actual.readLine()) != null ) {
+				
+				line_expected = line_expected.trim();
+				line_actual = line_actual.trim();
+				
+				// check line equality
+				if (!line_actual.equals(line_expected)) {
+		    	   System.out.println("line_expected: " + line_expected);
+		    	   System.out.println("line_actual: " + line_actual);
+		    	   return false; 
+				}
+			}
+			// make sure files are of the same size
+			if (br_expected.readLine() != null || br_expected.readLine() != null) {
+				System.out.println("files are of unequal size");
+				return false;
+			}
+			
+			br_expected.close();
+			br_actual.close();
+		
+		} catch(FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// files are the same
+		return true;
+	}
 }

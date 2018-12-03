@@ -2,8 +2,10 @@ package edu.wm.cs.muse;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -49,12 +51,13 @@ public class MuseTest {
 	File output = new File("test/output/output.txt");
 	
 	@Test
-	public void reachability_operation_on_hello_world() {
+	public void reachability_operation_on_hello_world() throws Exception {
 
 		try {
 			prepare_test_files(OperatorType.REACHABILITY);			
 			execute_muse(OperatorType.REACHABILITY);
-			assertEquals(true, FileUtils.contentEquals(expectedOutput, processedOutput));
+			
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -74,16 +77,7 @@ public class MuseTest {
 			prepare_test_files(OperatorType.SOURCE);
 			execute_muse(OperatorType.SOURCE);
 			
-			System.out.println("expected output: " + expectedOutput.toString());
-			System.out.println("processed output: " + processedOutput.toString());
-			
-			
-			
-//			String please = FileUtils.readFileToString(expectedOutput);
-//			String help = FileUtils.readFileToString(processedOutput);
-//			
-//			assertEquals(please, help);
-//			assertEquals(true, FileUtils.contentEquals(expectedOutput, processedOutput));
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -97,27 +91,27 @@ public class MuseTest {
 		}
 	}
 	
-//	@Test
-//	public void sink_operation_on_hello_world() {
-//	
-//		try {
-//			prepare_test_files(OperatorType.SINK);
-//			execute_muse(OperatorType.SINK);
-//			
-//			assertEquals(expectedOutput, processedOutput);
-//			
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (MalformedTreeException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (BadLocationException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//			
-//	}
+	@Test
+	public void sink_operation_on_hello_world() {
+	
+		try {
+			prepare_test_files(OperatorType.SINK);
+			execute_muse(OperatorType.SINK);
+			
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			
+		} catch (MalformedTreeException e) {
+			e.printStackTrace();
+			
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+			
+		}
+			
+	}
 //	
 //		@Test
 //	public void taint_operation_on_hello_world() {
@@ -182,6 +176,8 @@ public class MuseTest {
 		muse = new Muse();
 		root = getTestAST(content);
 	}
+	
+	
 	
     private CompilationUnit getTestAST(String source) {	
 		HashMap<String, String> options = new HashMap<String, String>();
