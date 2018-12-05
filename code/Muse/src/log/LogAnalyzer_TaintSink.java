@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * TaintSink log analyzer requires two string contents. Log and Source.
+ * Based on the log file, it removes the unused log sinks and only keeps the true positive logs.
  * @author Amit Seal Ami
  * 
  */
@@ -89,16 +91,23 @@ public class LogAnalyzer_TaintSink {
 			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak: methodA Ends\n"
 			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak: button_click ends\n";
 
-	public static String analyzeSourceString(String string, Map<Integer, Set<Integer>> maps) {
+	/**
+	 * Analyze source string, based on input, non true positive sinks for taintSink. 
+	 * @param string contains the source code in one string, with multiple lines.
+	 * @param maps {@link log.LogAnalyzer_TaintSink#getLogMaps(String) maps} contains the maps of source and sinks
+	 * @return modified source code.
+	 * @throws Exception 
+	 * @author Amit Seal Ami
+	 */
+	public static String analyzeSourceString(String string, Map<Integer, Set<Integer>> maps) throws Exception {
+		if(string.length()<10) {
+			throw new Exception("Give me proper source string; separated by new lines.");
+		}
 		String[] lines = string.split("\n");
 		String outputLines = "";
 
-		ArrayList<Integer> leakDeclarationIndexes = new ArrayList<Integer>();
 		for (String line : lines) {
-//			if (line.contains("String dataLeAk")) {
-//				int index = Integer.parseInt(line.split("dataLeAk")[1].split(" =")[0]);
-//				System.out.println(index);
-//			}
+
 			if (line.contains("leak-")) {
 
 				String[] source_sink = line.split("leak-")[1].split("\"")[0].split("-");
@@ -117,6 +126,12 @@ public class LogAnalyzer_TaintSink {
 		return outputLines;
 	}
 
+	/**
+	 * getLogMaps returns a mapping for each source, along with list of its sinks.
+	 * @param allLogs receives all logs in a single string
+	 * @return mapping from source to list of sinks
+	 * @author Amit Seal Ami
+	 */
 	public static Map<Integer, Set<Integer>> getLogMaps(String allLogs) {
 		String[] lines = allLogs.split("\n");
 
@@ -138,7 +153,7 @@ public class LogAnalyzer_TaintSink {
 		return maps;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		System.out.println(analyzeSourceString(sourceSample, getLogMaps(logSample)));
 	}
 }
