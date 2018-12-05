@@ -61,7 +61,7 @@ public class TaintOperator {
 	// for declaration.
 	private void insertVariable(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		String variable = String.format("String dataLeAk%d = \"\";", Utility.COUNTER_GLOBAL);
+		String variable = String.format("String dataLeAk%d = \"%d\";", Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 		Utility.COUNTER_GLOBAL++;
