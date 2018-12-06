@@ -7,39 +7,56 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    String dataLeAk18 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
-	Object throwawayLeAk18 = android.util.Log.d("leak-18", dataLeAk18);
+	String dataLeAk27 = "27";
+
+	String dataLeAk26 = "26";
+
+	String dataLeAk25 = "25";
+
+	String dataLeAk24 = "24";
 
 	int intA = 0;
 
     public int methodA(View v) {
-        String dataLeAk19 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
-		Object throwawayLeAk19 = android.util.Log.d("leak-19", dataLeAk19);
-		intA = 2;
+	dataLeAk24 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+	android.util.Log.d("leak-24-12", dataLeAk24);
+	android.util.Log.d("leak-25-12", dataLeAk25);
+	android.util.Log.d("leak-26-12", dataLeAk26);
+	android.util.Log.d("leak-27-12", dataLeAk27);
+	intA = 2;
         return 1;
     }
 
     int intB = 0;
 
     int methodB() {
-        String dataLeAk20 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
-		Object throwawayLeAk20 = android.util.Log.d("leak-20", dataLeAk20);
-		intB = 3;
+	dataLeAk25 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+	android.util.Log.d("leak-24-13", dataLeAk24);
+	android.util.Log.d("leak-25-13", dataLeAk25);
+	android.util.Log.d("leak-26-13", dataLeAk26);
+	android.util.Log.d("leak-27-13", dataLeAk27);
+	intB = 3;
         return 0;
     }
 
     public void button_click(View view) {
-        String dataLeAk21 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
-		Object throwawayLeAk21 = android.util.Log.d("leak-21", dataLeAk21);
-		android.util.Log.d("hey", "hello");
+	dataLeAk26 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+	android.util.Log.d("leak-24-14", dataLeAk24);
+	android.util.Log.d("leak-25-14", dataLeAk25);
+	android.util.Log.d("leak-26-14", dataLeAk26);
+	android.util.Log.d("leak-27-14", dataLeAk27);
+	android.util.Log.d("hey", "hello");
         methodA(view);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-		String dataLeAk22 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
-		Object throwawayLeAk22 = android.util.Log.d("leak-22", dataLeAk22);
+        dataLeAk27 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+		android.util.Log.d("leak-24-15", dataLeAk24);
+		android.util.Log.d("leak-25-15", dataLeAk25);
+		android.util.Log.d("leak-26-15", dataLeAk26);
+		android.util.Log.d("leak-27-15", dataLeAk27);
+		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
 }

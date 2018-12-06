@@ -1,10 +1,16 @@
 package log;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.io.FileUtils;
+import org.eclipse.jface.text.Document;
+
+import edu.wm.cs.muse.dataleak.support.FileUtility;
 
 /**
  * TaintSink log analyzer requires two string contents. Log and Source.
@@ -13,83 +19,52 @@ import java.util.Set;
  * 
  */
 public class LogAnalyzer_TaintSink {
+	//RuntimeLogs.txt
+	static String testString;
+	//ModifiedFile.txt
+	static String sourceString;
 	
-	static String sourceSample = "package com.example.amit.helloworld;\n" + "\n"
-			+ "import android.support.v7.app.AppCompatActivity;\n" + "import android.os.Bundle;\n"
-			+ "import android.view.View;\n" + "import android.widget.Button;\n" + "\n"
-			+ "public class MainActivity extends AppCompatActivity {\n" + "\n" + "\n" + "\n"
-			+ "    String dataLeAk28 = \"28\";\n" + "\n" + "    String dataLeAk27 = \"27\";\n" + "\n"
-			+ "    String dataLeAk26 = \"26\";\n" + "\n" + "    String dataLeAk25 = \"25\";\n" + "\n"
-			+ "    String dataLeAk24 = \"24\";\n" + "\n" + "    int intA = 0;\n" + "\n"
-			+ "    public int methodA(View v) {\n" + "        android.util.Log.d(\"leak\", \"methodA start\");\n" + "\n"
-			+ "        dataLeAk24 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();\n"
-			+ "        android.util.Log.d(\"leak-24-12\", dataLeAk24);\n"
-			+ "        android.util.Log.d(\"leak-25-12\", dataLeAk25);\n"
-			+ "        android.util.Log.d(\"leak-26-12\", dataLeAk26);\n"
-			+ "        android.util.Log.d(\"leak-27-12\", dataLeAk27);\n"
-			+ "        android.util.Log.d(\"leak-28-12\", dataLeAk28);\n"
-			+ "        android.util.Log.d(\"leak\", \"methodA Ends\");\n" + "        intA = 2;\n"
-			+ "        return 1;\n" + "    }\n" + "\n" + "    int intB = 0;\n" + "\n" + "    int methodB() {\n"
-			+ "        dataLeAk25 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();\n"
-			+ "        android.util.Log.d(\"leak-24-13\", dataLeAk24);\n"
-			+ "        android.util.Log.d(\"leak-25-13\", dataLeAk25);\n"
-			+ "        android.util.Log.d(\"leak-26-13\", dataLeAk26);\n"
-			+ "        android.util.Log.d(\"leak-27-13\", dataLeAk27);\n"
-			+ "        android.util.Log.d(\"leak-28-13\", dataLeAk28);\n"
-			+ "        android.util.Log.d(\"leak\", \"methodB Ends\");\n" + "        intB = 3;\n"
-			+ "        return 0;\n" + "    }\n" + "    int methodC(){\n"
-			+ "        dataLeAk26 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();\n"
-			+ "        android.util.Log.d(\"leak-24-14\", dataLeAk24);\n"
-			+ "        android.util.Log.d(\"leak-25-14\", dataLeAk25);\n"
-			+ "        android.util.Log.d(\"leak-26-14\", dataLeAk26);\n"
-			+ "        android.util.Log.d(\"leak-27-14\", dataLeAk27);\n"
-			+ "        android.util.Log.d(\"leak-28-14\", dataLeAk28);\n"
-			+ "        android.util.Log.d(\"leak\", \"methodC Ends\");\n" + "        return 1;\n" + "    }\n" + "\n"
-			+ "    public void button_click(View view) {\n"
-			+ "        android.util.Log.d(\"leak\", \"button_click starts\");\n" + "\n"
-			+ "        dataLeAk27 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();\n"
-			+ "        android.util.Log.d(\"leak-24-15\", dataLeAk24);\n"
-			+ "        android.util.Log.d(\"leak-25-15\", dataLeAk25);\n"
-			+ "        android.util.Log.d(\"leak-26-15\", dataLeAk26);\n"
-			+ "        android.util.Log.d(\"leak-27-15\", dataLeAk27);\n"
-			+ "        android.util.Log.d(\"leak-28-15\", dataLeAk28);\n"
-			+ "        android.util.Log.d(\"hey\", \"hello\");\n" + "        methodA(view);\n"
-			+ "        android.util.Log.d(\"leak\", \"button_click ends\");\n" + "    }\n" + "\n" + "    @Override\n"
-			+ "    protected void onCreate(Bundle savedInstanceState) {\n"
-			+ "        dataLeAk28 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();\n"
-			+ "        android.util.Log.d(\"leak-24-16\", dataLeAk24);\n"
-			+ "        android.util.Log.d(\"leak-25-16\", dataLeAk25);\n"
-			+ "        android.util.Log.d(\"leak-26-16\", dataLeAk26);\n"
-			+ "        android.util.Log.d(\"leak-27-16\", dataLeAk27);\n"
-			+ "        android.util.Log.d(\"leak-28-16\", dataLeAk28);\n"
-			+ "        super.onCreate(savedInstanceState);\n" + "        setContentView(R.layout.activity_main);\n"
-			+ "        android.util.Log.d(\"leak\", \"onCreate Ends\");\n" + "    }\n" + "}\n";
-	static String logSample = "2018-12-05 10:49:38.219 6195-6195/? D/leak-24-16: 24\n"
-			+ "2018-12-05 10:49:38.219 6195-6195/? D/leak-25-16: 25\n"
-			+ "2018-12-05 10:49:38.219 6195-6195/? D/leak-26-16: 26\n"
-			+ "2018-12-05 10:49:38.219 6195-6195/? D/leak-27-16: 27\n"
-			+ "2018-12-05 10:49:38.219 6195-6195/? D/leak-28-16: GMT+00:00\n"
-			+ "2018-12-05 10:49:38.332 6195-6195/? D/leak: onCreate Ends\n"
-			+ "2018-12-05 10:49:46.018 6257-6257/com.example.amit.helloworld D/leak-24-16: 24\n"
-			+ "2018-12-05 10:49:46.018 6257-6257/com.example.amit.helloworld D/leak-25-16: 25\n"
-			+ "2018-12-05 10:49:46.018 6257-6257/com.example.amit.helloworld D/leak-26-16: 26\n"
-			+ "2018-12-05 10:49:46.018 6257-6257/com.example.amit.helloworld D/leak-27-16: 27\n"
-			+ "2018-12-05 10:49:46.018 6257-6257/com.example.amit.helloworld D/leak-28-16: GMT+00:00\n"
-			+ "2018-12-05 10:49:46.094 6257-6257/com.example.amit.helloworld D/leak: onCreate Ends\n"
-			+ "2018-12-05 10:49:53.779 6257-6257/com.example.amit.helloworld D/leak: button_click starts\n"
-			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak-24-15: 24\n"
-			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak-25-15: 25\n"
-			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak-26-15: 26\n"
-			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak-27-15: GMT+00:00\n"
-			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak-28-15: GMT+00:00\n"
-			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak: methodA start\n"
-			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak-24-12: GMT+00:00\n"
-			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak-25-12: 25\n"
-			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak-26-12: 26\n"
-			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak-27-12: GMT+00:00\n"
-			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak-28-12: GMT+00:00\n"
-			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak: methodA Ends\n"
-			+ "2018-12-05 10:49:53.780 6257-6257/com.example.amit.helloworld D/leak: button_click ends\n";
+	public void runLogAnalysis(String[] args) throws Exception {
+		// Incomplete arguments
+		if (args.length != 3) {
+			printArgumentError();
+			return;
+		}
+		testString = FileUtility.readSourceFile(args[0].toString()).toString();
+		//modified files directory
+		File mod_file_path = new File(args[1].toString());
+		File [] mod_files = mod_file_path.listFiles();
+		
+		//mutant folder directory
+		File mutant_file_path = new File(args[2].toString());
+		File [] mutated_files = mutant_file_path.listFiles();
+
+		for (File mod_file : mod_files) {
+			try {
+				if (mod_file.getName().endsWith(".txt")) {
+					sourceString = FileUtility.readSourceFile(mod_file.getAbsolutePath()).toString();
+					String new_analyzed_file = analyzeSourceString(sourceString, getLogMaps(testString));
+					System.out.println(new_analyzed_file);
+					
+					//traverse mutants folder to replace the existing modified code
+					//the mutant folder filepath should link straight to the directory 
+					//containing the mutated files being analyzed.
+					String originalName = mod_file.getName().replaceAll(".txt", ".java");
+					for (File mutated_file : mutated_files) {
+						if (mutated_file.getName().equals(originalName) == true) 
+						{
+							Document sourceDoc = new Document(new_analyzed_file);
+							FileUtils.writeStringToFile(mutated_file, sourceDoc.get(), false);
+						}
+					}
+				}
+
+			} catch (IOException e) {
+				System.err.println(String.format("ERROR PROCESSING \"%s\": %s", mod_file.getAbsolutePath(), e.getMessage()));
+				return;
+			}
+		}
+	}
 
 	/**
 	 * Analyze source string, based on input, non true positive sinks for taintSink. 
@@ -152,8 +127,16 @@ public class LogAnalyzer_TaintSink {
 //		System.out.println(maps);
 		return maps;
 	}
+	
+	private void printArgumentError() {
+		System.out.println("******* ERROR: INCORRECT USAGE *******");
+		System.out.println("Argument List:");
+		System.out.println("1. Runtime Logs File");
+		System.out.println("2. Modified Files Directory");
+		System.out.println("3. Mutants path");
+	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(analyzeSourceString(sourceSample, getLogMaps(logSample)));
+		new LogAnalyzer_TaintSink().runLogAnalysis(args);
 	}
 }

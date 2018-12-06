@@ -75,7 +75,7 @@ public class Muse {
 					// Creates a new instance for describing manipulations of the given AST.
 					rewriter = ASTRewrite.create(root.getAST());
 
-					operatorExecution(root, rewriter, source, file, OperatorType.REACHABILITY);
+					operatorExecution(root, rewriter, source, file, OperatorType.TAINTSINK);
 
 				}
 			} catch (IOException e) {
