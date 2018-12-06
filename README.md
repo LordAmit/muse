@@ -4,7 +4,7 @@ Muse (alternatively µSE) is a mutation-based soundness evaluation framework whi
 This repository is a refactoring of the original Muse tool written by Richie Bonnett, done as a part of W&M's Software Engineering course, CSCI 435, year 2018.
 
 # Compilation
-The source code of Muse is available in [Code](Code) section of this repository, as a Java Project maintained using the open source IDE, Eclipse. To compile, simply clone this repo, and then import this project as a Java project in Eclipse.
+The source code of Muse is available in [Code](https://gitlab.com/WM-CSCI435-F18/android-muse/tree/master/code) section of this repository. It is maintained using the open source Eclipse Java IDE. To compile, simply clone this repo, and then import the project as a Java project in Eclipse.
 
 # Usage
 Muse relies on [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus). You will need the `libs4ast` folder of that project in order to run Muse. 
