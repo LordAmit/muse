@@ -125,7 +125,6 @@ public class Muse {
 	 * @throws BadLocationException
 	 * @throws MalformedTreeException
 	 */
-	// candidate for template pattern, TBD later.
 	public void operatorExecution(CompilationUnit root, ASTRewrite rewriter, String source, File file,
 			OperatorType operatorType) throws MalformedTreeException, BadLocationException, IOException {
 
@@ -134,27 +133,26 @@ public class Muse {
 		CompilationUnit newRoot;
 		switch (operatorType) {
 		case SINK:
-			SourceSchema sourceSchema_sink = new SourceSchema();
-			root.accept(sourceSchema_sink);
-			SourceOperator sourceOperator_sink = new SourceOperator(rewriter, sourceSchema_sink.getNodeChanges());
-			rewriter = sourceOperator_sink.InsertChanges();
-			applyChangesToFile(file, source, rewriter);
-
-			temp_file = new File("test/temp/temp_file.java");
-			tempFileWriter(root, rewriter, source, temp_file);
-
-			newSource = FileUtility.readSourceFile("test/temp/temp_file.java").toString();
-			newRoot = ASTHelper.getAST(newSource, Arguments.getBinariesFolder(), "test/temp/");
-			root = newRoot;
-			source = newSource;
-			rewriter = ASTRewrite.create(root.getAST());
+//			SourceSchema sourceSchema_sink = new SourceSchema();
+//			root.accept(sourceSchema_sink);
+//			SourceOperator sourceOperator_sink = new SourceOperator(rewriter, sourceSchema_sink.getNodeChanges());
+//			rewriter = sourceOperator_sink.InsertChanges();
+//			applyChangesToFile(file, source, rewriter);
+//			
+//			temp_file = new File("test/temp/temp_file.java");
+//			tempFileWriter(root, rewriter, source, temp_file);
+//
+//			newSource = FileUtility.readSourceFile("test/temp/temp_file.java").toString();
+//			newRoot = ASTHelper.getAST(newSource, Arguments.getBinariesFolder(), "test/temp/");
+//			root = newRoot;
+//			source = newSource;
+//			rewriter = ASTRewrite.create(root.getAST());
 
 			SinkSchema sinkSchema = new SinkSchema();
 			root.accept(sinkSchema);
 			SinkOperator sinkOperator = new SinkOperator(rewriter, sinkSchema.getNodeChanges());
 			rewriter = sinkOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
-			Files.delete(temp_file.toPath());
 			break;
 
 		case SOURCE:

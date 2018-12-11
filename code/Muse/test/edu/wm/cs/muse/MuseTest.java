@@ -2,14 +2,11 @@ package edu.wm.cs.muse;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
@@ -48,6 +45,9 @@ public class MuseTest {
 	ASTRewrite rewriter;
 	TextEdit edits;
 	File processedOutput;
+	
+	// Muse output is written to this file in each test, and compared to 
+	// the expected output.
 	File output = new File("test/output/output.txt");
 	
 	@Test
@@ -167,8 +167,7 @@ public class MuseTest {
 				break;
 			
 			case TAINT:
-				// not implemented yet
-				// do nothing
+				
 			case TAINTSINK: 
 				// also not implemented yet
 				
