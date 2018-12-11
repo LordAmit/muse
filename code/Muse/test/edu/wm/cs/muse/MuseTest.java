@@ -112,28 +112,28 @@ public class MuseTest {
 		}
 			
 	}
-//	
-//		@Test
-//	public void taint_operation_on_hello_world() {
-//		try {
-//			
-//			prepare_test_files(OperatorType.TAINT);
-//			execute_muse(OperatorType.TAINT);
-//
-//			assertEquals(expectedOutput, processedOutput);
-//
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (MalformedTreeException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (BadLocationException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//	}
+	
+		@Test
+	public void taint_operation_on_multi_class() {
+		try {
+			
+			prepare_test_files(OperatorType.TAINT);
+			execute_muse(OperatorType.TAINT);
+
+			assertEquals(expectedOutput, processedOutput);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			
+		} catch (MalformedTreeException e) {
+			e.printStackTrace();
+			
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+			
+		}
+
+	}
 	
 
 	private void execute_muse(OperatorType operator) throws BadLocationException, MalformedTreeException, IOException {
@@ -167,9 +167,11 @@ public class MuseTest {
 				break;
 			
 			case TAINT:
+				content = FileUtility.readSourceFile("test/input/sample_multilevelclass.txt").toString();
+				expectedOutput = new File("test/output/sample_multilevelclass_taint.txt");
 				
 			case TAINTSINK: 
-				// also not implemented yet
+				// not implemented yet
 				
 		}
 		muse = new Muse();
