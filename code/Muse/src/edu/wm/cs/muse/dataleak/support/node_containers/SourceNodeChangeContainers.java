@@ -5,7 +5,7 @@ import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 
 /**
  * A container for storing nodes, index, property descriptor, and insertion type for sources.
- * @author yang
+ * @author Yang Zhang
  *
  */
 

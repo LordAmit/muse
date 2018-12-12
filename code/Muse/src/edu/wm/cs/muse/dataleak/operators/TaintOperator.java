@@ -16,7 +16,7 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainer
  * that will create the appropriate object when given a class or method by the
  * TaintSchema.
  * 
- * @author yang, amit
+ * @author Yang Zhang, Amit Seal Ami
  */
 
 public class TaintOperator {

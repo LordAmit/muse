@@ -16,7 +16,7 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 
 /**
  * The SinkOperator class formats and inserts the string-based sink markers according to the Sink Schema
- * @author yang
+ * @author Yang Zhang
  */
 
 public class SinkOperator {

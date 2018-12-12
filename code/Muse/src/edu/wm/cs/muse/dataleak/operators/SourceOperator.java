@@ -16,7 +16,7 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainer
 /**
  * The SourceOperator class formats and inserts the string data source markers according to the Source 
  * Schema
- * @author yang
+ * @author Yang Zhang
  */
 
 public class SourceOperator {

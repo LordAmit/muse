@@ -15,9 +15,10 @@ import edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers
 /**
  * The TaintSinkSchema will traverse the nodes of the rewritten AST for
  * declarations, then correctly implement a sink insertion to all the methods in
- * the class.
+ * the class. The file must be modified by the TaintSchema process before
+ * TaintSink Schema can function correctly.
  * 
- * @author yang
+ * @author Yang Zhang
  */
 
 public class TaintSinkSchema extends ASTVisitor {

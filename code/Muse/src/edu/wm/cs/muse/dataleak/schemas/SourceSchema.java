@@ -15,7 +15,7 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainer
 /**
  * The SourceSchema visits each node the AST tree to find data sources, then inserts a placeholder string 
  * through an SourceOperator.
- * @author yang
+ * @author Yang Zhang
  */
 
 public class SourceSchema extends ASTVisitor {

@@ -18,7 +18,7 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainer
  * completed its course, it will call SinkOperator to insert sinks that reflect
  * the location of the declarations.
  * 
- * @author yang, amit
+ * @author Yang Zhang, Amit Seal Ami
  */
 
 public class TaintSchema extends ASTVisitor {

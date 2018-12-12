@@ -24,6 +24,13 @@ public class LogAnalyzer_TaintSink {
 	//ModifiedFile.txt
 	static String sourceString;
 	
+	/**
+	 * Iterates through the modified file directory to remove false positive data leaks.
+	 * Then alters the files in mutants folder with the respective changes.
+	 * @param args
+	 * @throws IOException
+	 * @author Yang Zhang
+	 */
 	public void runLogAnalysis(String[] args) throws Exception {
 		// Incomplete arguments
 		if (args.length != 3) {

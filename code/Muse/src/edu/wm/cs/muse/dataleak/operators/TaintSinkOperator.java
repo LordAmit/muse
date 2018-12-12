@@ -11,6 +11,13 @@ import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 import edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers;
 
+/**
+ * The TaintSinkOperator class will insert the sink aspect of the taint mutation
+ * scheme on the modified file through comparisons of the parent classes between
+ * the field and methods.
+ * 
+ * @author Yang Zhang, Amit Seal Ami
+ */
 public class TaintSinkOperator {
 
 	ArrayList<TaintNodeChangeContainers> fieldChanges;
@@ -50,24 +57,17 @@ public class TaintSinkOperator {
 	void insertSink(ASTNode node, int index, ArrayList<FieldDeclaration> fieldBoys,
 			ChildListPropertyDescriptor nodeProperty) {
 		for (int i = 0; i < fieldBoys.size(); i++) {
-//			System.out.println("index: " + index);
-//			if (index == 5)
-//				System.out.println("stop");
-//			if (index == 6)
-//				System.out.println("stop");
 
 			ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 			int index_equal = fieldBoys.get(i).toString().indexOf("=");
 			String tempString = fieldBoys.get(i).toString().substring(15, index_equal);
 			tempString = tempString.trim();
 
-//			System.out.println(tempString + "tempstring" + fieldBoys.get(i));
 			String sink = String.format("android.util.Log.d(\"leak-%s-%s\", dataLeAk%s);", tempString, index,
 					tempString);
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
 
 			listRewrite.insertAt(placeHolder, 1, null);
-//			System.out.println(String.format("leak-%d-%d", fieldBoys.get(i).toString().substring(16), index));
 		}
 
 	}
