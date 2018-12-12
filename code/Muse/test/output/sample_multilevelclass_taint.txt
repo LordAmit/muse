@@ -1,17 +1,17 @@
 package com.example.amit.helloworld.test;
 
 public class TestClass {
-    String dataLeAk11 = "";
+    String dataLeAk11 = "11";
 
-	String dataLeAk8 = "";
+	String dataLeAk8 = "8";
 
-	String dataLeAk5 = "";
+	String dataLeAk5 = "5";
 
-	String dataLeAk3 = "";
+	String dataLeAk3 = "3";
 
-	String dataLeAk1 = "";
+	String dataLeAk1 = "1";
 
-	String dataLeAk0 = "";
+	String dataLeAk0 = "0";
 
 	int methodA() {
 
