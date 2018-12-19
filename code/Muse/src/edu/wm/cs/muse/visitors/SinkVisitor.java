@@ -97,12 +97,6 @@ public class SinkVisitor extends ASTVisitor {
 				} catch (NullPointerException e) {
 				}
 				break;
-			/*
-			 * case ASTNode.BLOCK: for (Object stmt : ((Block) n).statements()) { Matcher
-			 * matcher = variablePattern.matcher(stmt.toString()); if (matcher.find()) {
-			 * count = Integer.valueOf(matcher.group(1)); insertSink(node, index, count,
-			 * Block.STATEMENTS_PROPERTY); } } break;
-			 */
 			case ASTNode.TYPE_DECLARATION:
 				for (Object field : ((TypeDeclaration) n).bodyDeclarations()) {
 					if (((BodyDeclaration) field).getNodeType() == ASTNode.FIELD_DECLARATION) {
@@ -150,13 +144,7 @@ public class SinkVisitor extends ASTVisitor {
 				} catch (NullPointerException e) {
 				}
 				break;
-			/*
-			 * case ASTNode.BLOCK: int parentIndex = 0; for (Object obj : ((Block)
-			 * n).statements()) { if (obj.toString().startsWith("super") ||
-			 * obj.toString().contains("dataLeAk")) { parentIndex++; } } counter++;
-			 * insertSource(n, parentIndex, Block.STATEMENTS_PROPERTY); insertSink(node,
-			 * index, counter, Block.STATEMENTS_PROPERTY); break;
-			 */
+
 			case ASTNode.TYPE_DECLARATION:
 				Utility.COUNTER_GLOBAL++;
 				insertSource(n, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);

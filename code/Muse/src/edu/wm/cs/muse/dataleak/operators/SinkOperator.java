@@ -59,9 +59,6 @@ public class SinkOperator {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		int cur = repeatCounts.containsKey(count) ? repeatCounts.get(count) : -1;
 		repeatCounts.put(count, cur + 1);
-		// old sink code
-//		String sink = String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", count, repeatCounts.get(count),
-//				count);
 		
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getSink(OperatorType.SINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
@@ -83,10 +80,6 @@ public class SinkOperator {
 
 	void insertSource(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty, int count) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		// old source code
-//		String source = String.format(
-//				"final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-//				Utility.COUNTER_GLOBAL);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getSource(OperatorType.SINK, count), ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 	}

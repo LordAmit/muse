@@ -65,12 +65,7 @@ class SourceVisitor extends ASTVisitor {
 				} catch (NullPointerException e) {
 				}
 				break;
-			/*
-			 * case ASTNode.BLOCK: int parentIndex = 0; for (Object obj : ((Block)
-			 * n).statements()) { if (obj.toString().startsWith("super")) { parentIndex++; }
-			 * } insertVariable(n, parentIndex, Block.STATEMENTS_PROPERTY);
-			 * insertSource(node, index, Block.STATEMENTS_PROPERTY); break;
-			 */
+
 			case ASTNode.TYPE_DECLARATION:
 				insertVariable(n, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
 				insertion(node, index, Block.STATEMENTS_PROPERTY);

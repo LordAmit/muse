@@ -36,7 +36,6 @@ public class ReachabilitySchema extends ASTVisitor {
 		}
 		String loc = node.getName().toString() + ".<init>";
 		String logMessage = "leak-%d: <" + loc + ">";
-//		System.out.println(String.format("leak-%d: <%s>", Utility.COUNTER_GLOBAL, loc));
 		nodeChanges.add(
 				new ReachabilityNodeChangeContainers(node, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, logMessage));
 		return true;
@@ -46,7 +45,6 @@ public class ReachabilitySchema extends ASTVisitor {
 		// Anonymous classes
 		String loc = "1.<init>";
 		String logMessage = "leak-%d: <" + loc + ">";
-//		System.out.println(String.format("leak-%d: <%s>", Utility.COUNTER_GLOBAL, loc));
 		nodeChanges.add(new ReachabilityNodeChangeContainers(node, 0,
 				AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY, logMessage));
 		return true;
@@ -77,7 +75,6 @@ public class ReachabilitySchema extends ASTVisitor {
 		}
 		String loc = className + "." + methodName;
 		String logMessage = "leak-%d: "+ loc ;
-//		System.out.println(String.format("leak-%d: %s", Utility.COUNTER_GLOBAL, loc));
 		nodeChanges.add(new ReachabilityNodeChangeContainers(node, index, Block.STATEMENTS_PROPERTY, logMessage));
 		return true;
 	}

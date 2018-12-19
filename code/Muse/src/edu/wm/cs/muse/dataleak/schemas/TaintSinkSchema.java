@@ -105,7 +105,6 @@ public class TaintSinkSchema extends ASTVisitor {
 
 			if (classRetainer != null) {
 				if (field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
-//					fieldHolder.add(field);
 					previousFieldHolder.add(field);
 				}
 				classRetainer = parent;

@@ -36,18 +36,13 @@ public class ReachabilityOperator {
 
 			ReachabilityNodeChangeContainers nodeChange = nodeChanges.get(i);
 
-			// old code from when the data leak info was not part of the DataLeak class
-//			String source = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
-//			String sink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
-//			String leak = String.format(source, Utility.COUNTER_GLOBAL) + "\n"
-//					+ String.format(sink, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL);
-
 			System.out.println(String.format(nodeChange.changedSource, Utility.COUNTER_GLOBAL));
 
 			Statement placeHolder = (Statement) rewriter
 					.createStringPlaceholder(DataLeak.getLeak(Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
 
 			Utility.COUNTER_GLOBAL++;
+			
 			/*
 			 * Uses the rewriter to create an AST for the SinkSchema to utilize Then
 			 * creates a new instance to manipulate the AST The root node then accepts the

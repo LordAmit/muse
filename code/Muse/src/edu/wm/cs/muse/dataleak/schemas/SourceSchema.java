@@ -61,15 +61,8 @@ public class SourceSchema extends ASTVisitor {
 				} catch (NullPointerException e) {
 				}
 				break;
-			/*
-			 * case ASTNode.BLOCK: int parentIndex = 0; for (Object obj : ((Block)
-			 * n).statements()) { if (obj.toString().startsWith("super")) { parentIndex++; }
-			 * } insertVariable(n, parentIndex, Block.STATEMENTS_PROPERTY);
-			 * insertSource(node, index, Block.STATEMENTS_PROPERTY); break;
-			 */
+
 			case ASTNode.TYPE_DECLARATION:
-//				insertVariable(n, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
-//				insertion(node, index, Block.STATEMENTS_PROPERTY);
 				nodeChanges.add(new SourceNodeChangeContainers(n, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, 1));
 				nodeChanges.add(new SourceNodeChangeContainers(node, index, Block.STATEMENTS_PROPERTY, 0));
 				try {
@@ -80,8 +73,6 @@ public class SourceSchema extends ASTVisitor {
 				}
 				break;
 			case ASTNode.ANONYMOUS_CLASS_DECLARATION:
-//				insertVariable(n, 0, AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY);
-//				insertion(node, index, Block.STATEMENTS_PROPERTY);
 				nodeChanges.add(new SourceNodeChangeContainers(n, 0, AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY, 1));
 				nodeChanges.add(new SourceNodeChangeContainers(node, index, Block.STATEMENTS_PROPERTY, 0));
 				inAnonymousClass = true;
