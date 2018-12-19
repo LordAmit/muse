@@ -173,7 +173,8 @@ public class MuseTest {
 			expectedOutput = new File("test/output/sample_multilevelclass_taint.txt");
 
 		case TAINTSINK:
-			// not implemented yet
+			content = FileUtility.readSourceFile("test/input/sample_multilevelclass.txt").toString();
+			expectedOutput = new File("test/output/sample_multilevelclass_taint.txt");
 
 		}
 		
