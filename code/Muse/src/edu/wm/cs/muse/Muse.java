@@ -40,13 +40,13 @@ public class Muse {
 
 	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
 		// Usage Error
-		if (args.length != 4) {
+		if (args.length != 5) {
 			printArgumentError();
 			return;
 		}
 
 		Arguments.extractArguments(args);
-		
+
 		FileUtility.setupMutantsDirectory();
 
 		System.out.println(Arguments.getRootPath());
@@ -61,10 +61,10 @@ public class Muse {
 						&& !file.getName().contains("EmmaInstrumentation.java")
 						&& !file.getName().contains("FinishListener.java")
 						&& !file.getName().contains("InstrumentedActivity.java")
-						&& !file.getName().contains("InstrumentedTest.java") 
+						&& !file.getName().contains("InstrumentedTest.java")
 						&& !file.getName().contains("UnitTest.java")
 						&& !file.getName().contains("SMSInstrumentedReceiver.java")) {
-
+					System.out.println("In file: " + file.getName());
 					// System.out.println("PROCESSING: " + file.getAbsolutePath());
 					String source = FileUtility.readSourceFile(file.getAbsolutePath()).toString();
 
@@ -75,7 +75,7 @@ public class Muse {
 					// Creates a new instance for describing manipulations of the given AST.
 					rewriter = ASTRewrite.create(root.getAST());
 
-					operatorExecution(root, rewriter, source, file, OperatorType.TAINT);
+					operatorExecution(root, rewriter, source, file, getOperatorType(Arguments.getOperator()));
 
 				}
 			} catch (IOException e) {
@@ -86,6 +86,28 @@ public class Muse {
 		}
 	}
 
+	private OperatorType getOperatorType(String inputOperator) {
+		// SOURCE, SINK, TAINT, TAINTSINK and REACHABILITY
+		System.out.println("Input operator: " + inputOperator);
+		switch (inputOperator) {
+		case "SOURCE":
+			return OperatorType.SOURCE;
+		case "SINK":
+			return OperatorType.SINK;
+		case "TAINT":
+			return OperatorType.TAINT;
+		case "TAINTSINK":
+			return OperatorType.TAINTSINK;
+		case "REACHABILITY":
+			return OperatorType.REACHABILITY;
+		default:
+			printArgumentError();
+			System.exit(-1);
+			break;
+		}
+		return null;
+	}
+
 	/**
 	 * Converts all modifications recorded by this rewriter into an object
 	 * representing the the corresponding text edits to the source of a ITypeRoot
@@ -93,7 +115,7 @@ public class Muse {
 	 * modified by this method call.
 	 * 
 	 * @author Amit Seal Ami
-	 * @param file   is file where it will be written
+	 * @param file   where it will be written
 	 * @param source is the content of source
 	 * @throws BadLocationException
 	 * @throws IOException
@@ -243,6 +265,7 @@ public class Muse {
 		System.out.println("2. App Source Code path");
 		System.out.println("3. App Name");
 		System.out.println("4. Mutants path");
+		System.out.println("5. MutationScheme: SOURCE, SINK, TAINT, TAINTSINK and REACHABILITY (caseSensitive).");
 	}
 
 	public static void main(String[] args) throws MalformedTreeException, BadLocationException {
