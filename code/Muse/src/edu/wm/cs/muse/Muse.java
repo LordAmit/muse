@@ -14,11 +14,13 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 
+import edu.wm.cs.muse.dataleak.operators.ComplexReachability;
 import edu.wm.cs.muse.dataleak.operators.ReachabilityOperator;
 import edu.wm.cs.muse.dataleak.operators.SinkOperator;
 import edu.wm.cs.muse.dataleak.operators.SourceOperator;
 import edu.wm.cs.muse.dataleak.operators.TaintOperator;
 import edu.wm.cs.muse.dataleak.operators.TaintSinkOperator;
+import edu.wm.cs.muse.dataleak.schemas.ComplexReachabilitySchema;
 import edu.wm.cs.muse.dataleak.schemas.ReachabilitySchema;
 import edu.wm.cs.muse.dataleak.schemas.SinkSchema;
 import edu.wm.cs.muse.dataleak.schemas.SourceSchema;
@@ -37,9 +39,11 @@ import edu.wm.cs.muse.mdroid.ASTHelper;
 public class Muse {
 
 	ASTRewrite rewriter;
-	//TODO: Does not handle anonymous declarations and try_catch clauses well. currently just ignores such methods.
-	//TODO: Fix Taint Schema for Interface
-	//TODO: Fix Taint Schema for overriding methods with super statements.
+
+	// TODO: Does not handle anonymous declarations and try_catch clauses well.
+	// currently just ignores such methods.
+	// TODO: Fix Taint Schema for Interface
+	// TODO: Fix Taint Schema for overriding methods with super statements.
 	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
 		// Usage Error
 		if (args.length != 5) {
@@ -102,6 +106,8 @@ public class Muse {
 			return OperatorType.TAINTSINK;
 		case "REACHABILITY":
 			return OperatorType.REACHABILITY;
+		case "COMPLEXREACHABILITY":
+			return OperatorType.COMPLEXREACHABILITY;
 		default:
 			printArgumentError();
 			System.exit(-1);
@@ -229,6 +235,13 @@ public class Muse {
 			rewriter = operator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			Files.delete(temp_file.toPath());
+			break;
+		case COMPLEXREACHABILITY:
+			ComplexReachabilitySchema complexSchema = new ComplexReachabilitySchema();
+			root.accept(complexSchema);
+			ComplexReachability complexOperator = new ComplexReachability(rewriter, complexSchema.getNodeChanges());
+			rewriter = complexOperator.InsertChanges();
+			applyChangesToFile(file, source, rewriter);
 			break;
 
 		}
