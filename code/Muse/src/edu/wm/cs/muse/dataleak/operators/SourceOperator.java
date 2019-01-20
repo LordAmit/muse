@@ -34,7 +34,7 @@ public class SourceOperator {
 	 * @return
 	 */
 	public ASTRewrite InsertChanges() {
-		Utility.COUNTER_GLOBAL = 0;
+//		Utility.COUNTER_GLOBAL = 0;
 
 		for (SourceNodeChangeContainers nodeChange : nodeChanges) {
 			
