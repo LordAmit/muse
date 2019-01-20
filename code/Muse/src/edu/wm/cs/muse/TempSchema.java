@@ -1,12 +1,12 @@
 package edu.wm.cs.muse;
 
-import org.eclipse.jdt.core.dom.ASTNode;
+//import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
+//import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.omg.CORBA.DynAnyPackage.TypeMismatch;
 
-import edu.wm.cs.muse.dataleak.schemas.TaintSchema;
+//import edu.wm.cs.muse.dataleak.schemas.TaintSchema;
 import edu.wm.cs.muse.dataleak.support.SchemaUtility;
 
 // class for experimenting with and understanding other schemas
