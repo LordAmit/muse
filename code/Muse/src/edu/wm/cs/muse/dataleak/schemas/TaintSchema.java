@@ -9,7 +9,8 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;;
+import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;
+import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers.INSERTION_TYPE;;
 
 /**
  * The TaintSchema will traverse the nodes of the AST, and when it reaches a
@@ -28,8 +29,8 @@ public class TaintSchema extends ASTVisitor {
 
 	/**
 	 * TaintSchema should use the source node container array since they occur at
-	 * the same time and use the same parameters. The sink aspect will be included via
-	 * the TaintSinkSchema
+	 * the same time and use the same parameters. The sink aspect will be included
+	 * via the TaintSinkSchema
 	 */
 	public TaintSchema() {
 		nodeChanges = new ArrayList<SourceNodeChangeContainers>();
@@ -39,11 +40,13 @@ public class TaintSchema extends ASTVisitor {
 		return this.nodeChanges;
 	};
 
-	//Creates a stack of class nodes that have a corresponding methodDeclaration node
-	//in order to correctly insert field declarations in the classes and source strings
-	//in the method bodies using the TaintOperator.
+	// Creates a stack of class nodes that have a corresponding methodDeclaration
+	// node
+	// in order to correctly insert field declarations in the classes and source
+	// strings
+	// in the method bodies using the TaintOperator.
 	public boolean visit(MethodDeclaration node) {
-		
+
 		Stack<ASTNode> ancestorStack = new Stack<ASTNode>();
 
 		System.out.println(node.getName());
@@ -54,20 +57,27 @@ public class TaintSchema extends ASTVisitor {
 				ancestorStack.add(parent);
 				parent = parent.getParent();
 			}
+			if (parent.getNodeType() == ASTNode.ANONYMOUS_CLASS_DECLARATION) {
+				System.out.println("Anonymous type detected");
+				break;
+			}
 			if (parent.getParent() == null)
 				break;
 		}
 
 		for (ASTNode ancestorNode : ancestorStack) {
+			if (ancestorStack.size() == 0)
+				return true;
 			// for declaration
-			nodeChanges.add(
-					new SourceNodeChangeContainers(ancestorNode, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, 1));
-			//for method body
-			nodeChanges.add(new SourceNodeChangeContainers(node.getBody(), index, Block.STATEMENTS_PROPERTY, 0));
+			nodeChanges.add(new SourceNodeChangeContainers(ancestorNode, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY,
+					/* 1, */ INSERTION_TYPE.DECLARATION));
+			// for method body
+			nodeChanges.add(new SourceNodeChangeContainers(node.getBody(), index, Block.STATEMENTS_PROPERTY,
+					/* 0, */ INSERTION_TYPE.METHOD_BODY));
 			index++;
-			
+
 		}
-		
+
 		return true;
 	}
 

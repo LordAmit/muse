@@ -11,27 +11,30 @@ import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;
+import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers.INSERTION_TYPE;
 
 /**
- * The SourceSchema visits each node the AST tree to find data sources, then inserts a placeholder string 
- * through an SourceOperator.
+ * The SourceSchema visits each node the AST tree to find data sources, then
+ * inserts a placeholder string through an SourceOperator.
+ * 
  * @author Yang Zhang
  */
 
 public class SourceSchema extends ASTVisitor {
-	
+
 	private ArrayList<SourceNodeChangeContainers> nodeChanges;
 
 	public SourceSchema() {
 		nodeChanges = new ArrayList<SourceNodeChangeContainers>();
 	}
-	
-	public ArrayList<SourceNodeChangeContainers> getNodeChanges(){
+
+	public ArrayList<SourceNodeChangeContainers> getNodeChanges() {
 		return this.nodeChanges;
 	};
-	
+
 	/*
-	 * Includes an additional integer param to differentiate between insertion and insertVariable
+	 * Includes an additional integer param to differentiate between insertion and
+	 * insertVariable
 	 */
 	public boolean visit(MethodDeclaration method) {
 		// Methods
@@ -63,8 +66,10 @@ public class SourceSchema extends ASTVisitor {
 				break;
 
 			case ASTNode.TYPE_DECLARATION:
-				nodeChanges.add(new SourceNodeChangeContainers(n, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, 1));
-				nodeChanges.add(new SourceNodeChangeContainers(node, index, Block.STATEMENTS_PROPERTY, 0));
+				nodeChanges.add(new SourceNodeChangeContainers(n, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, // 1,
+						INSERTION_TYPE.DECLARATION));
+				nodeChanges.add(new SourceNodeChangeContainers(node, index, Block.STATEMENTS_PROPERTY, // 0,
+						INSERTION_TYPE.METHOD_BODY));
 				try {
 					if (Modifier.isStatic(((TypeDeclaration) n).getModifiers())) {
 						inStaticContext = true;
@@ -73,8 +78,10 @@ public class SourceSchema extends ASTVisitor {
 				}
 				break;
 			case ASTNode.ANONYMOUS_CLASS_DECLARATION:
-				nodeChanges.add(new SourceNodeChangeContainers(n, 0, AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY, 1));
-				nodeChanges.add(new SourceNodeChangeContainers(node, index, Block.STATEMENTS_PROPERTY, 0));
+				nodeChanges.add(new SourceNodeChangeContainers(n, 0,
+						AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY, /* 1, */ INSERTION_TYPE.DECLARATION));
+				nodeChanges.add(new SourceNodeChangeContainers(node, index, Block.STATEMENTS_PROPERTY, // 0,
+						INSERTION_TYPE.METHOD_BODY));
 				inAnonymousClass = true;
 				break;
 			}
