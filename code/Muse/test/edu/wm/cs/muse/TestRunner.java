@@ -6,7 +6,7 @@ import org.junit.runner.notification.Failure;
 
 public class TestRunner {
 	public static void main(String[] args) {
-		Result museTestResult = JUnitCore.runClasses(MuseTest.class, LogAnalyzerTest.class);
+		Result museTestResult = JUnitCore.runClasses(MuseTest.class);
 	    for (Failure failure : museTestResult.getFailures()) {
 	      System.out.println(failure.toString());
 	    }
