@@ -10,11 +10,16 @@ import java.io.IOException;
  * 
  * @author Amit Seal Ami
  */
+/**
+ * @author Amit Seal Ami
+ *
+ */
 public class Arguments {
 	private static String binariesFolder;
 	private static String rootPath;
 	private static String appName;
 	private static String mutantsFolder;
+	private static String Operator;
 
 	/**
 	 * private constructor makes sure that no constructor can ever be used.
@@ -39,6 +44,7 @@ public class Arguments {
 		rootPath = args[1];
 		appName = args[2];
 		mutantsFolder = args[3];
+		Operator = args[4];
 	}
 
 	public static void extractArguments(File file) {
@@ -88,5 +94,16 @@ public class Arguments {
 	public static String getMutantsFolder() {
 		return mutantsFolder;
 	}
+	
+	/**
+	 * @return operator specified by the argument
+	 * Acceptable options are: 
+	 * SOURCE, SINK, TAINT, TAINTSINK and REACHABILITY
+	 */
+	public static String getOperator() {
+		return Operator;
+	}
+	
+	
 
 }
