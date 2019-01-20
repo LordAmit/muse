@@ -155,11 +155,27 @@ public class Muse {
 		CompilationUnit newRoot;
 		switch (operatorType) {
 		case SINK:
+			SourceSchema sourceSchema_s = new SourceSchema();
+			root.accept(sourceSchema_s);
+			SourceOperator sourceOperator_s = new SourceOperator(rewriter, sourceSchema_s.getNodeChanges());
+			rewriter = sourceOperator_s.InsertChanges();
+			applyChangesToFile(file, source, rewriter);
+
+			temp_file = new File("test/temp/temp_file.java");
+			tempFileWriter(root, rewriter, source, temp_file);
+
+			newSource = FileUtility.readSourceFile("test/temp/temp_file.java").toString();
+			newRoot = ASTHelper.getAST(newSource, Arguments.getBinariesFolder(), "test/temp/");
+			rewriter = null;
+			root = newRoot;
+			source = newSource;
+			rewriter = ASTRewrite.create(root.getAST());
 			SinkSchema sinkSchema = new SinkSchema();
 			root.accept(sinkSchema);
 			SinkOperator sinkOperator = new SinkOperator(rewriter, sinkSchema.getNodeChanges());
 			rewriter = sinkOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
+			Files.delete(temp_file.toPath());
 			break;
 
 		case SOURCE:
@@ -210,6 +226,7 @@ public class Muse {
 					taintSinkSchema.getMethodNodeChanges());
 			rewriter = operator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
+			Files.delete(temp_file.toPath());
 			break;
 
 		}
