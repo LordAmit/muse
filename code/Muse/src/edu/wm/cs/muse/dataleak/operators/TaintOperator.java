@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
+
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
@@ -43,6 +44,7 @@ public class TaintOperator {
 			// if (nodeChange.insertionType == 0 && nodeChange.node != null ) {
 			if (nodeChange.type == INSERTION_TYPE.METHOD_BODY && nodeChange.node != null) {
 				insertInMethodBody((Block) nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
+
 			} else {
 				if (nodeChange.node != null)
 					insertVariableDeclaration(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
@@ -71,7 +73,7 @@ public class TaintOperator {
 
 	// for declaration.
 	private void insertVariableDeclaration(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
-	
+
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		String variable = String.format("String dataLeAk%d = \"%d\";", Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);

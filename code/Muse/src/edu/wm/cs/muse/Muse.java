@@ -39,11 +39,9 @@ import edu.wm.cs.muse.mdroid.ASTHelper;
 public class Muse {
 
 	ASTRewrite rewriter;
-
-	// TODO: Does not handle anonymous declarations and try_catch clauses well.
-	// currently just ignores such methods.
-	// TODO: Fix Taint Schema for Interface
-	// TODO: Fix Taint Schema for overriding methods with super statements.
+	//TODO: Does not handle anonymous declarations and try_catch clauses well. currently just ignores such methods.
+	//TODO: Fix Taint Schema for Interface
+	//TODO: Fix Taint Schema for overriding methods with super statements.
 	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
 		// Usage Error
 		if (args.length != 5) {
@@ -239,7 +237,8 @@ public class Muse {
 		case COMPLEXREACHABILITY:
 			ComplexReachabilitySchema complexSchema = new ComplexReachabilitySchema();
 			root.accept(complexSchema);
-			ComplexReachability complexOperator = new ComplexReachability(rewriter, complexSchema.getNodeChanges());
+			ComplexReachability complexOperator = new ComplexReachability(rewriter,
+					complexSchema.getNodeChanges());
 			rewriter = complexOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			break;
