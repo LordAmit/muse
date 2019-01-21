@@ -37,18 +37,19 @@ public class SourceSchema extends ASTVisitor {
 	 * insertVariable
 	 */
 	public boolean visit(MethodDeclaration method) {
+		
 		// Methods
-		Block node = method.getBody();
-		if (node == null) {
+		Block methodBody = method.getBody();
+		if (methodBody == null) {
 			return true;
 		}
 		int index = 0;
-		for (Object obj : node.statements()) {
+		for (Object obj : methodBody.statements()) {
 			if (obj.toString().startsWith("super") || obj.toString().startsWith("this(")) {
 				index++;
 			}
 		}
-		ASTNode n = node.getParent();
+		ASTNode n = methodBody.getParent();
 		boolean inAnonymousClass = false;
 		boolean inStaticContext = false;
 		while (n != null && !inAnonymousClass && !inStaticContext) {
@@ -68,7 +69,7 @@ public class SourceSchema extends ASTVisitor {
 			case ASTNode.TYPE_DECLARATION:
 				nodeChanges.add(new SourceNodeChangeContainers(n, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, // 1,
 						INSERTION_TYPE.DECLARATION));
-				nodeChanges.add(new SourceNodeChangeContainers(node, index, Block.STATEMENTS_PROPERTY, // 0,
+				nodeChanges.add(new SourceNodeChangeContainers(methodBody, index, Block.STATEMENTS_PROPERTY, // 0,
 						INSERTION_TYPE.METHOD_BODY));
 				try {
 					if (Modifier.isStatic(((TypeDeclaration) n).getModifiers())) {
@@ -80,7 +81,7 @@ public class SourceSchema extends ASTVisitor {
 			case ASTNode.ANONYMOUS_CLASS_DECLARATION:
 				nodeChanges.add(new SourceNodeChangeContainers(n, 0,
 						AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY, /* 1, */ INSERTION_TYPE.DECLARATION));
-				nodeChanges.add(new SourceNodeChangeContainers(node, index, Block.STATEMENTS_PROPERTY, // 0,
+				nodeChanges.add(new SourceNodeChangeContainers(methodBody, index, Block.STATEMENTS_PROPERTY, // 0,
 						INSERTION_TYPE.METHOD_BODY));
 				inAnonymousClass = true;
 				break;
