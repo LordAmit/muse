@@ -5,8 +5,10 @@ import java.util.Stack;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;
@@ -46,6 +48,9 @@ public class TaintSchema extends ASTVisitor {
 	// strings
 	// in the method bodies using the TaintOperator.
 	public boolean visit(MethodDeclaration node) {
+		if(Modifier.isStatic(node.getModifiers())) {
+			return true;
+		}
 
 		Stack<ASTNode> ancestorStack = new Stack<ASTNode>();
 
@@ -58,7 +63,8 @@ public class TaintSchema extends ASTVisitor {
 				parent = parent.getParent();
 			}
 			if (parent.getNodeType() == ASTNode.ANONYMOUS_CLASS_DECLARATION) {
-				System.out.println("Anonymous type detected");
+				ancestorStack.add(parent);
+				parent = parent.getParent();
 				break;
 			}
 			if (parent.getParent() == null)
@@ -68,6 +74,14 @@ public class TaintSchema extends ASTVisitor {
 		for (ASTNode ancestorNode : ancestorStack) {
 			if (ancestorStack.size() == 0)
 				return true;
+			//for anonymous class declarations
+			if (ancestorNode.getNodeType() == ASTNode.ANONYMOUS_CLASS_DECLARATION) {
+				nodeChanges.add(new SourceNodeChangeContainers(ancestorNode, 0,
+						AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY, /* 1, */ INSERTION_TYPE.DECLARATION));
+				nodeChanges.add(new SourceNodeChangeContainers(node.getBody(), index, Block.STATEMENTS_PROPERTY, // 0,
+						INSERTION_TYPE.METHOD_BODY));
+				continue;
+			}
 			// for declaration
 			nodeChanges.add(new SourceNodeChangeContainers(ancestorNode, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY,
 					/* 1, */ INSERTION_TYPE.DECLARATION));
