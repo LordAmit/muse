@@ -7,6 +7,7 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.Modifier;
 
 import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
@@ -51,6 +52,9 @@ public class TaintSinkSchema extends ASTVisitor {
 	// classes
 	// match up.
 	public boolean visit(MethodDeclaration method) {
+		if(Modifier.isStatic(method.getModifiers())) {
+			return true;
+		}
 		parent = method.getParent();
 		int throwaway = 0;
 
