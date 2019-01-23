@@ -1,6 +1,7 @@
 package edu.wm.cs.muse.dataleak.support;
 
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.omg.CORBA.DynAnyPackage.TypeMismatch;
 
 /**
@@ -8,7 +9,7 @@ import org.omg.CORBA.DynAnyPackage.TypeMismatch;
  * @author Amit Seal Ami
  *
  */
-public class SchemaUtility {
+public class SchemaOperatorUtility {
 	
 	public static int getMethodDepthInternalClass(ASTNode node) throws TypeMismatch {
 		if(node.getNodeType()!=ASTNode.METHOD_DECLARATION) throw new TypeMismatch();
@@ -19,5 +20,21 @@ public class SchemaUtility {
 		}
 		return index;
 	}
-
+	
+	public static String getClassNameOfMethod(ASTNode method) {
+		String className = "";
+		method = method.getParent();
+		while (method != null) {
+			if (method.getNodeType() == ASTNode.TYPE_DECLARATION) {
+				className = ((TypeDeclaration) method).getName().toString();
+				break;
+			} else if (method.getNodeType() == ASTNode.ANONYMOUS_CLASS_DECLARATION) {
+				className = "1";
+				break;
+			}
+			method = method.getParent();
+		}
+		return className;
+	}
+	
 }
