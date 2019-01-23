@@ -7,7 +7,7 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.omg.CORBA.DynAnyPackage.TypeMismatch;
 
 //import edu.wm.cs.muse.dataleak.schemas.TaintSchema;
-import edu.wm.cs.muse.dataleak.support.SchemaUtility;
+import edu.wm.cs.muse.dataleak.support.SchemaOperatorUtility;
 
 // class for experimenting with and understanding other schemas
 public class TempSchema extends ASTVisitor {
@@ -16,7 +16,7 @@ public class TempSchema extends ASTVisitor {
 	public boolean visit(MethodDeclaration node) {
 //		System.out.println(node.toString());
 		try {
-			System.out.println(node.getName() +" " +SchemaUtility.getMethodDepthInternalClass(node));
+			System.out.println(node.getName() +" " +SchemaOperatorUtility.getMethodDepthInternalClass(node));
 		} catch (TypeMismatch e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
