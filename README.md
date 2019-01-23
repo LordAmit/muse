@@ -22,10 +22,12 @@ Provide the following list of required arguments when running Muse:
 2. ``AppSourceCode``: path of the Android app source code folder, which you want to apply mutation on;
 3. ``AppName``:  Name of the App;
 4. ``Output``: Path of the folder where the mutants will be created;
+5. `OperatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: SOURCE, SINK, TAINT, REACHABILITY, TAINTSINK, and COMPLEXREACHABILITY.
+ 
 
 ### Example
 ```
-java -jar Muse-1.0.0.jar MDroidPlus/libs4ast/ /tmp/AppFoo/src/ AppFoo /tmp/mutants/
+java -jar Muse-1.0.0.jar MDroidPlus/libs4ast/ /tmp/AppFoo/src/ AppFoo /tmp/mutants/ TAINTSINK
 ```
 
 This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored. 
