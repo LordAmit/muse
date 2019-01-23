@@ -54,7 +54,7 @@ public class TaintSchema extends ASTVisitor {
 
 		Stack<ASTNode> ancestorStack = new Stack<ASTNode>();
 
-		System.out.println(node.getName());
+//		System.out.println(node.getName());
 		parent = node.getParent();
 
 		while (true) {
