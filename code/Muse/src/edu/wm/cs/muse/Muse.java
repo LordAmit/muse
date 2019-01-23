@@ -40,10 +40,7 @@ public class Muse {
 
 	ASTRewrite rewriter;
 	//TODO: Does not handle anonymous declarations and try_catch clauses well. currently just ignores such methods.
-	//TODO: Fix Taint Schema for Interface
-	//TODO: Fix Taint Schema for overriding methods with super statements.
 	//TODO: Make schema for inserting leaks in static methods, since regular operators won't work well with static ones?
-	//TODO: print log for adding taint and taint sink leaks
 	
 	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
 		// Usage Error
