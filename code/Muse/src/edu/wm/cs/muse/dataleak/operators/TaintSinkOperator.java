@@ -5,10 +5,12 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
+import edu.wm.cs.muse.dataleak.support.SchemaOperatorUtility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 import edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers;
 
@@ -70,7 +72,8 @@ public class TaintSinkOperator {
 			int index_equal = fieldBoys.get(i).toString().indexOf("=");
 			String tempString = fieldBoys.get(i).toString().substring(15, index_equal);
 			tempString = tempString.trim();
-
+			MethodDeclaration methodNode = (MethodDeclaration) node.getParent();
+			System.out.println(String.format("leak-%s-%s: %s.%s", tempString, index, SchemaOperatorUtility.getClassNameOfMethod(node),methodNode.getName()));
 			String sink = String.format("android.util.Log.d(\"leak-%s-%s\", dataLeAk%s);", tempString, index,
 					tempString);
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
