@@ -10,6 +10,7 @@ import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
+import edu.wm.cs.muse.dataleak.support.SchemaOperatorUtility;
 import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;
 import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers.INSERTION_TYPE;
@@ -63,9 +64,11 @@ public class TaintOperator {
 				placement++;
 			}
 		}
+		int identifier = Utility.COUNTER_GLOBAL - 1;
+		
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-				Utility.COUNTER_GLOBAL - 1);
+				identifier);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
 		// listRewrite.insertAt(placeHolder, index, null);
 		listRewrite.insertAt(placeHolder, placement, null);
