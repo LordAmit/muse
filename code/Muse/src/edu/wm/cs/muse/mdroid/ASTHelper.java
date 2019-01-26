@@ -31,6 +31,9 @@ public static CompilationUnit getAST(String source, String binariesFolder, Strin
 		
 		ASTParser parser = ASTParser.newParser(AST.JLS8);
 		options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
+		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_8);
+		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_8);
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_8);
 		parser.setCompilerOptions(options);
 		
 		parser.setSource(source.toCharArray());
