@@ -39,9 +39,13 @@ import edu.wm.cs.muse.mdroid.ASTHelper;
 public class Muse {
 
 	ASTRewrite rewriter;
-	//TODO: Does not handle anonymous declarations and try_catch clauses well. currently just ignores such methods.
-	//TODO: Make schema for inserting leaks in static methods, since regular operators won't work well with static ones?
-	
+	// TODO: Does not handle anonymous declarations and try_catch clauses well.
+	// currently just ignores such methods.
+	// TODO: Make schema for inserting leaks in static methods, since regular
+	// operators won't work well with static ones?
+	// TODO: does not handle enum well since enum methods are considered static and
+	// not detected in java ast as static
+
 	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
 		// Usage Error
 		if (args.length != 5) {
@@ -166,11 +170,11 @@ public class Muse {
 			SourceOperator sourceOperator_s = new SourceOperator(rewriter, sourceSchema_s.getNodeChanges());
 			rewriter = sourceOperator_s.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
-
-			temp_file = new File("test/temp/temp_file.java");
+			String sink_temp_file_path = "test/temp/temp_file.java";
+			temp_file = new File(sink_temp_file_path);
 			tempFileWriter(root, rewriter, source, temp_file);
 
-			newSource = FileUtility.readSourceFile("test/temp/temp_file.java").toString();
+			newSource = FileUtility.readSourceFile(sink_temp_file_path).toString();
 			newRoot = ASTHelper.getAST(newSource, Arguments.getBinariesFolder(), "test/temp/");
 			rewriter = null;
 			root = newRoot;
@@ -215,11 +219,11 @@ public class Muse {
 			TaintOperator taintOperator_ts = new TaintOperator(rewriter, taintSchema_ts.getNodeChanges());
 			rewriter = taintOperator_ts.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
-
-			temp_file = new File("test/temp/temp_file.java");
+			String taintsink_temp_file_path = "test/temp/temp_file_taintsink.java";
+			temp_file = new File(taintsink_temp_file_path);
 			tempFileWriter(root, rewriter, source, temp_file);
 
-			newSource = FileUtility.readSourceFile("test/temp/temp_file.java").toString();
+			newSource = FileUtility.readSourceFile(taintsink_temp_file_path).toString();
 			newRoot = ASTHelper.getAST(newSource, Arguments.getBinariesFolder(), "test/temp/");
 			rewriter = null;
 			root = newRoot;
@@ -237,8 +241,7 @@ public class Muse {
 		case COMPLEXREACHABILITY:
 			ComplexReachabilitySchema complexSchema = new ComplexReachabilitySchema();
 			root.accept(complexSchema);
-			ComplexReachability complexOperator = new ComplexReachability(rewriter,
-					complexSchema.getNodeChanges());
+			ComplexReachability complexOperator = new ComplexReachability(rewriter, complexSchema.getNodeChanges());
 			rewriter = complexOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			break;
