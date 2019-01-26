@@ -1,3 +1,4 @@
 // this line will be skipped.
 //format is name,address of app dir
 android-timetracker,/home/amit/muse/app/android-timetracker/
+BMI_Calculator,/home/amit/muse/app/BMI_Calculator-master/

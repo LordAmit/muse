@@ -79,6 +79,19 @@ def content_in_all_schema_sh_file(project_name: str, output_dir: str):
     open(sh_file_path, mode="w").write(temp_string)
 
 
+def chmod_x_all_gradlew_file_script(project_name: str, output_dir: str):
+    sh_file_path = output_dir+project_name + \
+        "/sh_files/"+"gradle_permission"+".sh"
+    make_sh_file_with_x_bit(sh_file_path)
+    temp_string: str = "chmod +x {}\n"
+    content: str = "#!/bin/bash\n"
+    for mutation in mutation_types:
+        path_gradlew = output_dir+project_name + \
+            "/schemas/"+mutation+"/"+project_name+"/gradlew"
+        content += temp_string.format(path_gradlew)
+    open(sh_file_path, mode="w").write(content)
+
+
 def clean_and_build_all(project_name: str, output_dir: str):
     # sh /home/amit/muse/output/android-timetracker/schemas/TAINTSINK/android-timetracker/gradlew build
     sh_file_path = output_dir+project_name + \
@@ -115,3 +128,4 @@ if __name__ == "__main__":
             open(sh_file_path, mode="w").write(output)
         content_in_all_schema_sh_file(project_name, output_dir)
         clean_and_build_all(project_name, output_dir)
+        chmod_x_all_gradlew_file_script(project_name, output_dir)
