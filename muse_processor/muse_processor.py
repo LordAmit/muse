@@ -71,7 +71,7 @@ echo finished executing {}
 
 def content_in_all_schema_sh_file(project_name: str, output_dir: str):
     sh_file_path = output_dir+project_name + \
-        "/sh_files/"+project_name+"_"+"all_schema"+".sh"
+        "/sh_files/"+"all_schema"+".sh"
     make_sh_file_with_x_bit(sh_file_path)
     temp_string: str = ""
     for mutation in mutation_types:
@@ -85,8 +85,8 @@ def clean_and_build_all(project_name: str, output_dir: str):
         "/sh_files/"+"clean_and_build_all"+".sh"
     make_sh_file_with_x_bit(sh_file_path)
     temp_string: str = "cd {}\n"
-    temp_string += "sh {} clean\n"
-    temp_string += "sh {} build\n"
+    temp_string += "{} clean\n"
+    temp_string += "{} build\n"
     content: str = ""
     for mutation in mutation_types:
         path_project = output_dir+project_name + \
@@ -97,6 +97,7 @@ def clean_and_build_all(project_name: str, output_dir: str):
             print("error: gradlew not found at: "+path_gradlew)
             exit()
         content += temp_string.format(path_project, path_gradlew, path_gradlew)
+        os.chmod(path_gradlew, 0o755)
     open(sh_file_path, mode="w").write(content)
 
 
