@@ -51,6 +51,12 @@ public class TaintSchema extends ASTVisitor {
 		if(Modifier.isStatic(node.getModifiers())) {
 			return true;
 		}
+		if(Modifier.isPrivate(node.getModifiers())) {
+			System.out.println("Private method: "+node.getName());
+			return true;
+		}else {
+			System.out.println("Non private");
+		}
 
 		Stack<ASTNode> ancestorStack = new Stack<ASTNode>();
 
@@ -58,15 +64,35 @@ public class TaintSchema extends ASTVisitor {
 		parent = node.getParent();
 
 		while (true) {
+//			if(parent.getNodeType()==ASTNode.ENUM_DECLARATION) {
+//				System.out.println("Found: "+node.getName());
+//			}
+
+			
 			if (parent.getNodeType() == ASTNode.TYPE_DECLARATION) {
+				TypeDeclaration parentAsType= (TypeDeclaration)parent;
+				//if parent is not public, skip.
+
+				if(!Modifier.isPublic(parentAsType.getModifiers()))
+					return false;
 				ancestorStack.add(parent);
 				parent = parent.getParent();
 			}
 			if (parent.getNodeType() == ASTNode.ANONYMOUS_CLASS_DECLARATION) {
-				ancestorStack.add(parent);
-				parent = parent.getParent();
-				break;
+				//if anonymous, skip processing.
+				return true;
+//				ancestorStack.add(parent);
+//				parent = parent.getParent();
+//				break;
 			}
+			if (parent.getNodeType() == ASTNode.ENUM_DECLARATION) {
+//				ancestorStack.add(parent);
+//				parent = parent.getParent();
+//				break;
+				return false;
+			}
+			
+			
 			if (parent.getParent() == null)
 				break;
 		}
