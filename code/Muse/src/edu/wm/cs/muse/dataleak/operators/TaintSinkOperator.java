@@ -77,7 +77,7 @@ public class TaintSinkOperator {
 			String sink = String.format("android.util.Log.d(\"leak-%s-%s\", dataLeAk%s);", tempString, index,
 					tempString);
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
-			int placement = 1;
+			int placement = 0;
 			for (Object obj : node.statements()) {
 				if (obj.toString().startsWith("super") || obj.toString().startsWith("this(")) {
 					placement++;
