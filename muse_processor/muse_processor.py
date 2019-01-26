@@ -39,7 +39,7 @@ java -jar Muse.jar /home/amit/workspaces/muse/libs4ast {} {} {}{} {} > {}_{}.log
 def make_sh_file_with_x_bit(sh_file_path: str):
     if not Path(sh_file_path).exists():
         Path(sh_file_path).touch()
-        os.chmod(sh_file_path, 0o755)
+    os.chmod(sh_file_path, 0o755)
 
 
 def create_dir(path: str):
@@ -61,7 +61,7 @@ def make_folder_structure(project_name: str):
 
 def content_in_sh_per_schema(project_name: str, output_dir: str, mutation: str):
 
-    template_schema_apply = """#!/bin/sh 
+    template_schema_apply = """#!/bin/sh
 java -jar {} /home/amit/workspaces/muse/libs4ast {} {} {}{} {} > {}_{}.log
 echo finished executing {}
     """
@@ -69,7 +69,7 @@ echo finished executing {}
                                         output_dir+project_name+"/schemas/", mutation, mutation, project_name, mutation, mutation)
 
 
-def content_in_all_schema(project_name: str, output_dir: str):
+def content_in_all_schema_sh_file(project_name: str, output_dir: str):
     sh_file_path = output_dir+project_name + \
         "/sh_files/"+project_name+"_"+"all_schema"+".sh"
     make_sh_file_with_x_bit(sh_file_path)
@@ -79,14 +79,38 @@ def content_in_all_schema(project_name: str, output_dir: str):
     open(sh_file_path, mode="w").write(temp_string)
 
 
-for project_name, project in name_inputFolders:
-    make_folder_structure(project_name)
+def clean_and_build_all(project_name: str, output_dir: str):
+    # sh /home/amit/muse/output/android-timetracker/schemas/TAINTSINK/android-timetracker/gradlew build
+    sh_file_path = output_dir+project_name + \
+        "/sh_files/"+"clean_and_build_all"+".sh"
+    make_sh_file_with_x_bit(sh_file_path)
+    temp_string: str = "cd {}\n"
+    temp_string += "sh {} clean\n"
+    temp_string += "sh {} build\n"
+    content: str = ""
     for mutation in mutation_types:
-        output = content_in_sh_per_schema(project_name, output_dir, mutation)
-        sh_file_path = output_dir+project_name + \
-            "/sh_files/"+project_name+"_"+mutation+".sh"
+        path_project = output_dir+project_name + \
+            "/schemas/"+mutation+"/"+project_name+"/"
+        path_gradlew = output_dir+project_name + \
+            "/schemas/"+mutation+"/"+project_name+"/gradlew"
+        if not os.path.exists(path_gradlew):
+            print("error: gradlew not found at: "+path_gradlew)
+            exit()
+        content += temp_string.format(path_project, path_gradlew, path_gradlew)
+    open(sh_file_path, mode="w").write(content)
 
-        # print(output)
-        make_sh_file_with_x_bit(sh_file_path)
-        open(sh_file_path, mode="w").write(output)
-    content_in_all_schema(project_name, output_dir)
+
+if __name__ == "__main__":
+    for project_name, project in name_inputFolders:
+        make_folder_structure(project_name)
+        for mutation in mutation_types:
+            output = content_in_sh_per_schema(
+                project_name, output_dir, mutation)
+            sh_file_path = output_dir+project_name + \
+                "/sh_files/"+project_name+"_"+mutation+".sh"
+
+            # print(output)
+            make_sh_file_with_x_bit(sh_file_path)
+            open(sh_file_path, mode="w").write(output)
+        content_in_all_schema_sh_file(project_name, output_dir)
+        clean_and_build_all(project_name, output_dir)
