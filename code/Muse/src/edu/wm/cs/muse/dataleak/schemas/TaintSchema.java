@@ -71,10 +71,14 @@ public class TaintSchema extends ASTVisitor {
 			
 			if (parent.getNodeType() == ASTNode.TYPE_DECLARATION) {
 				TypeDeclaration parentAsType= (TypeDeclaration)parent;
+				
 				//if parent is not public, skip.
-
 				if(!Modifier.isPublic(parentAsType.getModifiers()))
 					return false;
+				//if parent is static, skip
+				if(Modifier.isStatic(parentAsType.getModifiers()))
+					return false;
+				
 				ancestorStack.add(parent);
 				parent = parent.getParent();
 			}
