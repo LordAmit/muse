@@ -18,8 +18,9 @@ import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 
 /**
- * The SinkSchema visits each node the AST tree to find data sinks, then calls on SinkOperator to insert a
- * string that indicates the occurrence.
+ * The SinkSchema visits each node the AST tree to find data sinks, then calls
+ * on SinkOperator to insert a string that indicates the occurrence.
+ * 
  * @author Yang Zhang
  */
 
@@ -30,22 +31,27 @@ public class SinkSchema extends ASTVisitor {
 	public SinkSchema() {
 		nodeChanges = new ArrayList<SinkNodeChangeContainers>();
 	}
-	
-	public ArrayList<SinkNodeChangeContainers> getNodeChanges(){
+
+	public ArrayList<SinkNodeChangeContainers> getNodeChanges() {
 		return this.nodeChanges;
 	};
-	
+
 	Pattern variablePattern = Pattern.compile("(.*String dataLeAk)(\\d+).*"); // the pattern to search for
-	
-/*
- * Includes an additional integer param to differentiate between insertSource and insertSink
- */
+
+	/*
+	 * Includes an additional integer param to differentiate between insertSource
+	 * and insertSink
+	 */
 	public boolean visit(MethodDeclaration method) {
 		// Methods
 		int count = 0;
 		int index = 0;
 		Block node = method.getBody();
 		if (node == null) {
+			return true;
+		}
+		if (method.getParent().getNodeType() == ASTNode.ENUM_DECLARATION) {
+			// abort abort. enum method.
 			return true;
 		}
 		for (Object obj : node.statements()) {
@@ -79,7 +85,8 @@ public class SinkSchema extends ASTVisitor {
 						Matcher matcher = variablePattern.matcher(field.toString());
 						if (matcher.find() && field.toString().trim().startsWith("String dataLeAk")) {
 							count = Integer.valueOf(matcher.group(2));
-							nodeChanges.add(new SinkNodeChangeContainers(node, index, count, Block.STATEMENTS_PROPERTY, method, 0));
+							nodeChanges.add(new SinkNodeChangeContainers(node, index, count, Block.STATEMENTS_PROPERTY,
+									method, 0));
 						}
 					}
 				}
@@ -94,7 +101,8 @@ public class SinkSchema extends ASTVisitor {
 						Matcher matcher = variablePattern.matcher(field.toString());
 						if (matcher.find() && field.toString().trim().startsWith("String dataLeAk")) {
 							count = Integer.valueOf(matcher.group(2));
-							nodeChanges.add(new SinkNodeChangeContainers(node, index, count, Block.STATEMENTS_PROPERTY, method, 0));
+							nodeChanges.add(new SinkNodeChangeContainers(node, index, count, Block.STATEMENTS_PROPERTY,
+									method, 0));
 						}
 					}
 				}
@@ -114,7 +122,7 @@ public class SinkSchema extends ASTVisitor {
 				} catch (NullPointerException e) {
 				}
 				break;
-				
+
 			case ASTNode.FIELD_DECLARATION:
 				try {
 					inStaticContext = Modifier.isStatic(((FieldDeclaration) n).getModifiers());
@@ -124,8 +132,10 @@ public class SinkSchema extends ASTVisitor {
 
 			case ASTNode.TYPE_DECLARATION:
 				Utility.COUNTER_GLOBAL++;
-				nodeChanges.add(new SinkNodeChangeContainers(n, 0, Utility.COUNTER_GLOBAL, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, method, 1));
-				nodeChanges.add(new SinkNodeChangeContainers(node, index, Utility.COUNTER_GLOBAL, Block.STATEMENTS_PROPERTY, method, 0));
+				nodeChanges.add(new SinkNodeChangeContainers(n, 0, Utility.COUNTER_GLOBAL,
+						TypeDeclaration.BODY_DECLARATIONS_PROPERTY, method, 1));
+				nodeChanges.add(new SinkNodeChangeContainers(node, index, Utility.COUNTER_GLOBAL,
+						Block.STATEMENTS_PROPERTY, method, 0));
 				try {
 					inStaticContext = Modifier.isStatic(((TypeDeclaration) n).getModifiers());
 				} catch (NullPointerException e) {
@@ -133,13 +143,15 @@ public class SinkSchema extends ASTVisitor {
 				break;
 			case ASTNode.ANONYMOUS_CLASS_DECLARATION:
 				Utility.COUNTER_GLOBAL++;
-				nodeChanges.add(new SinkNodeChangeContainers(n, 0, Utility.COUNTER_GLOBAL, AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY, method, 1));
-				nodeChanges.add(new SinkNodeChangeContainers(node, index, Utility.COUNTER_GLOBAL, Block.STATEMENTS_PROPERTY, method, 0));
+				nodeChanges.add(new SinkNodeChangeContainers(n, 0, Utility.COUNTER_GLOBAL,
+						AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY, method, 1));
+				nodeChanges.add(new SinkNodeChangeContainers(node, index, Utility.COUNTER_GLOBAL,
+						Block.STATEMENTS_PROPERTY, method, 0));
 				break;
 			}
 			n = n.getParent();
 		}
 		return true;
 	}
-	
+
 }

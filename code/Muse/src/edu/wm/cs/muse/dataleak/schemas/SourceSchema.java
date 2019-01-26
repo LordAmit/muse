@@ -38,6 +38,10 @@ public class SourceSchema extends ASTVisitor {
 	 */
 	public boolean visit(MethodDeclaration method) {
 		
+		if (method.getParent().getNodeType() == ASTNode.ENUM_DECLARATION) {
+			//abort abort. enum method.
+			return true;
+		}
 		// Methods
 		Block methodBody = method.getBody();
 		if (methodBody == null) {
