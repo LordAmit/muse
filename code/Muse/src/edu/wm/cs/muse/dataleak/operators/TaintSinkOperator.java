@@ -73,15 +73,22 @@ public class TaintSinkOperator {
 			String tempString = fieldBoys.get(i).toString().substring(15, index_equal);
 			tempString = tempString.trim();
 			MethodDeclaration methodNode = (MethodDeclaration) node.getParent();
-			System.out.println(String.format("leak-%s-%s: %s.%s", tempString, index, SchemaOperatorUtility.getClassNameOfMethod(node),methodNode.getName()));
+			System.out.println(String.format("leak-%s-%s: %s.%s", tempString, index,
+					SchemaOperatorUtility.getClassNameOfMethod(node), methodNode.getName()));
 			String sink = String.format("android.util.Log.d(\"leak-%s-%s\", dataLeAk%s);", tempString, index,
 					tempString);
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
-			int placement = 0;
+			int placement = 1;
+			int statement_counter = 0;
 			for (Object obj : node.statements()) {
 				if (obj.toString().startsWith("super") || obj.toString().startsWith("this(")) {
 					placement++;
+				}else if (obj.toString().startsWith("return ")){
+					//will only change placement if the return is the first statement in node.
+					if(statement_counter == 0)
+						placement = 0;
 				}
+				statement_counter++;
 			}
 			listRewrite.insertAt(placeHolder, placement, null);
 		}
