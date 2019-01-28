@@ -48,76 +48,68 @@ public class TaintSchema extends ASTVisitor {
 	// strings
 	// in the method bodies using the TaintOperator.
 	public boolean visit(MethodDeclaration node) {
-		if(Modifier.isStatic(node.getModifiers())) {
-			return true;
-		}
-		if(Modifier.isPrivate(node.getModifiers())) {
-			System.out.println("Private method: "+node.getName());
-			return true;
-		}else {
-			System.out.println("Non private");
-		}
 
+		if (Modifier.isStatic(node.getModifiers())) {
+			return true;
+		}
+		if (Modifier.isPrivate(node.getModifiers())) {
+			System.out.println("Private method: " + node.getName());
+			return true;
+		}
 		Stack<ASTNode> ancestorStack = new Stack<ASTNode>();
 
-//		System.out.println(node.getName());
+		System.out.println(node.getName());
 		parent = node.getParent();
 
 		while (true) {
-//			if(parent.getNodeType()==ASTNode.ENUM_DECLARATION) {
-//				System.out.println("Found: "+node.getName());
-//			}
-
-			
 			if (parent.getNodeType() == ASTNode.TYPE_DECLARATION) {
-				TypeDeclaration parentAsType= (TypeDeclaration)parent;
-				
-				//if parent is not public, skip.
-				if(!Modifier.isPublic(parentAsType.getModifiers()))
+				TypeDeclaration parentAsType = (TypeDeclaration) parent;
+
+				// if parent is private/protected, skip.
+				if (Modifier.isPrivate(parentAsType.getModifiers())
+						|| Modifier.isProtected(parentAsType.getModifiers()))
 					return false;
-				//if parent is static, skip
-				if(Modifier.isStatic(parentAsType.getModifiers()))
+				// if parent is static, skip
+				if (Modifier.isStatic(parentAsType.getModifiers()))
 					return false;
-				
+
 				ancestorStack.add(parent);
-				parent = parent.getParent();
-			}
-			if (parent.getNodeType() == ASTNode.ANONYMOUS_CLASS_DECLARATION) {
-				//if anonymous, skip processing.
-				return true;
-//				ancestorStack.add(parent);
 //				parent = parent.getParent();
-//				break;
-			}
-			if (parent.getNodeType() == ASTNode.ENUM_DECLARATION) {
-//				ancestorStack.add(parent);
+			} else if (parent.getNodeType() == ASTNode.ANONYMOUS_CLASS_DECLARATION) {
+				// if anonymous, skip processing.
+//			return true;
+				ancestorStack.add(parent);
 //				parent = parent.getParent();
-//				break;
+//			break;
+			} else if (parent.getNodeType() == ASTNode.ENUM_DECLARATION) {
+//			ancestorStack.add(parent);
+//			parent = parent.getParent();
+//			break;
 				return false;
 			}
-			
-			
-			if (parent.getParent() == null)
+
+			else if (parent.getParent() == null)
 				break;
+			parent = parent.getParent();
 		}
 
 		for (ASTNode ancestorNode : ancestorStack) {
 			if (ancestorStack.size() == 0)
 				return true;
-			//for anonymous class declarations
 			if (ancestorNode.getNodeType() == ASTNode.ANONYMOUS_CLASS_DECLARATION) {
 				nodeChanges.add(new SourceNodeChangeContainers(ancestorNode, 0,
 						AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY, /* 1, */ INSERTION_TYPE.DECLARATION));
 				nodeChanges.add(new SourceNodeChangeContainers(node.getBody(), index, Block.STATEMENTS_PROPERTY, // 0,
 						INSERTION_TYPE.METHOD_BODY));
-				continue;
+//				continue;
+			} else {
+				// for declaration
+				nodeChanges.add(new SourceNodeChangeContainers(ancestorNode, 0,
+						TypeDeclaration.BODY_DECLARATIONS_PROPERTY, INSERTION_TYPE.DECLARATION));
+				// for method body
+				nodeChanges.add(new SourceNodeChangeContainers(node.getBody(), index, Block.STATEMENTS_PROPERTY,
+						INSERTION_TYPE.METHOD_BODY));
 			}
-			// for declaration
-			nodeChanges.add(new SourceNodeChangeContainers(ancestorNode, 0, TypeDeclaration.BODY_DECLARATIONS_PROPERTY,
-					/* 1, */ INSERTION_TYPE.DECLARATION));
-			// for method body
-			nodeChanges.add(new SourceNodeChangeContainers(node.getBody(), index, Block.STATEMENTS_PROPERTY,
-					/* 0, */ INSERTION_TYPE.METHOD_BODY));
 			index++;
 
 		}
