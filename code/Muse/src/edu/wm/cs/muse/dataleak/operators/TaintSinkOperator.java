@@ -62,6 +62,10 @@ public class TaintSinkOperator {
 		ListRewrite listRewrite = null;
 		if (node == null)
 			return;
+		//if it is an empty method.
+		if(node.statements().size()==0) {
+			return;
+		}
 		for (int i = 0; i < fieldBoys.size(); i++) {
 			try {
 				listRewrite = rewriter.getListRewrite(node, nodeProperty);
@@ -78,14 +82,24 @@ public class TaintSinkOperator {
 			String sink = String.format("android.util.Log.d(\"leak-%s-%s\", dataLeAk%s);", tempString, index,
 					tempString);
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
+			
 			int placement = 1;
 			int statement_counter = 0;
+			
 			for (Object obj : node.statements()) {
+				
 				if (obj.toString().startsWith("super") || obj.toString().startsWith("this(")) {
+					// will only change placement if the super is at top and there is only one
+					// statement
+					System.out.println("SUper found");
+
+					if (statement_counter == 0) {
+						placement = 0;
+					}
 					placement++;
-				}else if (obj.toString().startsWith("return ")){
-					//will only change placement if the return is the first statement in node.
-					if(statement_counter == 0)
+				} else if (obj.toString().startsWith("return ")) {
+					// will only change placement if the return is the first statement in node.
+					if (statement_counter == 0)
 						placement = 0;
 				}
 				statement_counter++;
