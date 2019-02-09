@@ -52,7 +52,7 @@ public class TaintSinkSchema extends ASTVisitor {
 	// classes
 	// match up.
 	public boolean visit(MethodDeclaration method) {
-		if(Modifier.isStatic(method.getModifiers())) {
+		if (Modifier.isStatic(method.getModifiers())) {
 			return true;
 		}
 		parent = method.getParent();
@@ -108,14 +108,18 @@ public class TaintSinkSchema extends ASTVisitor {
 		if (parent != classRetainer) {
 
 			if (classRetainer != null) {
-				if (field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
+
+				if (field.toString().contains("dataLeAk")
+						&& field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
 					previousFieldHolder.add(field);
 				}
 				classRetainer = parent;
 			}
 
 			if (classRetainer == null) {
-				if (field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
+
+				if (field.toString().contains("dataLeAk")
+						&& field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
 					previousFieldHolder.add(field);
 				}
 				classRetainer = parent;
