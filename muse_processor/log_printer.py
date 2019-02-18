@@ -35,10 +35,14 @@ def process_log_for_class_and_method(mutation_log: str, tool_log: str):
             # print(operator_placement)
             mutation_operators_only.append(operator_placement)
         else:
-            pass
+            if "In file: " in log:
+                # file_name = log.split("In file: ")[1]
+                # mutation_operators_only.append("File,"+file_name)
+                mutation_operators_only.append(log)
             # print(log)
     counted_operators: Dict[str, int] = Counter(mutation_operators_only)
     not_found: int = 0
+    print("ClassName.Method,OperatorsInserted,FoundByTool,Difference,TypeOfDiffernce")
     for operator in counted_operators.keys():
         operator_count = counted_operators[operator]
         tool_log_count = tool_log.count(operator)
@@ -47,10 +51,11 @@ def process_log_for_class_and_method(mutation_log: str, tool_log: str):
             difference = str(operator_count - tool_log_count)
             diff_type = "negative" if (
                 operator_count - tool_log_count) < 0 else "non_negative"
-
-            print("operator: "+operator+", operator_inserted: "+str(operator_count) +
-                  ", tool_found: "+str(tool_log_count)+", difference: "+difference+" , type: "+diff_type)
-    print("Total not found: "+str(not_found))
+            if "In file: " in operator:
+                print(operator.replace(": ", ","))
+            else:
+                print(operator+","+str(operator_count) +
+                      ","+str(tool_log_count)+","+difference+","+diff_type)
 
 
 if len(sys.argv) is 2:
