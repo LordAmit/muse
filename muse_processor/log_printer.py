@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+## Used for printing information based on leak and tool in a csv file.
 import sys
 from typing import Dict, List
 from collections import Counter
@@ -42,7 +42,9 @@ def process_log_for_class_and_method(mutation_log: str, tool_log: str):
             # print(log)
     counted_operators: Dict[str, int] = Counter(mutation_operators_only)
     not_found: int = 0
-    print("ClassName.Method,OperatorsInserted,FoundByTool,Difference,TypeOfDiffernce")
+    print(
+        "ClassName.Method,OperatorsInserted,FoundByTool,Difference,TypeOfDiffernce"
+    )
     for operator in counted_operators.keys():
         operator_count = counted_operators[operator]
         tool_log_count = tool_log.count(operator)
@@ -54,8 +56,8 @@ def process_log_for_class_and_method(mutation_log: str, tool_log: str):
             if "In file: " in operator:
                 print(operator.replace(": ", ","))
             else:
-                print(operator+","+str(operator_count) +
-                      ","+str(tool_log_count)+","+difference+","+diff_type)
+                print(operator + "," + str(operator_count) + "," +
+                      str(tool_log_count) + "," + difference + "," + diff_type)
 
 
 if len(sys.argv) is 2:
