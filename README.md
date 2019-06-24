@@ -6,6 +6,9 @@ This repository is a refactoring of the original Muse tool written by Richie Bon
 # Compilation
 The source code of Muse is available in [Code](https://gitlab.com/WM-CSCI435-F18/android-muse/tree/master/code) section of this repository. It is maintained using the open source Eclipse Java IDE. To compile, simply clone this repo, and then import the project as a Java project in Eclipse.
 
+# Pre compiled Binary
+Alternatively, you can use the Muse.jar file by downloading it from the releases section. 
+
 # Usage
 Muse relies on [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus). You will need the `libs4ast` folder of that project in order to run Muse. 
 
@@ -31,6 +34,11 @@ java -jar Muse-1.0.0.jar MDroidPlus/libs4ast/ /tmp/AppFoo/src/ AppFoo /tmp/mutan
 ```
 
 This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored. 
+
+
+# Muse Processor Helper Utility
+We have created the Muse processor utility using python, which makes it easier to mutate android projects by generating relevant shell script files. To work with it, you need to replace the file paths, and edit the file called `input_folders`. In the file, you need to provide the list of directories containing Android projects. The provided `input_folders` already contains sample values. 
+
 
 # Cite
 If you use Muse for academic purposes, please cite: 
