@@ -3,11 +3,13 @@
 from argparse import ArgumentParser
 import re
 
-def parse_args() :
+
+def parse_args():
     parser = ArgumentParser()
     parser.add_argument("logcat", help="Android logcat file")
     parser.add_argument("tool", help="Tool report")
     return parser.parse_args()
+
 
 def extract_leaks(file):
     leaks = set()
@@ -31,12 +33,13 @@ def main():
         elif leak not in leaks:
             print("%s - IMPRECISE" % (leak))
             res[1] += 1
-        else :
+        else:
             print("%s - CORRECT" % (leak))
             res[2] += 1
     print("V&!D: %d" % (res[0]))
     print("!V&D: %d" % (res[1]))
     print("V&D: %d" % (res[2]))
-    
+
+
 if __name__ == '__main__':
     main()
