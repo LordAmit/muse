@@ -108,6 +108,28 @@ def sh_clean_project_folder(project_path: str):
     open(sh_file_path, mode="w").write(temp_string)
 
 
+def clean_all(project_name: str, output_dir: str):
+    # sh /home/amit/muse/output/android-timetracker/schemas/TAINTSINK/android-timetracker/gradlew build
+    sh_file_path = output_dir+project_name + \
+        "/sh_files/"+"clean_all"+".sh"
+    make_sh_file_with_x_bit(sh_file_path)
+    temp_string: str = "cd {}\n"
+    temp_string += "{} clean\n"
+    # temp_string += "{} assembleDebug\n"
+    content: str = ""
+    for mutation in mutation_types:
+        path_project = output_dir+project_name + \
+            "/schemas/"+mutation+"/"+project_name+"/"
+        path_gradlew = output_dir+project_name + \
+            "/schemas/"+mutation+"/"+project_name+"/gradlew"
+        # if not os.path.exists(path_gradlew):
+        #     print("error: gradlew not found at: "+path_gradlew)
+        #     exit()
+        content += temp_string.format(path_project, path_gradlew)
+        # os.chmod(path_gradlew, 0o755)
+    open(sh_file_path, mode="w").write(content)
+
+
 def clean_and_build_all(project_name: str, output_dir: str):
     # sh /home/amit/muse/output/android-timetracker/schemas/TAINTSINK/android-timetracker/gradlew build
     sh_file_path = output_dir+project_name + \
@@ -145,6 +167,7 @@ if __name__ == "__main__":
         content_in_all_schema_sh_file(project_name, project_path, output_dir)
         # print("check1")
         clean_and_build_all(project_name, output_dir)
+        clean_all(project_name, output_dir)
         # print("check2")
         chmod_x_all_gradlew_file_script(project_name, output_dir)
         # print("check3")
