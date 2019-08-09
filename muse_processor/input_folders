@@ -1,12 +1,19 @@
 // this line will be skipped.
 //format is name,address of app dir
-android-timetracker,/home/amit/muse/app/android-timetracker/
-BMI_Calculator,/home/amit/muse/app/BMI_Calculator-master/
-notepad,/home/amit/muse/app/notepad-master/
-afh_download,/home/amit/muse/app/afh_downloader-master/
-device-explorer,/home/amit/muse/app/Device-Explorer-master/
-manman,/home/amit/muse/app/Man-Man-master/
-kaltura,/home/amit/muse/app/oF2pks-kaltura-device-info-android/
-NasaApod,/home/amit/muse/app/NasaApodCL-master/
-CalendarTrigger,/home/amit/muse/app/CalendarTrigger-master/
-Recycler,/home/amit/muse/output/SimpleApps/RecyclerView/RecyclerView/
+//android-timetracker,/home/amit/muse/app/android-timetracker/
+//BMI_Calculator,/home/amit/muse/app/BMI_Calculator-master/
+//notepad,/home/amit/muse/app/notepad-master/
+//afh_download,/home/amit/muse/app/afh_downloader-master/
+//device-explorer,/home/amit/muse/app/Device-Explorer-master/
+//manman,/home/amit/muse/app/Man-Man-master/
+//kaltura,/home/amit/muse/app/oF2pks-kaltura-device-info-android/
+//NasaApod,/home/amit/muse/app/NasaApodCL-master/
+//CalendarTrigger,/home/amit/muse/app/CalendarTrigger-master/
+//Recycler,/home/amit/muse/output/SimpleApps/RecyclerView/RecyclerView/
+activitylauncher, /home/amit/muse/app/activitylauncher-reset/
+androidpn, /home/amit/muse/app/androidpn-client-reset/
+cameraroll, /home/amit/muse/app/Camera-Roll-Android-App-reset/
+LocationShare, /home/amit/muse/app/LocationShare-reset/
+privacyqr,/home/amit/muse/app/privacy-friendly-qr-scanner-reset/
+babymonitor,/home/amit/muse/app/protect-baby-monitor-reset/
+2048,/home/amit/muse/app/2048-android/
