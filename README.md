@@ -14,7 +14,7 @@ Muse relies on [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutati
 
 To run Muse, use the following command, specifying the required arguments:
 ```
-java -jar Muse-1.0.0.jar <libs4ast> <AppSourceCode> <AppName> <OutputPath>
+java -jar Muse-1.0.0.jar <libs4ast> <AppSourceCode> <AppName> <OutputPath> <OperatorType>
 ```
 
 If running Muse within a IDE like Eclipse, import only the Muse folder within the code subdirectory, or else you might get a java.lang.SecurityException error when running Muse.java
