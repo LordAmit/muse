@@ -50,7 +50,14 @@ Currently Muse is oriented towards the evaluation of static analysis tools for A
 
 This repository is for a refactoring and expansion of the original muse tool built by Richie Bonnett.
 
-## Team Members
-- Amit Seal Ami
+## Past Team Members
 - Liz Weech
 - Yang Zhang
+
+## Current Team Members
+- Amit Seal Ami
+- Scott Murphy
+- Kyle Gorham
+- Ian Wolff
+- Jeff Petit-Freres
+- Will Elliot
