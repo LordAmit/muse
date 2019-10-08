@@ -94,7 +94,7 @@ public class Muse {
 		}
 	}
 
-	private OperatorType getOperatorType(String inputOperator) {
+	protected OperatorType getOperatorType(String inputOperator) {
 		// SOURCE, SINK, TAINT, TAINTSINK and REACHABILITY
 		System.out.println("Input operator: " + inputOperator);
 		switch (inputOperator) {
@@ -165,11 +165,11 @@ public class Muse {
 		CompilationUnit newRoot;
 		switch (operatorType) {
 		case SINK:
-			SourceSchema sourceSchema_s = new SourceSchema();
-			root.accept(sourceSchema_s);
-			SourceOperator sourceOperator_s = new SourceOperator(rewriter, sourceSchema_s.getNodeChanges());
-			rewriter = sourceOperator_s.InsertChanges();
-			applyChangesToFile(file, source, rewriter);
+			//SourceSchema sourceSchema_s = new SourceSchema();
+			//root.accept(sourceSchema_s);
+			//SourceOperator sourceOperator_s = new SourceOperator(rewriter, sourceSchema_s.getNodeChanges());
+			//rewriter = sourceOperator_s.InsertChanges();
+			//applyChangesToFile(file, source, rewriter);
 			String sink_temp_file_path = "test/temp/temp_file.java";
 			temp_file = new File(sink_temp_file_path);
 			tempFileWriter(root, rewriter, source, temp_file);
