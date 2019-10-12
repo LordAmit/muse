@@ -68,7 +68,7 @@ public class Arguments {
 	 * @return the folder that contains the binaries related to lib4ast
 	 */
 	public static String getBinariesFolder() {
-        binariesFolder = "E:\\Documents\\GitHub\\MDroidPlus\\libs4ast";
+        binariesFolder = "C:\\Users\\moram\\Documents\\MDroidPlus\\libs4ast";
 		return binariesFolder;
 	}
 
