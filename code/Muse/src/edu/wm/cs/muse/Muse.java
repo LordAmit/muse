@@ -165,6 +165,7 @@ public class Muse {
 		CompilationUnit newRoot;
 		switch (operatorType) {
 		case SINK:
+			//TODO change the test file to a black class instead of a class that already includes the sources
 			//SourceSchema sourceSchema_s = new SourceSchema();
 			//root.accept(sourceSchema_s);
 			//SourceOperator sourceOperator_s = new SourceOperator(rewriter, sourceSchema_s.getNodeChanges());
@@ -180,6 +181,7 @@ public class Muse {
 			root = newRoot;
 			source = newSource;
 			rewriter = ASTRewrite.create(root.getAST());
+			
 			SinkSchema sinkSchema = new SinkSchema();
 			root.accept(sinkSchema);
 			SinkOperator sinkOperator = new SinkOperator(rewriter, sinkSchema.getNodeChanges());
