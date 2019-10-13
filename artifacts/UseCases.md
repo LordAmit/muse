@@ -2,7 +2,7 @@
 *Basically a document that team members can use to get up to speed. Includes basic use case for Muse and details description.*
 
 
-## Muse Purpose:
+## Muse Purpose
 The overall purpose of Muse is to mutate android application source code and then use this mutated source code to check the soundness of static analysis tools. Tools that claim to be able to recognize these mutations should be able to recognize mutations in the outputted code Muse creates. If some leaks are not  recognized, then the analysis tool needs to be patched.
 
 ## Basic Use Case
