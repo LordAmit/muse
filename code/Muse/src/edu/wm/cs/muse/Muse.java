@@ -165,12 +165,11 @@ public class Muse {
 		CompilationUnit newRoot;
 		switch (operatorType) {
 		case SINK:
-			//TODO change the test file to a black class instead of a class that already includes the sources
-			//SourceSchema sourceSchema_s = new SourceSchema();
-			//root.accept(sourceSchema_s);
-			//SourceOperator sourceOperator_s = new SourceOperator(rewriter, sourceSchema_s.getNodeChanges());
-			//rewriter = sourceOperator_s.InsertChanges();
-			//applyChangesToFile(file, source, rewriter);
+			SourceSchema sourceSchema_s = new SourceSchema();
+			root.accept(sourceSchema_s);
+			SourceOperator sourceOperator_s = new SourceOperator(rewriter, sourceSchema_s.getNodeChanges());
+			rewriter = sourceOperator_s.InsertChanges();
+			applyChangesToFile(file, source, rewriter);
 			String sink_temp_file_path = "test/temp/temp_file.java";
 			temp_file = new File(sink_temp_file_path);
 			tempFileWriter(root, rewriter, source, temp_file);

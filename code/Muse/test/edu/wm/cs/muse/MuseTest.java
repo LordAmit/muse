@@ -154,7 +154,7 @@ public class MuseTest {
 			// the input for the sink test is the output from the source operator
 			// this is because the sink operator relies on sources already being inserted in
 			// the code base
-			content = FileUtility.readSourceFile("test/output/sample_hello_world_source.txt").toString();
+			content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
 			expectedOutput = new File("test/output/sample_hello_world_sink.txt");
 			break;
 
