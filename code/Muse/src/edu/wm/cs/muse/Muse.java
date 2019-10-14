@@ -94,7 +94,7 @@ public class Muse {
 		}
 	}
 
-	private OperatorType getOperatorType(String inputOperator) {
+	protected OperatorType getOperatorType(String inputOperator) {
 		// SOURCE, SINK, TAINT, TAINTSINK and REACHABILITY
 		System.out.println("Input operator: " + inputOperator);
 		switch (inputOperator) {
@@ -180,6 +180,7 @@ public class Muse {
 			root = newRoot;
 			source = newSource;
 			rewriter = ASTRewrite.create(root.getAST());
+			
 			SinkSchema sinkSchema = new SinkSchema();
 			root.accept(sinkSchema);
 			SinkOperator sinkOperator = new SinkOperator(rewriter, sinkSchema.getNodeChanges());

@@ -2,8 +2,10 @@ package edu.wm.cs.muse;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -34,7 +36,7 @@ import edu.wm.cs.muse.dataleak.support.Utility;
 /**
  * Unit test file of Muse.
  * 
- * @author Amit Seal Ami, Liz Weech, Yang Zhang
+ * @author Amit Seal Ami, Liz Weech, Yang Zhang, Scott Murphy
  *
  */
 public class MuseTest {
@@ -56,7 +58,7 @@ public class MuseTest {
 	public void reachability_operation_on_hello_world() throws Exception {
 
 		try {
-			prepare_test_files(OperatorType.REACHABILITY);
+			prepare_test_files(OperatorType.REACHABILITY, 1);
 			execute_muse(OperatorType.REACHABILITY);
 
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
@@ -76,7 +78,7 @@ public class MuseTest {
 	@Test
 	public void source_operation_on_hello_world() {
 		try {
-			prepare_test_files(OperatorType.SOURCE);
+			prepare_test_files(OperatorType.SOURCE, 1);
 			execute_muse(OperatorType.SOURCE);
 
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
@@ -97,7 +99,7 @@ public class MuseTest {
 	public void sink_operation_on_hello_world() {
 
 		try {
-			prepare_test_files(OperatorType.SINK);
+			prepare_test_files(OperatorType.SINK, 1);
 			execute_muse(OperatorType.SINK);
 
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
@@ -116,10 +118,40 @@ public class MuseTest {
 	}
 
 	@Test
+	public void taint_operation_on_hello_world() {
+		try {
+
+			prepare_test_files(OperatorType.TAINT, 1);
+			execute_muse(OperatorType.TAINT);
+			
+			try (BufferedReader br = new BufferedReader(new FileReader(processedOutput))) {
+				String line = null;
+				while ((line = br.readLine()) != null) {
+						System.out.println(line);
+				}
+
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+
+		} catch (MalformedTreeException e) {
+			e.printStackTrace();
+
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+
+		}
+
+	}
+
+	@Test
 	public void taint_operation_on_multi_class() {
 		try {
 
-			prepare_test_files(OperatorType.TAINT);
+			prepare_test_files(OperatorType.TAINT, 2);
 			execute_muse(OperatorType.TAINT);
 
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
@@ -145,7 +177,7 @@ public class MuseTest {
 		processedOutput = output;
 	}
 
-	private void prepare_test_files(OperatorType operator) throws FileNotFoundException, IOException {
+	private void prepare_test_files(OperatorType operator, int test) throws FileNotFoundException, IOException {
 		Utility.COUNTER_GLOBAL = 0;
 		output = new File("test/output/output.txt");
 
@@ -169,13 +201,21 @@ public class MuseTest {
 			break;
 
 		case TAINT:
-			content = FileUtility.readSourceFile("test/input/sample_multilevelclass.txt").toString();
-			expectedOutput = new File("test/output/sample_multilevelclass_taint.txt");
-
+			if (test == 1) {
+				content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
+				expectedOutput = new File("test/output/sample_hello_world_taint.txt");
+			}
+			else if (test == 2) {
+				content = FileUtility.readSourceFile("test/input/sample_multilevelclass.txt").toString();
+				expectedOutput = new File("test/output/sample_multilevelclass_taint.txt");
+			}
+			break;
+			
 		case TAINTSINK:
 			content = FileUtility.readSourceFile("test/input/sample_multilevelclass.txt").toString();
 			expectedOutput = new File("test/output/sample_multilevelclass_taint.txt");
-
+			break;
+			
 		}
 		
 		muse = new Muse();
