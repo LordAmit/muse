@@ -2,10 +2,8 @@ package edu.wm.cs.muse;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -123,16 +121,8 @@ public class MuseTest {
 
 			prepare_test_files(OperatorType.TAINT, 1);
 			execute_muse(OperatorType.TAINT);
-			
-			try (BufferedReader br = new BufferedReader(new FileReader(processedOutput))) {
-				String line = null;
-				while ((line = br.readLine()) != null) {
-						System.out.println(line);
-				}
 
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
-
-			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -186,7 +176,7 @@ public class MuseTest {
 			// the input for the sink test is the output from the source operator
 			// this is because the sink operator relies on sources already being inserted in
 			// the code base
-			content = FileUtility.readSourceFile("test/output/sample_hello_world_source.txt").toString();
+			content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
 			expectedOutput = new File("test/output/sample_hello_world_sink.txt");
 			break;
 
