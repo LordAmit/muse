@@ -31,7 +31,8 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainer
 public class MuseTaintSchemaTest {
 
   public enum ComponentType {
-		STATICMETHOD, SWITCH, TRY, TRYMETHOD, SWITCHMETHOD, PRIVATE, PROTECTED
+		STATICMETHOD, SWITCH, TRY, TRYMETHOD, SWITCHMETHOD, PRIVATE, PROTECTED,
+		ANONYMOUS
 	} 
 	
 	String content = null;
@@ -42,6 +43,10 @@ public class MuseTaintSchemaTest {
 	File processedOutput;
 	TaintSchema taintSchema;
 
+  /*
+   * There is currently not defined behavior for static classes. This test will need 
+   * updating when a behavior is defined.
+   */
   @Test
   public void taint_operation_on_multilevelclass_static() {
     try {      
@@ -185,7 +190,27 @@ public class MuseTaintSchemaTest {
       e.printStackTrace();
     }
   }
-  
+
+  @Test
+  public void taint_operation_on_multilevelclass_anonymous() {
+    try {      
+      prepare_test_files(ComponentType.ANONYMOUS);
+      execute_muse_taint();
+      ArrayList<SourceNodeChangeContainers> taintChanges = taintSchema.getNodeChanges();
+
+      assertEquals(28, taintChanges.size());
+
+    } catch (IOException e) {
+      e.printStackTrace();
+
+    } catch (MalformedTreeException e) {
+      e.printStackTrace();
+
+    } catch (BadLocationException e) {
+      e.printStackTrace();
+    }
+  }
+
   private void execute_muse_taint() throws BadLocationException, MalformedTreeException, IOException {
 	taintSchema = new TaintSchema();
     rewriter = ASTRewrite.create(root.getAST());
@@ -225,7 +250,11 @@ public class MuseTaintSchemaTest {
     case PROTECTED:
         content = FileUtility.readSourceFile("test/input/taint_sample_protected_multilevelclass.txt").toString();
         break;
-    }
+        
+    case ANONYMOUS:
+        content = FileUtility.readSourceFile("test/input/taint_sample_anonymous_multilevelclass.txt").toString();
+        break;
+	}
 
     muse = new Muse();
 		root = getTestAST(content);
