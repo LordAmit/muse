@@ -12,11 +12,11 @@ public class MainActivity extends AppCompatActivity {
 
     int intB = 0;
 
-switch(intb)
-{
-case 0:
-break;
-}	
+	switch(intb) {
+		case 0:
+		break;
+	}	
+		
     int methodB() {
         return 0;
     }

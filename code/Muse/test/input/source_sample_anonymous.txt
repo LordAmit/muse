@@ -3,10 +3,10 @@ package com.example.amit.helloworld;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {	
     int intA = 0;
 
-    static int methodA() {
+    int methodA() {
         return 1;
     }
 
@@ -16,10 +16,16 @@ public class MainActivity extends AppCompatActivity {
         return 0;
     }
 
+	Anonymous anonClass = new Anonymous() {
+   		public int methodC() {
+       		return 0;
+    	}
+	};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+		
         this.intA = 1;
         this.methodA();
         this.intB = 2;

@@ -6,7 +6,7 @@ import android.os.Bundle;
 public class MainActivity extends AppCompatActivity {
     int intA = 0;
 
-    static int methodA() {
+    int methodA() {
         return 1;
     }
 
@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        this(onCreate(savedInstanceState));
 
         this.intA = 1;
         this.methodA();
