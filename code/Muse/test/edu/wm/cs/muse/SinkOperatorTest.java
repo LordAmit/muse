@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.junit.Before;
 import org.junit.Test;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -16,21 +17,17 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.Block;
 
 import edu.wm.cs.muse.dataleak.operators.SinkOperator;
-import edu.wm.cs.muse.dataleak.operators.TaintOperator;
 import edu.wm.cs.muse.dataleak.schemas.SinkSchema;
-import edu.wm.cs.muse.dataleak.schemas.TaintSchema;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
-import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;
-import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers.INSERTION_TYPE;
 import edu.wm.cs.muse.mdroid.ASTHelper;
 
 /**
  * 
  * @author Scott Murphy
  * 
- * Test class to test functonality of the Sink Operator
+ *   Test class to test functionality of the Sink Operator
  */
 
 public class SinkOperatorTest {
@@ -44,76 +41,140 @@ public class SinkOperatorTest {
 	private SinkOperator sinkOperator;
 	private SinkSchema sinkSchema;
 	private SinkNodeChangeContainers container;
-  
 
-  @Before
-  public void init() {
-    try {
-      source = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
-    }
-    catch (IOException e) {
-      System.err.println(String.format("ERROR PROCESSING \"%s\": %s", "test/input/sample_multilevelclass.txt", e.getMessage()));
+	/**
+	 * 
+	 * Sets up rewriter that is used in every test
+	 * Sets up the sinkSchema that will be used to test operator
+	 */
+	@Before
+	public void init() {
+		try {
+			source = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
+		} catch (IOException e) {
+			System.err.println(
+					String.format("ERROR PROCESSING \"%s\": %s", "test/input/sample_multilevelclass.txt", e.getMessage()));
 			return;
+		}
+
+		nodeChanges = new ArrayList<SinkNodeChangeContainers>();
+		root = ASTHelper.getAST(source, Arguments.getBinariesFolder(), Arguments.getRootPath());
+		rewriter = ASTRewrite.create(root.getAST());
+		sinkSchema = new SinkSchema();
+		root.accept(sinkSchema);
     }
 
-    nodeChanges = new ArrayList<SinkNodeChangeContainers>();
-    root = ASTHelper.getAST(source, Arguments.getBinariesFolder(), Arguments.getRootPath());
-	rewriter = ASTRewrite.create(root.getAST());
-	sinkSchema = new SinkSchema();
-	root.accept(sinkSchema);
-  }
-  
-  /*
-  @Test
-  public void insertion_at_null_declaration_node() {
-		//create a null container with declaration insertion type
-		SinkNodeChangeContainers nullDeclarationNode = new SinkNodeChangeContainers(node, 0, 0, Block.STATEMENTS_PROPERTY, method, 2);
-		nodeChanges.add(nullDeclarationNode);
+	/**
+	 * Test case: Verifies the behavior of the operator when given a single node change with
+	 * a declaration insertion type. Inserting sink
+	 * 
+	 * Method under test: InsertChanges(), insertSink()
+	 * 
+	 * Correct behavior: A single change should be inserted at the first available position
+	 */
+	@Test
+	public void insert_sink_declaration_nodeChange() {
+		nodeChanges.add(createNodeChanges("int methodA(){", 0, 1));
 		sinkOperator = new SinkOperator(rewriter, nodeChanges);
 		String output = sinkOperator.InsertChanges().toString();
-		System.out.println(output);
-		//check that the returned rewriter is  equal to the original rewriter
-		//assertEquals(rewriter.toString(),output);
+		// accesses the first output line where an insertion should occur
+		String outputAtInsertion = output.split("\\n")[4];
+
+		// first insertion point should reflect insertion
+		String expectedOutput = "	 [inserted: ;";
+		assertEquals(expectedOutput, outputAtInsertion);
+    }
+    
+    /**
+	 * Test case: Verifies the behavior of the operator when given a single node change with
+	 * a declaration insertion type. Inserting sink
+	 * 
+	 * Method under test: InsertChanges(), insertSink()
+	 * 
+	 * Correct behavior: A single change should be inserted at the first available position
+	 */
+	@Test
+	public void insert_source_declaration_nodeChange() {
+		nodeChanges.add(createNodeChanges("int methodA(){", 1, 1));
+		sinkOperator = new SinkOperator(rewriter, nodeChanges);
+		String output = sinkOperator.InsertChanges().toString();
+		// accesses the first output line where an insertion should occur
+		String outputAtInsertion = output.split("\\n")[4];
+
+		// first insertion point should reflect insertion
+		String expectedOutput = "	 [inserted: ;";
+		assertEquals(expectedOutput, outputAtInsertion);
 	}
-	*/
-  
-  @Test
-	public void insert_declaration_nodeChange() {
-		nodeChanges.add(createNodeChanges("int methodA(){", 0));	
+
+	/**
+	 * Test case: Verifies the behavior of the operator when given a single node change with
+	 * a method body insertion type. Inserting sink
+	 * 
+	 * Method under test: InsertChanges(), insertSink()
+	 * 
+	 * Correct behavior: A single change should be inserted at the first available position
+	 */
+	@Test
+	public void insert_methodBody_nodeChange() {
+		nodeChanges.add(createNodeChanges("return 1;", 0, 1));	
 		sinkOperator = new SinkOperator(rewriter, nodeChanges);
 		String output = sinkOperator.InsertChanges().toString();
 		//accesses the first output line where an insertion should occur
-		String outputAtInsertion = output.split("\\n")[4];
-		
+		String outputAtInsertion = output.split("\\n")[5];
+
 		//first insertion point should reflect insertion
 		String expectedOutput = "	 [inserted: ;";
 		assertEquals(expectedOutput, outputAtInsertion);
 	}
 
-
-
-  	/**
-	 * This method creates a single node change to be passed to the operator. 
+	/**
+	 * This method creates a single node change to be passed to the operator.
 	 * 
-	 * @param inputString: the string that will passed to the parser as a source
+	 * @param inputString:   the string that will passed to the parser as a source
 	 * @param insertionType: either METHOD_BODY or DECLARATION description
-	 * @return a new SourceNodeChangeContainers containing the block and insertion type
+	 * @return a new SourceNodeChangeContainers containing the block and insertion
+	 *         type
 	 */
-	private SinkNodeChangeContainers createNodeChanges(String inputString, int insertionType) {
+	private SinkNodeChangeContainers createNodeChanges(String inputString, int insertionType, int propertyFlag) {
+		SinkNodeChangeContainers newContainer = null;
+		
 		AST testAST = root.getAST();
-		//create a temporary parser to generate an AST from the test input
-	    ASTParser tempParser = ASTParser.newParser(AST.JLS8);
-	    //set the content for the method body from the test input
-	    tempParser.setSource(inputString.toCharArray());
-	    tempParser.setKind(ASTParser.K_STATEMENTS);
-	    tempParser.setResolveBindings(true);
-	    tempParser.setBindingsRecovery(true);
-	    ASTNode block = tempParser.createAST(new NullProgressMonitor());
-	    block = ASTNode.copySubtree(testAST, block);
-	    //create a new container with the test input and insertion type
-		SinkNodeChangeContainers newContainer = new SinkNodeChangeContainers(block, 0, 0, Block.STATEMENTS_PROPERTY, block, insertionType);
+		
+		MethodDeclaration methodDeclaration = createMethodDeclaration(testAST);
+
+		// create a temporary parser to generate an AST from the test input
+		ASTParser tempParser = ASTParser.newParser(AST.JLS8);
+		// set the content for the method body from the test input
+		tempParser.setSource(inputString.toCharArray());
+		tempParser.setKind(ASTParser.K_STATEMENTS);
+		tempParser.setResolveBindings(true);
+		tempParser.setBindingsRecovery(true);
+		Block block = (Block) tempParser.createAST(new NullProgressMonitor());
+		block = (Block) ASTNode.copySubtree(testAST, block);
+		methodDeclaration.setBody(block);
+
+        // create a new container with the test input and insertion type
+        if (propertyFlag == 1) {
+            newContainer = new SinkNodeChangeContainers(block, 0, 0, Block.STATEMENTS_PROPERTY, methodDeclaration, insertionType);
+        }
+        else { //not currently used, here for future use potentially
+            newContainer = new SinkNodeChangeContainers(block, 0, 0, null, methodDeclaration, insertionType);
+        }
+            
 		System.out.println(block.toString());
 		return newContainer;
+	}
+	
+	private MethodDeclaration createMethodDeclaration(AST testAST) {
+		TypeDeclaration typeDeclaration = testAST.newTypeDeclaration();
+		typeDeclaration.setName(testAST.newSimpleName("ClassName"));
+		CompilationUnit compilationUnit = testAST.newCompilationUnit();
+		compilationUnit.types().add(typeDeclaration);
+		MethodDeclaration method = compilationUnit.getAST().newMethodDeclaration();
+		method.setName(testAST.newSimpleName("MethodName"));
+		typeDeclaration.bodyDeclarations().add(method);
+		
+		return method;
 	}
 
 }
