@@ -1,0 +1,14 @@
+Notes for 10/16/2019
+
+complex reachability
+reachability
+source -> taint source
+sink -> taint sink
+taint -> scope source
+taintsink -> scope sink
+
+methods can also be placed in enums and other things
+look into where methods can be placed and test those
+
+look in ast helper and see where things can be added
+look into JDK 12
