@@ -94,7 +94,7 @@ public class Muse {
 		}
 	}
 
-	protected OperatorType getOperatorType(String inputOperator) {
+	private OperatorType getOperatorType(String inputOperator) {
 		// SOURCE, SINK, TAINT, TAINTSINK and REACHABILITY
 		System.out.println("Input operator: " + inputOperator);
 		switch (inputOperator) {
