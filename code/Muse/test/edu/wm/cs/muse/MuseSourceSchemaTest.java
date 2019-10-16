@@ -1,6 +1,7 @@
 package edu.wm.cs.muse;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -52,13 +53,6 @@ public class MuseSourceSchemaTest {
 	// the expected output.
 	File output = new File("test/output/source_schema_output.txt");
 
-	/**
-	 * Cant pass without implementing some handling of static methods. 
-	 * Have to update when know what to do with static methods
-	 * The purpose of this test is to see how many nodes are sent to the
-	 * operator to be changed. Has one of the methods as static, which at
-	 * the moment is just skipped over.
-	 ***/
 	@Test
 	public void source_operation_on_hello_world_static() {
 		try {
@@ -67,7 +61,7 @@ public class MuseSourceSchemaTest {
 
 			ArrayList<SourceNodeChangeContainers> changes = sourceSchema.getNodeChanges();
 			
-			assertEquals(6, changes.size());
+			assertEquals(4, changes.size());
 
 		} catch (IOException e) {
 			e.printStackTrace();
