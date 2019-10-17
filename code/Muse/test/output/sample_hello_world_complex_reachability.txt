@@ -4,57 +4,34 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
-    String dataLeAk2 = "";
-
-	String dataLeAk1 = "";
-
-	String dataLeAk0 = "";
-
-	String dataLeAk2 = "";
-
-	String dataLeAk1 = "";
-
-	String dataLeAk0 = "";
-
-	int intA = 0;
+    int intA = 0;
 
     int methodA() {
-        dataLeAk0 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
-		dataLeAk0 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
-		android.util.Log.d("leak-0-1", dataLeAk0);
-		android.util.Log.d("leak-1-1", dataLeAk1);
-		android.util.Log.d("leak-2-1", dataLeAk2);
-		android.util.Log.d("leak-0-0", dataLeAk0);
-		android.util.Log.d("leak-1-0", dataLeAk1);
-		android.util.Log.d("leak-2-0", dataLeAk2);
+        String dataLeAk0 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+		String[] leakArRay0 = new String[] {"n/a", dataLeAk0};
+		String dataLeAkPath0 = leakArRay0[leakArRay0.length - 1];
+		android.util.Log.d("leak-0", dataLeAkPath0);
 		return 1;
     }
 
     int intB = 0;
 
     int methodB() {
-        dataLeAk1 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
-		dataLeAk1 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
-		android.util.Log.d("leak-0-3", dataLeAk0);
-		android.util.Log.d("leak-1-3", dataLeAk1);
-		android.util.Log.d("leak-2-3", dataLeAk2);
-		android.util.Log.d("leak-0-2", dataLeAk0);
-		android.util.Log.d("leak-1-2", dataLeAk1);
-		android.util.Log.d("leak-2-2", dataLeAk2);
+        String dataLeAk1 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+		java.util.HashMap<String, java.util.HashMap<String, String>> leakMaP1 = new java.util.HashMap<String, java.util.HashMap<String, String>>();
+		leakMaP1.put("test", new java.util.HashMap<String, String>());
+		leakMaP1.get("test").put("test", dataLeAk1);
+		String dataLeAkPath1 = leakMaP1.get("test").get("test");
+		android.util.Log.d("leak-1", dataLeAkPath1);
 		return 0;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		dataLeAk2 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
-		dataLeAk2 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
-		android.util.Log.d("leak-0-5", dataLeAk0);
-		android.util.Log.d("leak-1-5", dataLeAk1);
-		android.util.Log.d("leak-2-5", dataLeAk2);
-		android.util.Log.d("leak-0-4", dataLeAk0);
-		android.util.Log.d("leak-1-4", dataLeAk1);
-		android.util.Log.d("leak-2-4", dataLeAk2);
+		String dataLeAk2 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+		StringBuffer leakBuFFer2 = new StringBuffer();for (char chAr2 : dataLeAk2.toCharArray()) {leakBuFFer2.append(chAr2);}String dataLeAkPath2 = leakBuFFer2.toString();
+		android.util.Log.d("leak-2", dataLeAkPath2);
 
         this.intA = 1;
         this.methodA();
