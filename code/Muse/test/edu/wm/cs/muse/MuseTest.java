@@ -2,8 +2,10 @@ package edu.wm.cs.muse;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -73,6 +75,28 @@ public class MuseTest {
 		}
 	}
 
+	@Test
+	public void complex_reachability_operation_on_multi_class() {
+		try {
+
+			prepare_test_files(OperatorType.COMPLEXREACHABILITY, 1);
+			execute_muse(OperatorType.COMPLEXREACHABILITY);
+			
+			
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+
+		} catch (MalformedTreeException e) {
+			e.printStackTrace();
+
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+
+		}
+	}
+	
 	@Test
 	public void source_operation_on_hello_world() {
 		try {
@@ -158,6 +182,26 @@ public class MuseTest {
 		}
 
 	}
+	
+	@Test
+	public void taint_sink_operation_on_multi_class() {
+		try {
+			prepare_test_files(OperatorType.TAINTSINK, 1);
+			execute_muse(OperatorType.TAINTSINK);
+			
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+
+		} catch (MalformedTreeException e) {
+			e.printStackTrace();
+
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+
+		}
+	}
 
 	private void execute_muse(OperatorType operator) throws BadLocationException, MalformedTreeException, IOException {
 		rewriter = ASTRewrite.create(root.getAST());
@@ -184,7 +228,12 @@ public class MuseTest {
 			content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
 			expectedOutput = new File("test/output/sample_hello_world_reachability.txt");
 			break;
-
+			
+		case COMPLEXREACHABILITY:
+			content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
+			expectedOutput = new File("test/output/sample_hello_world_complex_reachability.txt");
+			break;
+			
 		case SOURCE:
 			content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
 			expectedOutput = new File("test/output/sample_hello_world_source.txt");
@@ -203,7 +252,7 @@ public class MuseTest {
 			
 		case TAINTSINK:
 			content = FileUtility.readSourceFile("test/input/sample_multilevelclass.txt").toString();
-			expectedOutput = new File("test/output/sample_multilevelclass_taint.txt");
+			expectedOutput = new File("test/output/sample_multilevelclass_taint_sink.txt");
 			break;
 			
 		}
