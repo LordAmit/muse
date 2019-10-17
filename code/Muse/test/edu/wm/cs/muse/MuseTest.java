@@ -76,6 +76,28 @@ public class MuseTest {
 	}
 
 	@Test
+	public void complex_reachability_operation_on_multi_class() {
+		try {
+
+			prepare_test_files(OperatorType.COMPLEXREACHABILITY, 1);
+			execute_muse(OperatorType.COMPLEXREACHABILITY);
+			
+			
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+
+		} catch (MalformedTreeException e) {
+			e.printStackTrace();
+
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+
+		}
+	}
+	
+	@Test
 	public void source_operation_on_hello_world() {
 		try {
 			prepare_test_files(OperatorType.SOURCE, 1);
@@ -213,7 +235,12 @@ public class MuseTest {
 			content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
 			expectedOutput = new File("test/output/sample_hello_world_reachability.txt");
 			break;
-
+			
+		case COMPLEXREACHABILITY:
+			content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
+			expectedOutput = new File("test/output/sample_hello_world_complex_reachability.txt");
+			break;
+			
 		case SOURCE:
 			content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
 			expectedOutput = new File("test/output/sample_hello_world_source.txt");
