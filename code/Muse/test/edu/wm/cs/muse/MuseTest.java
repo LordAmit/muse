@@ -189,13 +189,6 @@ public class MuseTest {
 			prepare_test_files(OperatorType.TAINTSINK, 1);
 			execute_muse(OperatorType.TAINTSINK);
 			
-			try (BufferedReader br = new BufferedReader(new FileReader(processedOutput))) {
-				   String line = null;
-				   while ((line = br.readLine()) != null) {
-				       System.out.println(line);
-				   }
-				}
-			
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 			
 		} catch (IOException e) {
