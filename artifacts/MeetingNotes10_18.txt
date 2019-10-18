@@ -1,0 +1,36 @@
+JDK 8
+	Change exception type to JDK 11 & 12
+Run on android source folders
+	pass src folder to muse and have it move to different directory
+	figure when muse breaks compilation
+	javac check compilability
+	use other libraries for non-standard libraries
+		put libraries for android in common app library
+		automation
+			
+Update documentation
+Manual analysis for sprint 3
+Prepare automated clean up for sprint 4
+muse/log/loganalyser – removes non executable sinks
+amit will provide log files
+
+Tasks:
+	Identify corner case
+	View leaks
+
+
+muse accepts 3 arguments (some mandatory for different inputs)
+	source code
+	check compilation (java c or other tool)
+	remove non executable leaks
+
+mutation considerations
+	where
+		compilable vs non combilable
+			
+		executable leak vs non executable leak
+			onStop and onResume
+			execution engine determines if leak is executable
+				use leaks 
+	what
+	
