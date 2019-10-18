@@ -20,8 +20,8 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.junit.Test;
 
-import edu.wm.cs.muse.dataleak.schemas.SourceSchema;
-import edu.wm.cs.muse.dataleak.schemas.SinkSchema;
+import edu.wm.cs.muse.dataleak.schemas.TaintSourceSchema;
+import edu.wm.cs.muse.dataleak.schemas.TaintSinkSchema;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
@@ -34,7 +34,7 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
  * All sink schemas run with 3 data leaks already in place
  */
 
-public class MuseSinkSchemaTest {
+public class TaintSinkSchemaTest {
 
   public enum ComponentType {
 		STATICMETHOD, SWITCH, TRY, TRYMETHOD, SWITCHMETHOD
@@ -46,7 +46,7 @@ public class MuseSinkSchemaTest {
 	ASTRewrite rewriter;
 	TextEdit edits;
 	File processedOutput;
-	SinkSchema sinkSchema;
+	TaintSinkSchema taintSinkSchema;
 
 
   @Test
@@ -54,7 +54,7 @@ public class MuseSinkSchemaTest {
     try {      
       prepare_test_files(ComponentType.STATICMETHOD);
       execute_muse_sink();
-      ArrayList<SinkNodeChangeContainers> sinkChanges = sinkSchema.getNodeChanges();
+      ArrayList<SinkNodeChangeContainers> sinkChanges = taintSinkSchema.getNodeChanges();
 
       assertEquals(6, sinkChanges.size());
       
@@ -75,7 +75,7 @@ public class MuseSinkSchemaTest {
     try {      
       prepare_test_files(ComponentType.SWITCH);
       execute_muse_sink();
-      ArrayList<SinkNodeChangeContainers> sinkChanges = sinkSchema.getNodeChanges();
+      ArrayList<SinkNodeChangeContainers> sinkChanges = taintSinkSchema.getNodeChanges();
 
       assertEquals(9, sinkChanges.size());
 
@@ -96,7 +96,7 @@ public class MuseSinkSchemaTest {
     try {      
       prepare_test_files(ComponentType.TRY);
       execute_muse_sink();
-      ArrayList<SinkNodeChangeContainers> sinkChanges = sinkSchema.getNodeChanges();
+      ArrayList<SinkNodeChangeContainers> sinkChanges = taintSinkSchema.getNodeChanges();
 
       assertEquals(9, sinkChanges.size());
 
@@ -117,7 +117,7 @@ public class MuseSinkSchemaTest {
     try {      
       prepare_test_files(ComponentType.TRYMETHOD);
       execute_muse_sink();
-      ArrayList<SinkNodeChangeContainers> sinkChanges = sinkSchema.getNodeChanges();
+      ArrayList<SinkNodeChangeContainers> sinkChanges = taintSinkSchema.getNodeChanges();
 
       assertEquals(12, sinkChanges.size());
 
@@ -138,7 +138,7 @@ public class MuseSinkSchemaTest {
     try {      
       prepare_test_files(ComponentType.SWITCHMETHOD);
       execute_muse_sink();
-      ArrayList<SinkNodeChangeContainers> sinkChanges = sinkSchema.getNodeChanges();
+      ArrayList<SinkNodeChangeContainers> sinkChanges = taintSinkSchema.getNodeChanges();
 
       assertEquals(15, sinkChanges.size());
 
@@ -155,10 +155,10 @@ public class MuseSinkSchemaTest {
   }
 
   private void execute_muse_sink() throws BadLocationException, MalformedTreeException, IOException {
-    sinkSchema = new SinkSchema();
+    taintSinkSchema = new TaintSinkSchema();
     rewriter = ASTRewrite.create(root.getAST());
   
-    root.accept(sinkSchema);
+    root.accept(taintSinkSchema);
   }
 
   private void prepare_test_files(ComponentType component) throws FileNotFoundException, IOException {

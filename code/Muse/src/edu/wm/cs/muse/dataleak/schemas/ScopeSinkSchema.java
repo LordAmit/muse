@@ -22,7 +22,7 @@ import edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers
  * @author Yang Zhang
  */
 
-public class TaintSinkSchema extends ASTVisitor {
+public class ScopeSinkSchema extends ASTVisitor {
 	ASTNode parent;
 	ASTNode classRetainer = null;
 	private ArrayList<TaintNodeChangeContainers> taintNodeChanges;
@@ -32,7 +32,7 @@ public class TaintSinkSchema extends ASTVisitor {
 	ArrayList<FieldDeclaration> fieldHolder = new ArrayList<FieldDeclaration>();
 	ArrayList<FieldDeclaration> previousFieldHolder = new ArrayList<FieldDeclaration>();
 
-	public TaintSinkSchema() {
+	public ScopeSinkSchema() {
 		taintNodeChanges = new ArrayList<TaintNodeChangeContainers>();
 		nodeChanges = new ArrayList<SinkNodeChangeContainers>();
 	}

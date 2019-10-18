@@ -24,11 +24,11 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
  * @author Yang Zhang
  */
 
-public class SinkSchema extends ASTVisitor {
+public class TaintSinkSchema extends ASTVisitor {
 
 	private ArrayList<SinkNodeChangeContainers> nodeChanges;
 
-	public SinkSchema() {
+	public TaintSinkSchema() {
 		nodeChanges = new ArrayList<SinkNodeChangeContainers>();
 	}
 

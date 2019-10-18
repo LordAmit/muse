@@ -21,12 +21,12 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainer
  * @author Yang Zhang
  */
 
-public class SourceOperator {
+public class TaintSourceOperator {
 
 	ArrayList<SourceNodeChangeContainers> nodeChanges;
 	ASTRewrite rewriter;
 
-	public SourceOperator(ASTRewrite rewriter, ArrayList<SourceNodeChangeContainers> nodeChanges) {
+	public TaintSourceOperator(ASTRewrite rewriter, ArrayList<SourceNodeChangeContainers> nodeChanges) {
 		this.rewriter = rewriter;
 		this.nodeChanges = nodeChanges;
 	}

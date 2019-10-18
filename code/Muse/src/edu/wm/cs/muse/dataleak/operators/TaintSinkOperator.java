@@ -19,16 +19,16 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
  * @author Yang Zhang
  */
 
-public class SinkOperator {
+public class TaintSinkOperator {
 	ArrayList<SinkNodeChangeContainers> nodeChanges;
 	ASTRewrite rewriter;
 	HashMap<Integer, Integer> repeatCounts = new HashMap<Integer, Integer>();
 
-	public SinkOperator(ASTRewrite rewriter) {
+	public TaintSinkOperator(ASTRewrite rewriter) {
 		this.rewriter = rewriter;
 	}
 	
-	public SinkOperator(ASTRewrite rewriter, ArrayList<SinkNodeChangeContainers> nodeChanges) {
+	public TaintSinkOperator(ASTRewrite rewriter, ArrayList<SinkNodeChangeContainers> nodeChanges) {
 		this.rewriter = rewriter;
 		this.nodeChanges = nodeChanges;
 	}

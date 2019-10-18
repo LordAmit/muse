@@ -21,13 +21,13 @@ import edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers
  * 
  * @author Yang Zhang, Amit Seal Ami
  */
-public class TaintSinkOperator {
+public class ScopeSinkOperator {
 
 	ArrayList<TaintNodeChangeContainers> fieldChanges;
 	ArrayList<SinkNodeChangeContainers> methodChanges;
 	ASTRewrite rewriter;
 
-	public TaintSinkOperator(ASTRewrite rewriter, ArrayList<TaintNodeChangeContainers> fieldChanges,
+	public ScopeSinkOperator(ASTRewrite rewriter, ArrayList<TaintNodeChangeContainers> fieldChanges,
 			ArrayList<SinkNodeChangeContainers> methodChanges) {
 		this.rewriter = rewriter;
 		this.fieldChanges = fieldChanges;

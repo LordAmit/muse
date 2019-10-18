@@ -16,16 +16,16 @@ import org.eclipse.text.edits.TextEdit;
 
 import edu.wm.cs.muse.dataleak.operators.ComplexReachability;
 import edu.wm.cs.muse.dataleak.operators.ReachabilityOperator;
-import edu.wm.cs.muse.dataleak.operators.SinkOperator;
-import edu.wm.cs.muse.dataleak.operators.SourceOperator;
-import edu.wm.cs.muse.dataleak.operators.TaintOperator;
 import edu.wm.cs.muse.dataleak.operators.TaintSinkOperator;
+import edu.wm.cs.muse.dataleak.operators.TaintSourceOperator;
+import edu.wm.cs.muse.dataleak.operators.ScopeSourceOperator;
+import edu.wm.cs.muse.dataleak.operators.ScopeSinkOperator;
 import edu.wm.cs.muse.dataleak.schemas.ComplexReachabilitySchema;
 import edu.wm.cs.muse.dataleak.schemas.ReachabilitySchema;
-import edu.wm.cs.muse.dataleak.schemas.SinkSchema;
-import edu.wm.cs.muse.dataleak.schemas.SourceSchema;
-import edu.wm.cs.muse.dataleak.schemas.TaintSchema;
 import edu.wm.cs.muse.dataleak.schemas.TaintSinkSchema;
+import edu.wm.cs.muse.dataleak.schemas.TaintSourceSchema;
+import edu.wm.cs.muse.dataleak.schemas.ScopeSourceSchema;
+import edu.wm.cs.muse.dataleak.schemas.ScopeSinkSchema;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
@@ -165,9 +165,9 @@ public class Muse {
 		CompilationUnit newRoot;
 		switch (operatorType) {
 		case SINK:
-			SourceSchema sourceSchema_s = new SourceSchema();
+			TaintSourceSchema sourceSchema_s = new TaintSourceSchema();
 			root.accept(sourceSchema_s);
-			SourceOperator sourceOperator_s = new SourceOperator(rewriter, sourceSchema_s.getNodeChanges());
+			TaintSourceOperator sourceOperator_s = new TaintSourceOperator(rewriter, sourceSchema_s.getNodeChanges());
 			rewriter = sourceOperator_s.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			String sink_temp_file_path = "test/temp/temp_file.java";
@@ -181,19 +181,19 @@ public class Muse {
 			source = newSource;
 			rewriter = ASTRewrite.create(root.getAST());
 			
-			SinkSchema sinkSchema = new SinkSchema();
-			root.accept(sinkSchema);
-			SinkOperator sinkOperator = new SinkOperator(rewriter, sinkSchema.getNodeChanges());
-			rewriter = sinkOperator.InsertChanges();
+			TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
+			root.accept(taintSinkSchema);
+			TaintSinkOperator taintSinkOperator = new TaintSinkOperator(rewriter, taintSinkSchema.getNodeChanges());
+			rewriter = taintSinkOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			Files.delete(temp_file.toPath());
 			break;
 
 		case SOURCE:
-			SourceSchema sourceSchema = new SourceSchema();
-			root.accept(sourceSchema);
-			SourceOperator sourceOperator = new SourceOperator(rewriter, sourceSchema.getNodeChanges());
-			rewriter = sourceOperator.InsertChanges();
+			TaintSourceSchema taintSourceSchema = new TaintSourceSchema();
+			root.accept(taintSourceSchema);
+			TaintSourceOperator taintSourceOperator = new TaintSourceOperator(rewriter, taintSourceSchema.getNodeChanges());
+			rewriter = taintSourceOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			break;
 
@@ -207,17 +207,17 @@ public class Muse {
 			break;
 
 		case TAINT:
-			TaintSchema taintSchema = new TaintSchema();
-			root.accept(taintSchema);
-			TaintOperator taintOperator = new TaintOperator(rewriter, taintSchema.getNodeChanges());
-			rewriter = taintOperator.InsertChanges();
+			ScopeSourceSchema scopeSourceSchema = new ScopeSourceSchema();
+			root.accept(scopeSourceSchema);
+			ScopeSourceOperator scopeSourceOperator = new ScopeSourceOperator(rewriter, scopeSourceSchema.getNodeChanges());
+			rewriter = scopeSourceOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			break;
 
 		case TAINTSINK:
-			TaintSchema taintSchema_ts = new TaintSchema();
+			ScopeSourceSchema taintSchema_ts = new ScopeSourceSchema();
 			root.accept(taintSchema_ts);
-			TaintOperator taintOperator_ts = new TaintOperator(rewriter, taintSchema_ts.getNodeChanges());
+			ScopeSourceOperator taintOperator_ts = new ScopeSourceOperator(rewriter, taintSchema_ts.getNodeChanges());
 			rewriter = taintOperator_ts.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			String taintsink_temp_file_path = "test/temp/temp_file_taintsink.java";
@@ -231,10 +231,10 @@ public class Muse {
 			source = newSource;
 			rewriter = ASTRewrite.create(root.getAST());
 
-			TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
-			root.accept(taintSinkSchema);
-			TaintSinkOperator operator = new TaintSinkOperator(rewriter, taintSinkSchema.getFieldNodeChanges(),
-					taintSinkSchema.getMethodNodeChanges());
+			ScopeSinkSchema scopeSinkSchema = new ScopeSinkSchema();
+			root.accept(scopeSinkSchema);
+			ScopeSinkOperator operator = new ScopeSinkOperator(rewriter, scopeSinkSchema.getFieldNodeChanges(),
+					scopeSinkSchema.getMethodNodeChanges());
 			rewriter = operator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			Files.delete(temp_file.toPath());

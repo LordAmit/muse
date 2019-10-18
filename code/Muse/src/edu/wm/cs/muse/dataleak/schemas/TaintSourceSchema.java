@@ -20,11 +20,11 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainer
  * @author Yang Zhang
  */
 
-public class SourceSchema extends ASTVisitor {
+public class TaintSourceSchema extends ASTVisitor {
 
 	private ArrayList<SourceNodeChangeContainers> nodeChanges;
 
-	public SourceSchema() {
+	public TaintSourceSchema() {
 		nodeChanges = new ArrayList<SourceNodeChangeContainers>();
 	}
 

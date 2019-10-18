@@ -21,7 +21,7 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.junit.Test;
 
-import edu.wm.cs.muse.dataleak.schemas.SourceSchema;
+import edu.wm.cs.muse.dataleak.schemas.TaintSourceSchema;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.dataleak.support.Utility;
@@ -33,7 +33,7 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainer
  * @author Kyle Gorham
  *
  */
-public class MuseSourceSchemaTest {
+public class TaintSourceSchemaTest {
 
 	public enum ComponentType {
 		STATICMETHOD, SWITCH, TRY, TRYMETHOD, SWITCHMETHOD
@@ -47,7 +47,7 @@ public class MuseSourceSchemaTest {
 	ASTRewrite rewriter;
 	TextEdit edits;
 	File processedOutput;
-	SourceSchema sourceSchema;
+	TaintSourceSchema taintSourceSchema;
 
 	// Muse output is written to this file in each test, and compared to
 	// the expected output.
@@ -59,7 +59,7 @@ public class MuseSourceSchemaTest {
 			prepare_test_files(ComponentType.STATICMETHOD);
 			execute_muse(OperatorType.SOURCE);
 
-			ArrayList<SourceNodeChangeContainers> changes = sourceSchema.getNodeChanges();
+			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
 			assertEquals(4, changes.size());
 
@@ -89,7 +89,7 @@ public class MuseSourceSchemaTest {
 			prepare_test_files(ComponentType.TRY);
 			execute_muse(OperatorType.SOURCE);
 
-			ArrayList<SourceNodeChangeContainers> changes = sourceSchema.getNodeChanges();
+			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
 			assertEquals(6, changes.size());
 			
@@ -116,7 +116,7 @@ public class MuseSourceSchemaTest {
 			prepare_test_files(ComponentType.SWITCH);
 			execute_muse(OperatorType.SOURCE);
 
-			ArrayList<SourceNodeChangeContainers> changes = sourceSchema.getNodeChanges();
+			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
 			assertEquals(6, changes.size());
 			
@@ -144,7 +144,7 @@ public class MuseSourceSchemaTest {
 			prepare_test_files(ComponentType.SWITCHMETHOD);
 			execute_muse(OperatorType.SOURCE);
 
-			ArrayList<SourceNodeChangeContainers> changes = sourceSchema.getNodeChanges();
+			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
 			assertEquals(10, changes.size());
 			
@@ -172,7 +172,7 @@ public class MuseSourceSchemaTest {
 			prepare_test_files(ComponentType.TRYMETHOD);
 			execute_muse(OperatorType.SOURCE);
 
-			ArrayList<SourceNodeChangeContainers> changes = sourceSchema.getNodeChanges();
+			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
 			assertEquals(8, changes.size());
 			
@@ -189,12 +189,12 @@ public class MuseSourceSchemaTest {
 	}
 
 	private void execute_muse(OperatorType operator) throws BadLocationException, MalformedTreeException, IOException {
-		sourceSchema = new SourceSchema();
+		taintSourceSchema = new TaintSourceSchema();
 		rewriter = ASTRewrite.create(root.getAST());
 		sourceDoc = new Document(content);
 		//muse.operatorExecution(root, rewriter, sourceDoc.get(), output, operator);
 		
-		root.accept(sourceSchema);
+		root.accept(taintSourceSchema);
 		processedOutput = output;
 	}
 

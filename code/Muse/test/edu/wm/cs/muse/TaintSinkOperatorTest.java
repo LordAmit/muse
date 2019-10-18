@@ -16,8 +16,8 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.Block;
 
-import edu.wm.cs.muse.dataleak.operators.SinkOperator;
-import edu.wm.cs.muse.dataleak.schemas.SinkSchema;
+import edu.wm.cs.muse.dataleak.operators.TaintSinkOperator;
+import edu.wm.cs.muse.dataleak.schemas.TaintSinkSchema;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
@@ -30,7 +30,7 @@ import edu.wm.cs.muse.mdroid.ASTHelper;
  *   Test class to test functionality of the Sink Operator
  */
 
-public class SinkOperatorTest {
+public class TaintSinkOperatorTest {
 
 	private ASTRewrite rewriter;
 	private String source;
@@ -38,8 +38,8 @@ public class SinkOperatorTest {
 	private MethodDeclaration method;
 	private Block node;
 	private ArrayList<SinkNodeChangeContainers> nodeChanges;
-	private SinkOperator sinkOperator;
-	private SinkSchema sinkSchema;
+	private TaintSinkOperator taintSinkOperator;
+	private TaintSinkSchema taintSinkSchema;
 	private SinkNodeChangeContainers container;
 
 	/**
@@ -60,8 +60,8 @@ public class SinkOperatorTest {
 		nodeChanges = new ArrayList<SinkNodeChangeContainers>();
 		root = ASTHelper.getAST(source, Arguments.getBinariesFolder(), Arguments.getRootPath());
 		rewriter = ASTRewrite.create(root.getAST());
-		sinkSchema = new SinkSchema();
-		root.accept(sinkSchema);
+		taintSinkSchema = new TaintSinkSchema();
+		root.accept(taintSinkSchema);
     }
 
 	/**
@@ -75,8 +75,8 @@ public class SinkOperatorTest {
 	@Test
 	public void insert_sink_declaration_nodeChange() {
 		nodeChanges.add(createNodeChanges("int methodA(){", 0, 1));
-		sinkOperator = new SinkOperator(rewriter, nodeChanges);
-		String output = sinkOperator.InsertChanges().toString();
+		taintSinkOperator = new TaintSinkOperator(rewriter, nodeChanges);
+		String output = taintSinkOperator.InsertChanges().toString();
 		// accesses the first output line where an insertion should occur
 		String outputAtInsertion = output.split("\\n")[4];
 
@@ -96,8 +96,8 @@ public class SinkOperatorTest {
 	@Test
 	public void insert_source_declaration_nodeChange() {
 		nodeChanges.add(createNodeChanges("int methodA(){", 1, 1));
-		sinkOperator = new SinkOperator(rewriter, nodeChanges);
-		String output = sinkOperator.InsertChanges().toString();
+		taintSinkOperator = new TaintSinkOperator(rewriter, nodeChanges);
+		String output = taintSinkOperator.InsertChanges().toString();
 		// accesses the first output line where an insertion should occur
 		String outputAtInsertion = output.split("\\n")[4];
 
@@ -117,8 +117,8 @@ public class SinkOperatorTest {
 	@Test
 	public void insert_methodBody_nodeChange() {
 		nodeChanges.add(createNodeChanges("return 1;", 0, 1));	
-		sinkOperator = new SinkOperator(rewriter, nodeChanges);
-		String output = sinkOperator.InsertChanges().toString();
+		taintSinkOperator = new TaintSinkOperator(rewriter, nodeChanges);
+		String output = taintSinkOperator.InsertChanges().toString();
 		//accesses the first output line where an insertion should occur
 		String outputAtInsertion = output.split("\\n")[5];
 

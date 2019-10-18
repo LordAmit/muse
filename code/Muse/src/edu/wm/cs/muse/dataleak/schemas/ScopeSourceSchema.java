@@ -24,7 +24,7 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainer
  * @author Yang Zhang, Amit Seal Ami
  */
 
-public class TaintSchema extends ASTVisitor {
+public class ScopeSourceSchema extends ASTVisitor {
 	ASTNode parent;
 	private ArrayList<SourceNodeChangeContainers> nodeChanges;
 	int index = 0;
@@ -34,7 +34,7 @@ public class TaintSchema extends ASTVisitor {
 	 * the same time and use the same parameters. The sink aspect will be included
 	 * via the TaintSinkSchema
 	 */
-	public TaintSchema() {
+	public ScopeSourceSchema() {
 		nodeChanges = new ArrayList<SourceNodeChangeContainers>();
 	}
 
