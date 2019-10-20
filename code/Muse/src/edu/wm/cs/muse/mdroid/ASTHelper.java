@@ -59,7 +59,7 @@ public static CompilationUnit getAST(String source, String binariesFolder, Strin
 		}
 		//classPath[i] = "/Users/mariolinares/Documents/liminal/projects/Ferias/FeriasDNP/bin/classes/co/gov/dnp/ferias";
 		String[] sources = {  projectPath };
-		ASTParser parser = ASTParser.newParser(AST.JLS3);
+		ASTParser parser = ASTParser.newParser(AST.JLS8);
 		parser.setSource(source.toCharArray());
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setResolveBindings(true);
