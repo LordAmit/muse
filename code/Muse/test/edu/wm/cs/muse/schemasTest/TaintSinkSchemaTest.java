@@ -1,4 +1,4 @@
-package edu.wm.cs.muse;
+package edu.wm.cs.muse.schemasTest;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,6 +21,7 @@ import org.eclipse.text.edits.TextEdit;
 import org.junit.Test;
 
 import edu.wm.cs.muse.dataleak.schemas.TaintSourceSchema;
+import edu.wm.cs.muse.Muse;
 import edu.wm.cs.muse.dataleak.schemas.TaintSinkSchema;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.Utility;
@@ -166,23 +167,23 @@ public class TaintSinkSchemaTest {
 
     switch (component) {
     case STATICMETHOD:
-      content = FileUtility.readSourceFile("test/input/sink_sample_static_method.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/sink_sample_static_method.txt").toString();
       break;
 
     case SWITCH:
-      content = FileUtility.readSourceFile("test/input/sink_sample_switch.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/sink_sample_switch.txt").toString();
       break;
       
     case SWITCHMETHOD:
-      content = FileUtility.readSourceFile("test/input/sink_sample_switch_method.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/sink_sample_switch_method.txt").toString();
       break;
 
     case TRY:
-      content = FileUtility.readSourceFile("test/input/sink_sample_try.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/sink_sample_try.txt").toString();
       break;
     
     case TRYMETHOD:
-      content = FileUtility.readSourceFile("test/input/sink_sample_try_method.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/sink_sample_try_method.txt").toString();
       break;
     }
 

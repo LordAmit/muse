@@ -1,4 +1,4 @@
-package edu.wm.cs.muse;
+package edu.wm.cs.muse.schemasTest;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,6 +19,7 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.junit.Test;
 
+import edu.wm.cs.muse.Muse;
 import edu.wm.cs.muse.dataleak.schemas.ScopeSourceSchema;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.Utility;
@@ -223,36 +224,36 @@ public class ScopeSourceSchemaTest {
 
     switch (component) {
     case STATICMETHOD:
-    	content = FileUtility.readSourceFile("test/input/taint_sample_static_multilevelclass.txt").toString();
+    	content = FileUtility.readSourceFile("test/input/scopeSourceInput/taint_sample_static_multilevelclass.txt").toString();
     	//content = FileUtility.readSourceFile("test/input/sink_sample_static_method.txt").toString();
       break;
 
     case SWITCH:
-      content = FileUtility.readSourceFile("test/input/taint_sample_switch_multilevelclass.txt").toString();
+      content = FileUtility.readSourceFile("test/input/scopeSourceInput/taint_sample_switch_multilevelclass.txt").toString();
       break;
       
     case SWITCHMETHOD:
-      content = FileUtility.readSourceFile("test/input/taint_sample_switch_method_multilevelclass.txt").toString();
+      content = FileUtility.readSourceFile("test/input/scopeSourceInput/taint_sample_switch_method_multilevelclass.txt").toString();
       break;
 
     case TRY:
-      content = FileUtility.readSourceFile("test/input/taint_sample_try_multilevelclass.txt").toString();
+      content = FileUtility.readSourceFile("test/input/scopeSourceInput/taint_sample_try_multilevelclass.txt").toString();
       break;
     
     case TRYMETHOD:
-      content = FileUtility.readSourceFile("test/input/taint_sample_try_method_multilevelclass.txt").toString();
+      content = FileUtility.readSourceFile("test/input/scopeSourceInput/taint_sample_try_method_multilevelclass.txt").toString();
       break;
       
     case PRIVATE:
-        content = FileUtility.readSourceFile("test/input/taint_sample_private_multilevelclass.txt").toString();
+        content = FileUtility.readSourceFile("test/input/scopeSourceInput/taint_sample_private_multilevelclass.txt").toString();
         break;
         
     case PROTECTED:
-        content = FileUtility.readSourceFile("test/input/taint_sample_protected_multilevelclass.txt").toString();
+        content = FileUtility.readSourceFile("test/input/scopeSourceInput/taint_sample_protected_multilevelclass.txt").toString();
         break;
         
     case ANONYMOUS:
-        content = FileUtility.readSourceFile("test/input/taint_sample_anonymous_multilevelclass.txt").toString();
+        content = FileUtility.readSourceFile("test/input/scopeSourceInput/taint_sample_anonymous_multilevelclass.txt").toString();
         break;
 	}
 
