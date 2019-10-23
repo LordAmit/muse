@@ -78,11 +78,14 @@ public class TaintSourceSchemaTest {
 	
 	
 	/** 
-	 * Is a try catch in the code, checking to make sure the code 
+	 * Test Case: Is a try catch in the code, checking to make sure the code 
 	 * doesn't break if there is one
 	 * The purpose of this test is to see how many nodes are sent to the
 	 * operator to be changed.
-	 * There should still be 6 nodes in changes.
+	 * 
+	 * Method under test: visit
+	 * 
+	 * Correct Behavior: There should still be 6 nodes in changes.
 	 ***/
 	@Test
 	public void source_operation_on_hello_world_try() {
@@ -107,9 +110,12 @@ public class TaintSourceSchemaTest {
 	}
 	
 	/** 
-	 * If there is a switch statement in the code makes sure the program
+	 * Test Case: If there is a switch statement in the code makes sure the program
 	 * will continue to read the file until the end.
-	 * There should be 6 nodes in changes, as there are 3 method declarations
+	 * 
+	 * Method under test: visit
+	 * 
+	 * Correct Behavior: There should be 6 nodes in changes, as there are 3 method declarations
 	 ***/
 	@Test
 	public void source_operation_on_hello_world_switch() {
@@ -134,10 +140,13 @@ public class TaintSourceSchemaTest {
 	}
 	
 	/** 
-	 * Checks to see what happens if there is a method declaration inside
+	 * Test Case: Checks to see what happens if there is a method declaration inside
 	 * a switch statement. The one switch statement has multiple methods
 	 * There should be 10 nodes in changes, as there are 5 method declarations
-	 * 2 methods are inside switch, both should be included
+	 * 
+	 * Method under test: visit
+	 * 
+	 * Correct Behavior: 2 methods are inside switch, both should be included
 	 ***/
 	@Test
 	public void source_operation_on_hello_world_switch_method() {
@@ -162,10 +171,13 @@ public class TaintSourceSchemaTest {
 	}
 	
 	/** 
-	 * Place a method inside the try catch to see if handles correctly
+	 * Test Case: Place a method inside the try catch to see if handles correctly
 	 * The purpose of this test is to see how many nodes are sent to the
 	 * operator to be changed.
-	 * There should still be 8 nodes, as there are 4 method declarations
+	 * 
+	 * Method under test: visit
+	 * 
+	 * Correct Behavior: There should still be 8 nodes, as there are 4 method declarations
 	 ***/
 	@Test
 	public void source_operation_on_hello_world_try_method() {
@@ -189,6 +201,13 @@ public class TaintSourceSchemaTest {
 		}
 	}
 
+	/**
+	 * executes muse
+	 * @param operator
+	 * @throws BadLocationException
+	 * @throws MalformedTreeException
+	 * @throws IOException
+	 */
 	private void execute_muse(OperatorType operator) throws BadLocationException, MalformedTreeException, IOException {
 		taintSourceSchema = new TaintSourceSchema();
 		rewriter = ASTRewrite.create(root.getAST());
