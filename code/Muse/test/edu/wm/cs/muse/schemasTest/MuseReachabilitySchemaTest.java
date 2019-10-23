@@ -69,6 +69,13 @@ public class MuseReachabilitySchemaTest {
   
   }
 
+  /**
+   * Test Case: Checks reachability schema on input with switch cases
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 5 changes should be found in ReahcabilityNodeChangeContainers
+   */
   @Test
   public void reachability_operation_on_hello_world_switch() {
     try {      
@@ -90,6 +97,13 @@ public class MuseReachabilitySchemaTest {
   
   }
 
+  /**
+   * Test Case: check Reachability schema on a try statement in the input file
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 6 changes should be found in ReachabilityNodeChangeContainer
+   */
   @Test
   public void reachability_operation_on_hello_world_try() {
     try {      
@@ -111,6 +125,13 @@ public class MuseReachabilitySchemaTest {
   
   }
 
+  /**
+   * Test Case: checks reachability schema on try method in input file
+   * 
+   * Method under test: visit
+   * 
+   * Correct behavior:  7 changes should be found in ReachabilityNodeChangeContainer
+   */
   @Test
   public void reachability_operation_on_hello_world_try_method() {
     try {      
@@ -132,6 +153,13 @@ public class MuseReachabilitySchemaTest {
   
   }
 
+  /**
+   * Test Case: Checks Reachability schema on switch statements with methods in them.
+   * 
+   * Method under test: visit method 
+   * 
+   * Correct Behavior: 8 changes should be found in ReachabilityNodeChangeContainer
+   */
   @Test
   public void reachability_operation_on_hello_world_switch_method() {
     try {      
@@ -152,6 +180,13 @@ public class MuseReachabilitySchemaTest {
     }
 }
   
+  /**
+   * Test Case: checks ReachabilitySchema on interface method in input file
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 3 changes should be found in ReachabilityNodeChangeContainers
+   */
   @Test
   public void reachability_operation_on_hello_world_interface() {
     try {      
@@ -172,6 +207,13 @@ public class MuseReachabilitySchemaTest {
     }
   }
     
+  /**
+   * Test Case: checks how reachabilityschema handles onCreate call on current instance
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 4 changes should be found in ReachabilityNodeChangeContainers
+   */
     @Test
     public void reachability_operation_on_hello_world_this() {
       try {      
@@ -192,6 +234,13 @@ public class MuseReachabilitySchemaTest {
       }
     }
     
+    /**
+     * Test Case: checks how reachabilityschema handles onCreate call on super class
+     * 
+     * Method under test: visit
+     * 
+     * Correct Behavior: 4 changes should be found in ReachabilityNodeChangeContainers
+     */
       @Test
       public void reachability_operation_on_hello_world_super() {
         try {      
@@ -212,6 +261,13 @@ public class MuseReachabilitySchemaTest {
         }
       }
       
+      /**
+       * Test Case: checks how reachabilityschema traverses anonymous method
+       * 
+       * Method under test: visit
+       * 
+       * Correct Behavior: 6 changes should be found in ReachabilityNodeChangeContainers
+       */
       @Test
       public void reachability_operation_on_hello_world_anonymous() {
         try {      
