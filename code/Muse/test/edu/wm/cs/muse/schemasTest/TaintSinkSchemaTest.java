@@ -50,6 +50,13 @@ public class TaintSinkSchemaTest {
 	TaintSinkSchema taintSinkSchema;
 
 
+  /**
+   * Test Case: Checks if TaintSinkSchema traverse static method in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 6 changes should be found in SinkNodeChangeContainers
+   */
   @Test
   public void sink_operation_on_hello_world_static() {
     try {      
@@ -71,6 +78,13 @@ public class TaintSinkSchemaTest {
   
   }
 
+  /**
+   * Test Case: Checks if TaintSinkSchema traverse switch cases in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 9 changes should be found in SinkNodeChangeContainers
+   */
   @Test
   public void sink_operation_on_hello_world_switch() {
     try {      
@@ -92,6 +106,13 @@ public class TaintSinkSchemaTest {
   
   }
 
+  /**
+   * Test Case: Checks if TaintSinkSchema traverse try statement in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 9 changes should be found in SinkNodeChangeContainers
+   */
   @Test
   public void sink_operation_on_hello_world_try() {
     try {      
@@ -113,6 +134,13 @@ public class TaintSinkSchemaTest {
   
   }
 
+  /**
+   * Test Case: Checks if TaintSinkSchema traverse try statement around a method in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 12 changes should be found in SinkNodeChangeContainers
+   */
   @Test
   public void sink_operation_on_hello_world_try_method() {
     try {      
@@ -134,6 +162,13 @@ public class TaintSinkSchemaTest {
   
   }
 
+  /**
+   * Test Case: Checks if TaintSinkSchema traverse switch statements that include methods in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 15 changes should be found in SinkNodeChangeContainers
+   */
   @Test
   public void sink_operation_on_hello_world_switch_method() {
     try {      
@@ -155,6 +190,12 @@ public class TaintSinkSchemaTest {
   
   }
 
+  /**
+   * Executes muse
+   * @throws BadLocationException
+   * @throws MalformedTreeException
+   * @throws IOException
+   */
   private void execute_muse_sink() throws BadLocationException, MalformedTreeException, IOException {
     taintSinkSchema = new TaintSinkSchema();
     rewriter = ASTRewrite.create(root.getAST());
@@ -162,6 +203,12 @@ public class TaintSinkSchemaTest {
     root.accept(taintSinkSchema);
   }
 
+  /**
+   * prepares test files
+   * @param component
+   * @throws FileNotFoundException
+   * @throws IOException
+   */
   private void prepare_test_files(ComponentType component) throws FileNotFoundException, IOException {
     Utility.COUNTER_GLOBAL = 0;
 
