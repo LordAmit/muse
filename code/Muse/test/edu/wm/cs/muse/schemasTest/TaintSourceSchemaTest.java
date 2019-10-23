@@ -207,27 +207,27 @@ public class TaintSourceSchemaTest {
 
 		switch (component) {
 		case STATICMETHOD:
-			content = FileUtility.readSourceFile("test/input/taintSourceInput/source_sample_static_method.txt").toString();
+			content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_static_method.txt").toString();
 			expectedOutput = new File("test/output/sample_hello_world_sink.txt");
 			break;
 
 		case SWITCH:
-			content = FileUtility.readSourceFile("test/input/taintSourceInput/source_sample_switch.txt").toString();
+			content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_switch.txt").toString();
 			expectedOutput = new File("test/output/sample_hello_world_source.txt");
 			break;
 			
 		case SWITCHMETHOD:
-			content = FileUtility.readSourceFile("test/input/taintSourceInput/source_sample_switch_method.txt").toString();
+			content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_switch_method.txt").toString();
 			expectedOutput = new File("test/output/sample_multilevelclass_taint.txt");
 			break;
 
 		case TRY:
-			content = FileUtility.readSourceFile("test/input/taintSourceInput/source_sample_try.txt").toString();
+			content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_try.txt").toString();
 			expectedOutput = new File("test/output/sample_multilevelclass_taint.txt");
 			break;
 		
 		case TRYMETHOD:
-			content = FileUtility.readSourceFile("test/input/taintSourceInput/source_sample_try_method.txt").toString();
+			content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_try_method.txt").toString();
 			expectedOutput = new File("test/output/sample_multilevelclass_taint.txt");
 			break;
 			

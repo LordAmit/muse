@@ -266,40 +266,40 @@ public class MuseComplexReachabilitySchemaTest {
 
     switch (component) {
     case STATICMETHOD:
-    	content = FileUtility.readSourceFile("test/input/taintSourceInput/source_sample_static_method.txt").toString();
+    	content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_static_method.txt").toString();
     	//content = FileUtility.readSourceFile("test/input/sink_sample_static_method.txt").toString();
       break;
 
     case SWITCH:
-      content = FileUtility.readSourceFile("test/input/taintSourceInput/source_sample_switch.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_switch.txt").toString();
       break;
       
     case SWITCHMETHOD:
-      content = FileUtility.readSourceFile("test/input/taintSourceInput/source_sample_switch_method.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_switch_method.txt").toString();
       break;
 
     case TRY:
-      content = FileUtility.readSourceFile("test/input/taintSourceInput/source_sample_try.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_try.txt").toString();
       break;
     
     case TRYMETHOD:
-      content = FileUtility.readSourceFile("test/input/taintSourceInput/source_sample_try_method.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_try_method.txt").toString();
       break;
       
     case INTERFACE:
-        content = FileUtility.readSourceFile("test/input/taintSourceInput/source_sample_interface.txt").toString();
+        content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_interface.txt").toString();
         break;  
         
     case THIS:
-        content = FileUtility.readSourceFile("test/input/taintSourceInput/source_sample_this.txt").toString();
+        content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_this.txt").toString();
         break;  
         
     case SUPER:
-        content = FileUtility.readSourceFile("test/input/taintSourceInput/source_sample_super.txt").toString();
+        content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_super.txt").toString();
         break;  
         
     case ANONYMOUS:
-        content = FileUtility.readSourceFile("test/input/taintSourceInput/source_sample_anonymous.txt").toString();
+        content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_anonymous.txt").toString();
         break;
     }
 
