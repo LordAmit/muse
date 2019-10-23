@@ -69,6 +69,14 @@ public class ScopeSourceSchemaTest {
   
   }
 
+  /**
+   * Test Case: tests scope source schema operation on input that has multiple classes and switch 
+   * statements.
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 24 scope changes should be found
+   */
   @Test
   public void taint_operation_on_multilevelclass_switch() {
     try {      
@@ -90,6 +98,14 @@ public class ScopeSourceSchemaTest {
   
   }
 
+  /**
+   * Test Case: tests scope source schema operation on input that has multiple classes and try
+   * statements.
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 24 scope changes should be found
+   */
   @Test
   public void taint_operation_on_multilevelclass_try() {
     try {      
@@ -111,6 +127,14 @@ public class ScopeSourceSchemaTest {
   
   }
 
+  /**
+   * Test Case: tests scope source schema operation on input that has multiple classes and a try
+   * method.
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 24 scope changes should be found
+   */
   @Test
   public void taint_operation_on_multilevelclass_try_method() {
     try {      
@@ -132,6 +156,14 @@ public class ScopeSourceSchemaTest {
   
   }
 
+  /**
+   * Test Case: tests scope source schema operation on input that has multiple classes and switch
+   * cases that have methods in them.
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 36 scope changes should be found
+   */
   @Test
   public void taint_operation_on_multilevelclass_switch_method() {
     try {      
@@ -152,6 +184,14 @@ public class ScopeSourceSchemaTest {
     }
 }
   
+  /**
+   * Test Case: tests scope source schema operation on input that has multiple classes and private
+   * methods.
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 10 scope changes should be found
+   */
   @Test
   public void taint_operation_on_multilevelclass_private_method() {
     try {      
@@ -172,6 +212,14 @@ public class ScopeSourceSchemaTest {
     }
   }
   
+  /**
+   * Test Case: tests scope source schema operation on input with multilevel classes and protected 
+   * methods.
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 12 scope changes should be found
+   */
   @Test
   public void taint_operation_on_multilevelclass_protected_method() {
     try {      
@@ -192,6 +240,14 @@ public class ScopeSourceSchemaTest {
     }
   }
 
+  /**
+   * Test Case: tests scope source schema operation on input that has multilevel classes and 
+   * an anonymous class.
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 24 scope changes should be found
+   */
   @Test
   public void taint_operation_on_multilevelclass_anonymous() {
     try {      
@@ -212,6 +268,12 @@ public class ScopeSourceSchemaTest {
     }
   }
 
+  /**
+   * Executes muse
+   * @throws BadLocationException
+   * @throws MalformedTreeException
+   * @throws IOException
+   */
   private void execute_muse_taint() throws BadLocationException, MalformedTreeException, IOException {
 	scopeSourceSchema = new ScopeSourceSchema();
     rewriter = ASTRewrite.create(root.getAST());
@@ -219,6 +281,9 @@ public class ScopeSourceSchemaTest {
     root.accept(scopeSourceSchema);
   }
 
+  /*
+   * Prepares test files 
+   */
   private void prepare_test_files(ComponentType component) throws FileNotFoundException, IOException {
     Utility.COUNTER_GLOBAL = 0;
 
