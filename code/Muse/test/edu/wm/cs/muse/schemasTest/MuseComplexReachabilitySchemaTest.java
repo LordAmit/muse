@@ -47,6 +47,13 @@ public class MuseComplexReachabilitySchemaTest {
 	ComplexReachabilitySchema complexReachabilitySchema;
 	
 
+  /**
+   * Test Case: Checks to see if ComplexReachability properly traverse static method
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 3 changes should be found
+   */
   @Test
   public void reachability_operation_on_hello_world_static() {
     try {      
@@ -68,6 +75,14 @@ public class MuseComplexReachabilitySchemaTest {
   
   }
 
+  /**
+   * Test Case: Checks to see if ComplexReachability properly traverses switch 
+   * statements
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 4 changes should be found
+   */
   @Test
   public void reachability_operation_on_hello_world_switch() {
     try {      
@@ -89,6 +104,13 @@ public class MuseComplexReachabilitySchemaTest {
   
   }
 
+  /**
+   * Test Case: Checks to see if ComplexReachability properly traverses try statement
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 5 changes should be found
+   */
   @Test
   public void reachability_operation_on_hello_world_try() {
     try {      
@@ -110,6 +132,14 @@ public class MuseComplexReachabilitySchemaTest {
   
   }
 
+  /**
+   * Test Case: Checks to see if ComplexReachability properly traverses try statement
+   * surrounding method
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 6 changes should be found
+   */
   @Test
   public void reachability_operation_on_hello_world_try_method() {
     try {      
@@ -131,6 +161,14 @@ public class MuseComplexReachabilitySchemaTest {
   
   }
 
+  /**
+   * Test Case: Checks to see if ComplexReachability properly traverse switch statements
+   * with methods in them
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 7 changes should be found
+   */
   @Test
   public void reachability_operation_on_hello_world_switch_method() {
     try {      
@@ -151,6 +189,14 @@ public class MuseComplexReachabilitySchemaTest {
     }
 }
   
+  /**
+   * Test Case: Checks to see if ComplexReachability properly traverse interface
+   * method
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 2 changes should be found
+   */
   @Test
   public void reachability_operation_on_hello_world_interface() {
     try {      
@@ -171,6 +217,13 @@ public class MuseComplexReachabilitySchemaTest {
     }
   }
   
+  /**
+   * Test Case: Checks to see if ComplexReachability properly traverse static method
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 2 changes should be found
+   */
   @Test
   public void complex_reachability_operation_on_hello_world_interface() {
     try {      
@@ -195,6 +248,14 @@ public class MuseComplexReachabilitySchemaTest {
     }
   }
     
+  /**
+   * Test Case: Checks to see if ComplexReachability can handle onCreate call on current
+   * instance of class
+   * 
+   * Method under test: visit
+   * 
+   * Correct Behavior: 3 changes should be found
+   */
     @Test
     public void reachability_operation_on_hello_world_this() {
       try {      
@@ -215,6 +276,13 @@ public class MuseComplexReachabilitySchemaTest {
       }
     }
     
+    /**
+     * Test Case: Checks to see if ComplexReachability can handle call on super class
+     * 
+     * Method under test: visit
+     * 
+     * Correct Behavior: 3 changes should be found
+     */
       @Test
       public void reachability_operation_on_hello_world_super() {
         try {      
@@ -235,6 +303,14 @@ public class MuseComplexReachabilitySchemaTest {
         }
       }
       
+      /**
+       * Test Case: Checks to see if ComplexReachability properly traverses anonymous
+       * method
+       * 
+       * Method under test: visit
+       * 
+       * Correct Behavior: 4 changes should be found
+       */
       @Test
       public void reachability_operation_on_hello_world_anonymous() {
         try {      
@@ -255,6 +331,12 @@ public class MuseComplexReachabilitySchemaTest {
         }
       }
   
+  /**
+   * Executes muse
+   * @throws BadLocationException
+   * @throws MalformedTreeException
+   * @throws IOException
+   */
   private void execute_muse_complex_reachability() throws BadLocationException, MalformedTreeException, IOException {
 		complexReachabilitySchema = new ComplexReachabilitySchema();
 	    rewriter = ASTRewrite.create(root.getAST());

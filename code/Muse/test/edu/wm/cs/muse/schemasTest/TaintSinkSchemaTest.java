@@ -51,7 +51,7 @@ public class TaintSinkSchemaTest {
 
 
   /**
-   * Test Case: Checks if TaintSinkSchema traverse static method in input file
+   * Test Case: Checks if TaintSinkSchema traverses static method in input file
    * 
    * Method under Test: visit
    * 
@@ -79,7 +79,7 @@ public class TaintSinkSchemaTest {
   }
 
   /**
-   * Test Case: Checks if TaintSinkSchema traverse switch cases in input file
+   * Test Case: Checks if TaintSinkSchema traverses switch cases in input file
    * 
    * Method under Test: visit
    * 
@@ -135,7 +135,7 @@ public class TaintSinkSchemaTest {
   }
 
   /**
-   * Test Case: Checks if TaintSinkSchema traverse try statement around a method in input file
+   * Test Case: Checks if TaintSinkSchema traverses try statement around a method in input file
    * 
    * Method under Test: visit
    * 
@@ -163,7 +163,7 @@ public class TaintSinkSchemaTest {
   }
 
   /**
-   * Test Case: Checks if TaintSinkSchema traverse switch statements that include methods in input file
+   * Test Case: Checks if TaintSinkSchema traverses switch statements that include methods in input file
    * 
    * Method under Test: visit
    * 
