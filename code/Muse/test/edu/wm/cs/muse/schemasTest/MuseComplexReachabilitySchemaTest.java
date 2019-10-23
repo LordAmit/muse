@@ -46,6 +46,7 @@ public class MuseComplexReachabilitySchemaTest {
 	File processedOutput;
 	ComplexReachabilitySchema complexReachabilitySchema;
 	
+
   @Test
   public void reachability_operation_on_hello_world_static() {
     try {      
