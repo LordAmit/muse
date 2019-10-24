@@ -58,7 +58,7 @@ public class TaintSourceSchemaTest {
 	public void source_operation_on_hello_world_static() {
 		try {
 			prepare_test_files(ComponentType.STATICMETHOD);
-			execute_muse(OperatorType.SOURCE);
+			execute_muse(OperatorType.TAINTSOURCE);
 
 			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
@@ -88,7 +88,7 @@ public class TaintSourceSchemaTest {
 	public void source_operation_on_hello_world_try() {
 		try {
 			prepare_test_files(ComponentType.TRY);
-			execute_muse(OperatorType.SOURCE);
+			execute_muse(OperatorType.TAINTSOURCE);
 
 			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
@@ -115,7 +115,7 @@ public class TaintSourceSchemaTest {
 	public void source_operation_on_hello_world_switch() {
 		try {
 			prepare_test_files(ComponentType.SWITCH);
-			execute_muse(OperatorType.SOURCE);
+			execute_muse(OperatorType.TAINTSOURCE);
 
 			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
@@ -143,7 +143,7 @@ public class TaintSourceSchemaTest {
 	public void source_operation_on_hello_world_switch_method() {
 		try {
 			prepare_test_files(ComponentType.SWITCHMETHOD);
-			execute_muse(OperatorType.SOURCE);
+			execute_muse(OperatorType.TAINTSOURCE);
 
 			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
@@ -171,7 +171,7 @@ public class TaintSourceSchemaTest {
 	public void source_operation_on_hello_world_try_method() {
 		try {
 			prepare_test_files(ComponentType.TRYMETHOD);
-			execute_muse(OperatorType.SOURCE);
+			execute_muse(OperatorType.TAINTSOURCE);
 
 			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
