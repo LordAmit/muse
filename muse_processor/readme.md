@@ -27,8 +27,8 @@ Assuming that you already configured muse_processor, you can directly execute `m
 ├── schemas
 │   ├── COMPLEXREACHABILITY
 │   ├── REACHABILITY
-│   ├── SINK
-│   └── TAINTSINK
+│   ├── TAINTSINK
+│   └── SCOPESINK
 └── sh_files
     ├── all_schema.sh
     ├── babymonitor_COMPLEXREACHABILITY.sh
@@ -50,7 +50,7 @@ Here is a short description for each script files that you need to execute in or
   
     a)  `clean_project_folder.sh`: Used to execute `gradlew clean` command in the base directory. Useful since you do not need build data for creating mutants.
     
-    b) `babymonitor_SINK.sh`: Used to execute Muse with necessary arguments so that the mutated version of babymonitor is created while SINK schema is applied. The same goes for the `*_REACHABILITY, *_TAINTSINK, *_COMPLEXREACHABILITY` schemes. 
+    b) `babymonitor_SINK.sh`: Used to execute Muse with necessary arguments so that the mutated version of babymonitor is created while TAINTSINK schema is applied. The same goes for the `*_REACHABILITY, *_TAINTSINK, *_COMPLEXREACHABILITY` schemes. 
 
 2. `gradle_permission.sh`: Since the gradle files created through the Muse framework may or may not have executable permission, we need to execute this. It merely assigns executable permission for the gradle script in each mutated application folder. 
 

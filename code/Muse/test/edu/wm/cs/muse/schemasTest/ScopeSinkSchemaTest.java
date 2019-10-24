@@ -52,7 +52,7 @@ public class ScopeSinkSchemaTest{
 	@Test
 	public void number_of_methods() {
 		try {
-			prepare_test_files(OperatorType.TAINTSINK);
+			prepare_test_files(OperatorType.SCOPESINK);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -79,7 +79,7 @@ public class ScopeSinkSchemaTest{
 	@Test
 	public void number_of_Sinks() {
 		try {
-			prepare_test_files(OperatorType.TAINTSINK);
+			prepare_test_files(OperatorType.SCOPESINK);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -114,7 +114,7 @@ public class ScopeSinkSchemaTest{
 		correctList.add("METHODCTWOB");
 		
 		try {
-			prepare_test_files(OperatorType.TAINTSINK);
+			prepare_test_files(OperatorType.SCOPESINK);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -141,7 +141,7 @@ public class ScopeSinkSchemaTest{
 		
 		
 		try {
-			prepare_test_files(OperatorType.TAINTSINK);
+			prepare_test_files(OperatorType.SCOPESINK);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -168,7 +168,7 @@ public class ScopeSinkSchemaTest{
 		
 		
 		try {
-			prepare_test_files(OperatorType.TAINTSINK);
+			prepare_test_files(OperatorType.SCOPESINK);
 
 		} catch (IOException e) {
 			e.printStackTrace();

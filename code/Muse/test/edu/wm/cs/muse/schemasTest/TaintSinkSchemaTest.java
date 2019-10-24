@@ -214,23 +214,23 @@ public class TaintSinkSchemaTest {
 
     switch (component) {
     case STATICMETHOD:
-      content = FileUtility.readSourceFile("test/input/taintSinkInput/sink_sample_static_method.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_static_method.txt").toString();
       break;
 
     case SWITCH:
-      content = FileUtility.readSourceFile("test/input/taintSinkInput/sink_sample_switch.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_switch.txt").toString();
       break;
       
     case SWITCHMETHOD:
-      content = FileUtility.readSourceFile("test/input/taintSinkInput/sink_sample_switch_method.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_switch_method.txt").toString();
       break;
 
     case TRY:
-      content = FileUtility.readSourceFile("test/input/taintSinkInput/sink_sample_try.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_try.txt").toString();
       break;
     
     case TRYMETHOD:
-      content = FileUtility.readSourceFile("test/input/taintSinkInput/sink_sample_try_method.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_try_method.txt").toString();
       break;
     }
 
