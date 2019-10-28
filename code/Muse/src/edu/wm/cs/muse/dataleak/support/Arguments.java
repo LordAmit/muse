@@ -46,6 +46,7 @@ public class Arguments {
 		appName = args[2];
 		mutantsFolder = args[3];
 		Operator = args[4];
+		leakPath = args[5];
 	}
 
 	public static void extractArguments(File file) {
@@ -64,25 +65,24 @@ public class Arguments {
 	public static void setRootPath(String rootPath) {
 		Arguments.rootPath = rootPath;
 	}
-	
-	public static void setLeakPath(String leakPath) {
-		Arguments.leakPath = leakPath;
-	}
 
-	/**
-	 * @return the path where the leak string file resides
-	 */
-	public static String getLeakPath() {
-		return leakPath;
-	}
-	
+
 	/**
 	 * @return the folder that contains the binaries related to lib4ast
 	 */
 	public static String getBinariesFolder() {
-        binariesFolder = "C:\\Users\\moram\\Documents\\MDroidPlus\\libs4ast";
+        //binariesFolder = "C:\\Users\\Ian\\Downloads\\MDroidPlus-master\\libs4ast";
 		return binariesFolder;
 	}
+	
+	/**
+	 * @return the path where the leak string file resides.
+	 */
+	public static String getLeakPath() {
+		leakPath = "C:\\Users\\Ian\\Downloads\\leak.txt";
+		return leakPath;
+	}
+
 
 	/**
 	 * @return the path where the source files reside. Source files may be under
