@@ -1,5 +1,10 @@
 package edu.wm.cs.muse.dataleak;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import edu.wm.cs.muse.dataleak.support.Arguments;
+import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 /**
@@ -20,8 +25,8 @@ import edu.wm.cs.muse.dataleak.support.OperatorType;
 public class DataLeak {
 
 	// source and sink strings used by the reachability operator schema
-	private static String reachabilitySource = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
-	private static String reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
+	private static String reachabilitySource;
+	private static String reachabilitySink;
 
 	/**
 	 * Formats the source string and returns the correct source string based on the
@@ -87,11 +92,22 @@ public class DataLeak {
 	 * 
 	 * @param identifier an instance of the global counter utility used to identify
 	 *                   the leak string
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 * 
 	 * @returns the string version of a data leak as used by the reachability
 	 *          operator schema.
 	 */
 	public static String getLeak(int identifier) {
+		try {
+			String[] leakStrings = FileUtility.readSourceFile(Arguments.getLeakPath()).toString().split("\\n");
+			reachabilitySource = leakStrings[0];
+			reachabilitySink = leakStrings[1];
+		} catch (IOException e) {
+			reachabilitySource = "java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+			reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
+			e.printStackTrace();
+		}
 		return String.format(reachabilitySource, identifier) + "\n"
 				+ String.format(reachabilitySink, identifier, identifier, identifier);
 	}
