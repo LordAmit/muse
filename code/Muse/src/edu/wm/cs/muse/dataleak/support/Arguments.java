@@ -17,6 +17,7 @@ import java.io.IOException;
 public class Arguments {
 	private static String binariesFolder;
 	private static String rootPath;
+	private static String leakPath;
 	private static String appName;
 	private static String mutantsFolder;
 	private static String Operator;
@@ -63,7 +64,18 @@ public class Arguments {
 	public static void setRootPath(String rootPath) {
 		Arguments.rootPath = rootPath;
 	}
+	
+	public static void setLeakPath(String leakPath) {
+		Arguments.leakPath = leakPath;
+	}
 
+	/**
+	 * @return the path where the leak string file resides
+	 */
+	public static String getLeakPath() {
+		return leakPath;
+	}
+	
 	/**
 	 * @return the folder that contains the binaries related to lib4ast
 	 */
