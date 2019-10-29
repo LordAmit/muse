@@ -130,17 +130,17 @@ public class Muse {
 	}
 
 	private OperatorType getOperatorType(String inputOperator) {
-		// SOURCE, SINK, TAINT, TAINTSINK and REACHABILITY
+		// TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY
 		System.out.println("Input operator: " + inputOperator);
 		switch (inputOperator) {
-		case "SOURCE":
-			return OperatorType.SOURCE;
-		case "SINK":
-			return OperatorType.SINK;
-		case "TAINT":
-			return OperatorType.TAINT;
+		case "TAINTSOURCE":
+			return OperatorType.TAINTSOURCE;
 		case "TAINTSINK":
 			return OperatorType.TAINTSINK;
+		case "SCOPESOURCE":
+			return OperatorType.SCOPESOURCE;
+		case "SCOPESINK":
+			return OperatorType.SCOPESINK;
 		case "REACHABILITY":
 			return OperatorType.REACHABILITY;
 		case "COMPLEXREACHABILITY":
@@ -199,7 +199,7 @@ public class Muse {
 		String newSource;
 		CompilationUnit newRoot;
 		switch (operatorType) {
-		case SINK:
+		case TAINTSINK:
 			TaintSourceSchema sourceSchema_s = new TaintSourceSchema();
 			root.accept(sourceSchema_s);
 			TaintSourceOperator sourceOperator_s = new TaintSourceOperator(rewriter, sourceSchema_s.getNodeChanges());
@@ -224,7 +224,7 @@ public class Muse {
 			Files.delete(temp_file.toPath());
 			break;
 
-		case SOURCE:
+		case TAINTSOURCE:
 			TaintSourceSchema taintSourceSchema = new TaintSourceSchema();
 			root.accept(taintSourceSchema);
 			TaintSourceOperator taintSourceOperator = new TaintSourceOperator(rewriter, taintSourceSchema.getNodeChanges());
@@ -241,7 +241,7 @@ public class Muse {
 			applyChangesToFile(file, source, rewriter);
 			break;
 
-		case TAINT:
+		case SCOPESOURCE:
 			ScopeSourceSchema scopeSourceSchema = new ScopeSourceSchema();
 			root.accept(scopeSourceSchema);
 			ScopeSourceOperator scopeSourceOperator = new ScopeSourceOperator(rewriter, scopeSourceSchema.getNodeChanges());
@@ -249,7 +249,7 @@ public class Muse {
 			applyChangesToFile(file, source, rewriter);
 			break;
 
-		case TAINTSINK:
+		case SCOPESINK:
 			ScopeSourceSchema taintSchema_ts = new ScopeSourceSchema();
 			root.accept(taintSchema_ts);
 			ScopeSourceOperator taintOperator_ts = new ScopeSourceOperator(rewriter, taintSchema_ts.getNodeChanges());
@@ -319,7 +319,7 @@ public class Muse {
 		System.out.println("2. App Source Code path");
 		System.out.println("3. App Name");
 		System.out.println("4. Mutants path");
-		System.out.println("5. MutationScheme: SOURCE, SINK, TAINT, TAINTSINK and REACHABILITY (caseSensitive).");
+		System.out.println("5. MutationScheme: TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY (caseSensitive).");
 	}
 
 	public static void main(String[] args) throws MalformedTreeException, BadLocationException {

@@ -74,7 +74,7 @@ public class Arguments {
 	 * @return the folder that contains the binaries related to lib4ast
 	 */
 	public static String getBinariesFolder() {
-        //binariesFolder = "C:\\Users\\Ian\\Downloads\\MDroidPlus-master\\libs4ast";
+    //binariesFolder = "C:\\Users\\Ian\\Downloads\\MDroidPlus-master\\libs4ast";
 		return binariesFolder;
 	}
 	
@@ -114,7 +114,7 @@ public class Arguments {
 	/**
 	 * @return operator specified by the argument
 	 * Acceptable options are: 
-	 * SOURCE, SINK, TAINT, TAINTSINK and REACHABILITY
+	 * TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY
 	 */
 	public static String getOperator() {
 		return Operator;

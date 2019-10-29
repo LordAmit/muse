@@ -38,16 +38,16 @@ public class DataLeak {
 	 * @returns the appropriate source for the operator type specified.
 	 */
 	public static String getSource(OperatorType op, int identifier) {
-		if (op == OperatorType.SINK) {
+		if (op == OperatorType.TAINTSINK) {
 			return String.format(
 					"final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
 					identifier);
 		}
-		if (op == OperatorType.SOURCE) {
+		if (op == OperatorType.TAINTSOURCE) {
 			return String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
 					identifier);
 		}
-		if (op == OperatorType.TAINT) {
+		if (op == OperatorType.SCOPESOURCE) {
 			return String.format("Object tainted_LeAk%d = android.util.Log.d(\\\"taint-leak-%d\\\", dataLeAk%d);",
 					identifier);
 		}
@@ -75,7 +75,7 @@ public class DataLeak {
 	 * @returns the appropriate sink for the operator type specified.
 	 */
 	public static String getSink(OperatorType op, int sourceIdentifier, int sinkIdentifier) {
-		if (op == OperatorType.SINK) {
+		if (op == OperatorType.TAINTSINK) {
 			return String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", sourceIdentifier, sinkIdentifier,
 					sourceIdentifier);
 		}

@@ -100,8 +100,8 @@ public class MuseTest {
 	@Test
 	public void source_operation_on_hello_world() {
 		try {
-			prepare_test_files(OperatorType.SOURCE, 1);
-			execute_muse(OperatorType.SOURCE);
+			prepare_test_files(OperatorType.TAINTSOURCE, 1);
+			execute_muse(OperatorType.TAINTSOURCE);
 
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 
@@ -121,8 +121,8 @@ public class MuseTest {
 	public void sink_operation_on_hello_world() {
 
 		try {
-			prepare_test_files(OperatorType.SINK, 1);
-			execute_muse(OperatorType.SINK);
+			prepare_test_files(OperatorType.TAINTSINK, 1);
+			execute_muse(OperatorType.TAINTSINK);
 
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 			
@@ -143,8 +143,8 @@ public class MuseTest {
 	public void taint_operation_on_hello_world() {
 		try {
 
-			prepare_test_files(OperatorType.TAINT, 1);
-			execute_muse(OperatorType.TAINT);
+			prepare_test_files(OperatorType.SCOPESOURCE, 1);
+			execute_muse(OperatorType.SCOPESOURCE);
 
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 			
@@ -165,8 +165,8 @@ public class MuseTest {
 	public void taint_operation_on_multi_class() {
 		try {
 
-			prepare_test_files(OperatorType.TAINT, 2);
-			execute_muse(OperatorType.TAINT);
+			prepare_test_files(OperatorType.SCOPESOURCE, 2);
+			execute_muse(OperatorType.SCOPESOURCE);
 
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 
@@ -186,8 +186,8 @@ public class MuseTest {
 	@Test
 	public void taint_sink_operation_on_multi_class() {
 		try {
-			prepare_test_files(OperatorType.TAINTSINK, 1);
-			execute_muse(OperatorType.TAINTSINK);
+			prepare_test_files(OperatorType.SCOPESINK, 1);
+			execute_muse(OperatorType.SCOPESINK);
 			
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 			
@@ -216,7 +216,7 @@ public class MuseTest {
 		output = new File("test/output/output.txt");
 
 		switch (operator) {
-		case SINK:
+		case TAINTSINK:
 			// the input for the sink test is the output from the source operator
 			// this is because the sink operator relies on sources already being inserted in
 			// the code base
@@ -234,12 +234,12 @@ public class MuseTest {
 			expectedOutput = new File("test/output/sample_hello_world_complex_reachability.txt");
 			break;
 			
-		case SOURCE:
+		case TAINTSOURCE:
 			content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
 			expectedOutput = new File("test/output/sample_hello_world_source.txt");
 			break;
 
-		case TAINT:
+		case SCOPESOURCE:
 			if (test == 1) {
 				content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
 				expectedOutput = new File("test/output/sample_hello_world_taint.txt");
@@ -250,7 +250,7 @@ public class MuseTest {
 			}
 			break;
 			
-		case TAINTSINK:
+		case SCOPESINK:
 			content = FileUtility.readSourceFile("test/input/sample_multilevelclass.txt").toString();
 			expectedOutput = new File("test/output/sample_multilevelclass_taint_sink.txt");
 			break;

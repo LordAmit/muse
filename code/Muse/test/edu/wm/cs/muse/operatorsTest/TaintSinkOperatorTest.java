@@ -1,4 +1,4 @@
-package edu.wm.cs.muse;
+package edu.wm.cs.muse.operatorsTest;
 
 import static org.junit.Assert.*;
 
