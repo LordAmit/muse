@@ -26,15 +26,15 @@ User wants to run Muse to then test static analysis tool
 - `<AppSourceCode>` - path to the Android application source code folder, to which mutation will be applied
 - `<AppName>` - Name of the Android application
 - `<Output>` - path of the folder where the mutants will be created and saved after
-- `<OperatorType>` - the type of operation the be used when creating mutated files. Currently must be one of: SOURCE, SINK, TAINT, REACHABILITY, TAINTSINK, and COMPLEXREACHABILITY
+- `<OperatorType>` - the type of operation the be used when creating mutated files. Currently must be one of: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY
 
 
 ## OperatorType Descriptions
 
 Different `<OperatorType>` settings can be used when running source. Below is a description of each of these `<OperatorTypes>`
 
-**SOURCE:**
-- User runs Muse with the SOURCE `<OperatorType>`
+**TAINTSOURCE:**
+- User runs Muse with the TAINTSOURCE `<OperatorType>`
 - Muse runs the respective schema to mark places for mutation insertion
   - Looks for ASTNode `TYPE_DECLARATION` and `ANONYMOUS_CLASS_DECLARATION`
     - while not inStaticContext and not inAnonymousClass
@@ -42,14 +42,14 @@ Different `<OperatorType>` settings can be used when running source. Below is a 
   - Source statement `String dataLeAk%d = \"\";`
 - Muse rewrites these changes to the output file
 
-**SINK**
-- User runs Muse with the SINK `<OperatorType>`
+**TAINTSINK**
+- User runs Muse with the TAINTSINK `<OperatorType>`
 - Muse runs the respective schema to mark places for mutation insertion
   - Looks for ASTNode `TYPE_DECLARATION` and `ANONYMOUS_CLASS_DECLARATION`
     - While not inStaticContext and not inAnonymousClass
   - Then again looks for ASTNode `TYPE_DECLARATION` and `ANONYMOUS_CLASS_DECLARATION`
     - If inAnonymousClass become true
-- Also runs SOURCE to mark places for source placement
+- Also runs TAINTSOURCE to mark places for source placement
 - Muse runs respective operator to make changes for each mutation
   - Also inputs the Source statement `String dataLeAk%d = \"\";`
   - Sink statement `android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);`
@@ -75,8 +75,8 @@ Different `<OperatorType>` settings can be used when running source. Below is a 
 - Muse rewrites these changes to the output file
 
 
-**TAINT**
-- User runs Muse with the TAINT `<OperatorType>`
+**SCOPESOURCE**
+- User runs Muse with the SCOPESOURCE `<OperatorType>`
 - Muse runs the respective schema to mark places for mutation insertion
   - Marks changes for all non static and non private/protected, creates node change for both declaration and method body
   - Looking for TYPE_DECLARATION and ANONYMOUS_CLASS_DECLARATION
@@ -87,11 +87,11 @@ Different `<OperatorType>` settings can be used when running source. Below is a 
 - Muse rewrites these changes to the output file
 
 
-**TAINTSINK**
-- User runs Muse with the TAINTSINK `<OperatorType>`
+**SCOPESINK**
+- User runs Muse with the SCOPESINK `<OperatorType>`
 - Muse runs the respective schema to mark places for mutation insertion
   - Marks change for sink at each field declaration in every method where the classes match
-- Also runs TAINT to place marks for sources
+- Also runs SCOPESOURCE to place marks for sources
 - Muse then runs the respective operators to make changes for all marked node changes
   - Sink statement `"android.util.Log.d(\"leak-%s-%s\", dataLeAk%s);`
 - Muse rewrites these change to the output file

@@ -1,4 +1,4 @@
-package edu.wm.cs.muse;
+package edu.wm.cs.muse.schemasTest;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,6 +22,7 @@ import org.eclipse.text.edits.TextEdit;
 import org.junit.Test;
 
 import edu.wm.cs.muse.dataleak.schemas.TaintSourceSchema;
+import edu.wm.cs.muse.Muse;
 import edu.wm.cs.muse.dataleak.schemas.TaintSinkSchema;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.Utility;
@@ -50,6 +51,13 @@ public class TaintSinkSchemaTest {
 	TaintSinkSchema taintSinkSchema;
 
 
+  /**
+   * Test Case: Checks if TaintSinkSchema traverses static method in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 6 changes should be found in SinkNodeChangeContainers
+   */
   @Test
   public void sink_operation_on_hello_world_static() {
     try {      
@@ -71,6 +79,13 @@ public class TaintSinkSchemaTest {
   
   }
 
+  /**
+   * Test Case: Checks if TaintSinkSchema traverses switch cases in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 9 changes should be found in SinkNodeChangeContainers
+   */
   @Test
   public void sink_operation_on_hello_world_switch() {
     try {      
@@ -92,6 +107,13 @@ public class TaintSinkSchemaTest {
   
   }
 
+  /**
+   * Test Case: Checks if TaintSinkSchema traverse try statement in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 9 changes should be found in SinkNodeChangeContainers
+   */
   @Test
   public void sink_operation_on_hello_world_try() {
     try {      
@@ -113,6 +135,13 @@ public class TaintSinkSchemaTest {
   
   }
 
+  /**
+   * Test Case: Checks if TaintSinkSchema traverses try statement around a method in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 12 changes should be found in SinkNodeChangeContainers
+   */
   @Test
   public void sink_operation_on_hello_world_try_method() {
     try {      
@@ -134,6 +163,13 @@ public class TaintSinkSchemaTest {
   
   }
 
+  /**
+   * Test Case: Checks if TaintSinkSchema traverses switch statements that include methods in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 15 changes should be found in SinkNodeChangeContainers
+   */
   @Test
   public void sink_operation_on_hello_world_switch_method() {
     try {      
@@ -176,6 +212,12 @@ public class TaintSinkSchemaTest {
   
   }
   
+  /**
+   * Executes muse
+   * @throws BadLocationException
+   * @throws MalformedTreeException
+   * @throws IOException
+   */
   private void execute_muse_sink() throws BadLocationException, MalformedTreeException, IOException {
     taintSinkSchema = new TaintSinkSchema();
     rewriter = ASTRewrite.create(root.getAST());
@@ -183,28 +225,34 @@ public class TaintSinkSchemaTest {
     root.accept(taintSinkSchema);
   }
 
+  /**
+   * prepares test files
+   * @param component
+   * @throws FileNotFoundException
+   * @throws IOException
+   */
   private void prepare_test_files(ComponentType component) throws FileNotFoundException, IOException {
     Utility.COUNTER_GLOBAL = 0;
 
     switch (component) {
     case STATICMETHOD:
-      content = FileUtility.readSourceFile("test/input/sink_sample_static_method.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_static_method.txt").toString();
       break;
 
     case SWITCH:
-      content = FileUtility.readSourceFile("test/input/sink_sample_switch.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_switch.txt").toString();
       break;
       
     case SWITCHMETHOD:
-      content = FileUtility.readSourceFile("test/input/sink_sample_switch_method.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_switch_method.txt").toString();
       break;
 
     case TRY:
-      content = FileUtility.readSourceFile("test/input/sink_sample_try.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_try.txt").toString();
       break;
     
     case TRYMETHOD:
-      content = FileUtility.readSourceFile("test/input/sink_sample_try_method.txt").toString();
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_try_method.txt").toString();
       break;
       
     case ENUMMETHOD:

@@ -57,7 +57,7 @@ public class TaintSourceOperator {
 	public void insertInMethodBody(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(
-				DataLeak.getSource(OperatorType.SOURCE, Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
+				DataLeak.getSource(OperatorType.TAINTSOURCE, Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
 		Utility.COUNTER_GLOBAL++;
 		listRewrite.insertAt(placeHolder, index, null);
 	}

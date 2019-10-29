@@ -42,11 +42,17 @@ public class ScopeSinkSchemaTest{
 	File processedOutput;
 	File output = new File("test/output/schemastestoutput/output.txt");
 	
-	//checks to see if all methods are being traversed
+	/**
+	 * Test Case: Checks to see that all methods are being traversed
+	 * 
+	 * Method under test: visit
+	 * 
+	 * Correct Behavior: 6 changes should be found
+	 */
 	@Test
 	public void number_of_methods() {
 		try {
-			prepare_test_files(OperatorType.TAINTSINK);
+			prepare_test_files(OperatorType.SCOPESINK);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -62,11 +68,18 @@ public class ScopeSinkSchemaTest{
 
 	}
 	
-	//Checks to see if the correct number of sinks are being inputted
+	
+	/**
+	 * Test Case: Checks to see if the correct number of sinks are being inputted
+	 * 
+	 * Method under test: visit
+	 * 
+	 * Correct Behavior: 6 changes should be found
+	 */
 	@Test
 	public void number_of_Sinks() {
 		try {
-			prepare_test_files(OperatorType.TAINTSINK);
+			prepare_test_files(OperatorType.SCOPESINK);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -82,7 +95,14 @@ public class ScopeSinkSchemaTest{
 
 	}
 	
-	//checks to see if the correct method calls are being traversed
+	
+	/**
+	 * Test Case: Checks to see if the correct methods are being returned
+	 * 
+	 * Method under test: visit
+	 * 
+	 * Correct Behavior: list of methods should be returned
+	 */
 	@Test
 	public void correct_method_calls() {
 		ArrayList<String> correctList = new ArrayList<>();
@@ -94,7 +114,7 @@ public class ScopeSinkSchemaTest{
 		correctList.add("METHODCTWOB");
 		
 		try {
-			prepare_test_files(OperatorType.TAINTSINK);
+			prepare_test_files(OperatorType.SCOPESINK);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -109,13 +129,19 @@ public class ScopeSinkSchemaTest{
 		assertEquals(correctList,testTaintSinkSchema.returnMethodNames());
 	}
 	
-	//checks to see if subclasses are being traversed properly
+	/**
+	 * Test case: checks to see if subclasses are being traversed properly
+	 * 
+	 * Method under test: visit
+	 * 
+	 * Correct behavior: 2 changes should be returned
+	 */
 	@Test
 	public void number_of_subClasses() {
 		
 		
 		try {
-			prepare_test_files(OperatorType.TAINTSINK);
+			prepare_test_files(OperatorType.SCOPESINK);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -130,13 +156,19 @@ public class ScopeSinkSchemaTest{
 		assertEquals(2,testTaintSinkSchema.returnSubClassCount());
 	}
 	
-	//checks to see if there is a correct numer of dataleaks
+	/**
+	 * Test Case: checks to see if there is a correct number of dataleaks
+	 * 
+	 * Method under test: visit
+	 * 
+	 * Correct Behavior: 11 leaks should be returned
+	 */
 	@Test
 	public void number_of_dataLeaks() {
 		
 		
 		try {
-			prepare_test_files(OperatorType.TAINTSINK);
+			prepare_test_files(OperatorType.SCOPESINK);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -151,6 +183,12 @@ public class ScopeSinkSchemaTest{
 		assertEquals(11,testTaintSinkSchema.returndataLeakCount());
 	}
 	
+	/**
+	 * Prepares test files
+	 * @param operator
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	private void prepare_test_files(OperatorType operator) throws FileNotFoundException, IOException {
 		Utility.COUNTER_GLOBAL = 0;
 		output = new File("test/output/schemastestoutput/output.txt");

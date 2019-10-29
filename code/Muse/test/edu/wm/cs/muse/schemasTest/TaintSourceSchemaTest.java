@@ -1,4 +1,4 @@
-package edu.wm.cs.muse;
+package edu.wm.cs.muse.schemasTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -22,6 +22,7 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.junit.Test;
 
+import edu.wm.cs.muse.Muse;
 import edu.wm.cs.muse.dataleak.schemas.TaintSourceSchema;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
@@ -58,7 +59,7 @@ public class TaintSourceSchemaTest {
 	public void source_operation_on_hello_world_static() {
 		try {
 			prepare_test_files(ComponentType.STATICMETHOD);
-			execute_muse(OperatorType.SOURCE);
+			execute_muse(OperatorType.TAINTSOURCE);
 
 			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
@@ -78,17 +79,20 @@ public class TaintSourceSchemaTest {
 	
 	
 	/** 
-	 * Is a try catch in the code, checking to make sure the code 
+	 * Test Case: Is a try catch in the code, checking to make sure the code 
 	 * doesn't break if there is one
 	 * The purpose of this test is to see how many nodes are sent to the
 	 * operator to be changed.
-	 * There should still be 6 nodes in changes.
+	 * 
+	 * Method under test: visit
+	 * 
+	 * Correct Behavior: There should still be 6 nodes in changes.
 	 ***/
 	@Test
 	public void source_operation_on_hello_world_try() {
 		try {
 			prepare_test_files(ComponentType.TRY);
-			execute_muse(OperatorType.SOURCE);
+			execute_muse(OperatorType.TAINTSOURCE);
 
 			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
@@ -107,15 +111,18 @@ public class TaintSourceSchemaTest {
 	}
 	
 	/** 
-	 * If there is a switch statement in the code makes sure the program
+	 * Test Case: If there is a switch statement in the code makes sure the program
 	 * will continue to read the file until the end.
-	 * There should be 6 nodes in changes, as there are 3 method declarations
+	 * 
+	 * Method under test: visit
+	 * 
+	 * Correct Behavior: There should be 6 nodes in changes, as there are 3 method declarations
 	 ***/
 	@Test
 	public void source_operation_on_hello_world_switch() {
 		try {
 			prepare_test_files(ComponentType.SWITCH);
-			execute_muse(OperatorType.SOURCE);
+			execute_muse(OperatorType.TAINTSOURCE);
 
 			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
@@ -134,16 +141,19 @@ public class TaintSourceSchemaTest {
 	}
 	
 	/** 
-	 * Checks to see what happens if there is a method declaration inside
+	 * Test Case: Checks to see what happens if there is a method declaration inside
 	 * a switch statement. The one switch statement has multiple methods
 	 * There should be 10 nodes in changes, as there are 5 method declarations
-	 * 2 methods are inside switch, both should be included
+	 * 
+	 * Method under test: visit
+	 * 
+	 * Correct Behavior: 2 methods are inside switch, both should be included
 	 ***/
 	@Test
 	public void source_operation_on_hello_world_switch_method() {
 		try {
 			prepare_test_files(ComponentType.SWITCHMETHOD);
-			execute_muse(OperatorType.SOURCE);
+			execute_muse(OperatorType.TAINTSOURCE);
 
 			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
@@ -162,16 +172,19 @@ public class TaintSourceSchemaTest {
 	}
 	
 	/** 
-	 * Place a method inside the try catch to see if handles correctly
+	 * Test Case: Place a method inside the try catch to see if handles correctly
 	 * The purpose of this test is to see how many nodes are sent to the
 	 * operator to be changed.
-	 * There should still be 8 nodes, as there are 4 method declarations
+	 * 
+	 * Method under test: visit
+	 * 
+	 * Correct Behavior: There should still be 8 nodes, as there are 4 method declarations
 	 ***/
 	@Test
 	public void source_operation_on_hello_world_try_method() {
 		try {
 			prepare_test_files(ComponentType.TRYMETHOD);
-			execute_muse(OperatorType.SOURCE);
+			execute_muse(OperatorType.TAINTSOURCE);
 
 			ArrayList<SourceNodeChangeContainers> changes = taintSourceSchema.getNodeChanges();
 			
@@ -189,6 +202,13 @@ public class TaintSourceSchemaTest {
 		}
 	}
 
+	/**
+	 * executes muse
+	 * @param operator
+	 * @throws BadLocationException
+	 * @throws MalformedTreeException
+	 * @throws IOException
+	 */
 	private void execute_muse(OperatorType operator) throws BadLocationException, MalformedTreeException, IOException {
 		taintSourceSchema = new TaintSourceSchema();
 		rewriter = ASTRewrite.create(root.getAST());
@@ -207,27 +227,27 @@ public class TaintSourceSchemaTest {
 
 		switch (component) {
 		case STATICMETHOD:
-			content = FileUtility.readSourceFile("test/input/source_sample_static_method.txt").toString();
+			content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_static_method.txt").toString();
 			expectedOutput = new File("test/output/sample_hello_world_sink.txt");
 			break;
 
 		case SWITCH:
-			content = FileUtility.readSourceFile("test/input/source_sample_switch.txt").toString();
+			content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_switch.txt").toString();
 			expectedOutput = new File("test/output/sample_hello_world_source.txt");
 			break;
 			
 		case SWITCHMETHOD:
-			content = FileUtility.readSourceFile("test/input/source_sample_switch_method.txt").toString();
+			content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_switch_method.txt").toString();
 			expectedOutput = new File("test/output/sample_multilevelclass_taint.txt");
 			break;
 
 		case TRY:
-			content = FileUtility.readSourceFile("test/input/source_sample_try.txt").toString();
+			content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_try.txt").toString();
 			expectedOutput = new File("test/output/sample_multilevelclass_taint.txt");
 			break;
 		
 		case TRYMETHOD:
-			content = FileUtility.readSourceFile("test/input/source_sample_try_method.txt").toString();
+			content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_try_method.txt").toString();
 			expectedOutput = new File("test/output/sample_multilevelclass_taint.txt");
 			break;
 			
