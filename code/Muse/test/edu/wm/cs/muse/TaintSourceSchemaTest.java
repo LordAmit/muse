@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.JavaCore;
@@ -237,20 +238,23 @@ public class TaintSourceSchemaTest {
 	}
 
 	
-	//Taken directly from muse test
-	private CompilationUnit getTestAST(String source) {
-		
-		HashMap<String, String> options = new HashMap<String, String>();
-		ASTParser parser = ASTParser.newParser(AST.JLS8);
-		options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
-		parser.setCompilerOptions(options);
+	  //Taken directly from muse test
+		private CompilationUnit getTestAST(String source) {
+			
+			ASTParser parser = ASTParser.newParser(AST.JLS8);
+			Map options = JavaCore.getOptions();
+			options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
+			options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_8);
+			options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_8);
+			options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_8);		
+			parser.setCompilerOptions(options);
 
-		parser.setSource(source.toCharArray());
+			parser.setSource(source.toCharArray());
 
-		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		parser.setResolveBindings(true);
-		parser.setBindingsRecovery(true);
+			parser.setKind(ASTParser.K_COMPILATION_UNIT);
+			parser.setResolveBindings(true);
+			parser.setBindingsRecovery(true);
 
-		return (CompilationUnit) parser.createAST(new NullProgressMonitor());
-	}
+			return (CompilationUnit) parser.createAST(new NullProgressMonitor());
+	  } 
 }
