@@ -20,6 +20,7 @@ public class Arguments {
 	private static String appName;
 	private static String mutantsFolder;
 	private static String Operator;
+	private static String leakPath = "src/edu/wm/cs/muse/dataleak/default_leak_strings.txt";
 
 	/**
 	 * private constructor makes sure that no constructor can ever be used.
@@ -60,9 +61,14 @@ public class Arguments {
 		}
 	}
 
+	public static void setLeakPath(String leakPath) {
+		Arguments.leakPath = leakPath;
+	}
+	
 	public static void setRootPath(String rootPath) {
 		Arguments.rootPath = rootPath;
 	}
+
 
 	/**
 	 * @return the folder that contains the binaries related to lib4ast
@@ -70,6 +76,15 @@ public class Arguments {
 	public static String getBinariesFolder() {
 		return binariesFolder;
 	}
+	
+	/**
+	 * @return the path where the leak string file resides.
+	 */
+	public static String getLeakPath() {
+		//leakPath = "C:\\Users\\Ian\\Downloads\\leak.txt";
+		return leakPath;
+	}
+
 
 	/**
 	 * @return the path where the source files reside. Source files may be under

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.JavaCore;
@@ -21,7 +22,7 @@ public class ASTHelper {
 public static CompilationUnit getAST(String source, String binariesFolder, String sourceRootFolder) {
 		
 		
-		HashMap options = new HashMap();
+		//HashMap options = new HashMap();
 		List<String> jars = getJarsInfolder(binariesFolder);
 		String[] classPath = new String[jars.size()];
 		for(int i = 0; i < classPath.length; i++){
@@ -30,6 +31,7 @@ public static CompilationUnit getAST(String source, String binariesFolder, Strin
 		String[] srcPath = {sourceRootFolder};
 		
 		ASTParser parser = ASTParser.newParser(AST.JLS8);
+		Map options = JavaCore.getOptions();
 		options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
 		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_8);
 		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_8);
@@ -83,7 +85,7 @@ public static CompilationUnit getTestingAST(String source, String sourceRootFold
 		}
 		//classPath[i] = "/Users/mariolinares/Documents/liminal/projects/Ferias/FeriasDNP/bin/classes/co/gov/dnp/ferias";
 		String[] sources = {  projectPath };
-		ASTParser parser = ASTParser.newParser(AST.JLS3);
+		ASTParser parser = ASTParser.newParser(AST.JLS8);
 		parser.setSource(source.toCharArray());
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setResolveBindings(true);

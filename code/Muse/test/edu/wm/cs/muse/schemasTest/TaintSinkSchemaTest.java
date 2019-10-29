@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.JavaCore;
@@ -38,7 +39,7 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 public class TaintSinkSchemaTest {
 
   public enum ComponentType {
-		STATICMETHOD, SWITCH, TRY, TRYMETHOD, SWITCHMETHOD
+		STATICMETHOD, SWITCH, TRY, TRYMETHOD, SWITCHMETHOD, ENUMMETHOD
 	} 
 	
 	String content = null;
@@ -190,6 +191,27 @@ public class TaintSinkSchemaTest {
   
   }
 
+  @Test
+  public void sink_operation_on_hello_world_enum_method() {
+    try {      
+      prepare_test_files(ComponentType.ENUMMETHOD);
+      execute_muse_sink();
+      ArrayList<SinkNodeChangeContainers> sinkChanges = taintSinkSchema.getNodeChanges();
+
+      assertEquals(9, sinkChanges.size());
+
+    } catch (IOException e) {
+      e.printStackTrace();
+
+    } catch (MalformedTreeException e) {
+      e.printStackTrace();
+
+    } catch (BadLocationException e) {
+      e.printStackTrace();
+    }
+  
+  }
+  
   /**
    * Executes muse
    * @throws BadLocationException
@@ -232,6 +254,10 @@ public class TaintSinkSchemaTest {
     case TRYMETHOD:
       content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_try_method.txt").toString();
       break;
+      
+    case ENUMMETHOD:
+        content = FileUtility.readSourceFile("test/input/sink_sample_enum_method.txt").toString();
+        break;
     }
 
     muse = new Muse();
@@ -241,9 +267,12 @@ public class TaintSinkSchemaTest {
   //Taken directly from muse test
 	private CompilationUnit getTestAST(String source) {
 		
-		HashMap<String, String> options = new HashMap<String, String>();
 		ASTParser parser = ASTParser.newParser(AST.JLS8);
+		Map options = JavaCore.getOptions();
 		options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
+		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_8);
+		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_8);
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_8);		
 		parser.setCompilerOptions(options);
 
 		parser.setSource(source.toCharArray());
