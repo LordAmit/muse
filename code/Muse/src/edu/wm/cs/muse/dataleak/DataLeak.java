@@ -17,7 +17,7 @@ import edu.wm.cs.muse.dataleak.support.OperatorType;
  *         Sample data leak formats: Declaration: String dataLeak{{ IDENTIFIER
  *         }}; Source: dataLeak{{ IDENTIFIER }} =
  *         java.util.Calendar.getInstance().getTimeZone().getDisplayName();
- *         Sink: android.util.Log.d(“leak-{{ IDENTIFIER }}”, dataLeak{{
+ *         Sink: android.util.Log.d("leak-{{ IDENTIFIER }}", dataLeak{{
  *         IDENTIFIER }}); Hop: dataLeak{{ IDENTIFIER }} = dataLeak{{ IDENTIFIER
  *         }};
  * 
@@ -101,8 +101,21 @@ public class DataLeak {
 	public static String getLeak(int identifier) {
 		try {
 			String[] leakStrings = FileUtility.readSourceFile(Arguments.getLeakPath()).toString().split("\\n");
-			reachabilitySource = leakStrings[0];
-			reachabilitySink = leakStrings[1];
+			// first line read in as leak source string or default leak source string if empty
+			if (leakStrings.length > 0 && !leakStrings[0].isEmpty()) {
+				reachabilitySource = leakStrings[0];
+			}
+			else {
+				reachabilitySource = "java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+			}
+			// second line read in as leak sink string or default leak sink string if empty
+			if (leakStrings.length > 1 && !leakStrings[1].isEmpty()) {
+				reachabilitySink = leakStrings[1];
+			}
+			else {
+				reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
+			}
+			// if no file found, default leak strings are used
 		} catch (IOException e) {
 			reachabilitySource = "java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
 			reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
