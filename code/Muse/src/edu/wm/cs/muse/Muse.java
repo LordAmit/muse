@@ -3,6 +3,7 @@ package edu.wm.cs.muse;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
@@ -31,6 +32,13 @@ import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.mdroid.ASTHelper;
 
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
 /**
  *
  * @author Richard Bonett
@@ -39,6 +47,7 @@ import edu.wm.cs.muse.mdroid.ASTHelper;
 public class Muse {
 
 	ASTRewrite rewriter;
+	CommandLine cmd = null;
 	// TODO: Does not handle anonymous declarations and try_catch clauses well.
 	// currently just ignores such methods.
 	// TODO: Make schema for inserting leaks in static methods, since regular
@@ -47,13 +56,39 @@ public class Muse {
 	// not detected in java ast as static
 
 	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
-		// Usage Error
-		if (args.length != 5) {
+		
+		Options options = new Options();
+		//adding an option flag that can be used on command line
+		options.addOption("d", "dataleak", true, "Run Muse with a custom data leak file");
+
+		CommandLineParser parser = new DefaultParser();
+
+		//parse the command line input
+		try {
+			cmd = parser.parse(options, args);
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+			return;
+		}
+
+		///////Add control flow based on the option flag parsed here
+			
+		//sets the leakPath to the file specified
+		if (cmd.hasOption("d")) {
+			System.out.println("DataLeak set");
+			Arguments.setLeakPath(cmd.getOptionValue("d"));
+		}	
+		
+		///////
+		
+		// Usage Error, check length of remaining arguments
+		if (cmd.getArgs().length != 5) {
 			printArgumentError();
 			return;
 		}
 
-		Arguments.extractArguments(args);
+		//any non option arguments are passed in 
+		Arguments.extractArguments(cmd.getArgs());
 
 		FileUtility.setupMutantsDirectory();
 
