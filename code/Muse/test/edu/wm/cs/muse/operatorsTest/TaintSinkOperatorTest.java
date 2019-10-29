@@ -58,7 +58,7 @@ public class TaintSinkOperatorTest {
 		}
 
 		nodeChanges = new ArrayList<SinkNodeChangeContainers>();
-		root = ASTHelper.getAST(source, Arguments.getBinariesFolder(), Arguments.getRootPath());
+		root = ASTHelper.getTestingAST(source, Arguments.getRootPath());
 		rewriter = ASTRewrite.create(root.getAST());
 		taintSinkSchema = new TaintSinkSchema();
 		root.accept(taintSinkSchema);
