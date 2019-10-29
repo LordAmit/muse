@@ -17,7 +17,7 @@ import java.io.IOException;
 public class Arguments {
 	private static String binariesFolder;
 	private static String rootPath;
-	private static String leakPath;
+	private static String leakPath = "src/dataleak/default_leak_strings.txt";
 	private static String appName;
 	private static String mutantsFolder;
 	private static String Operator;
@@ -46,7 +46,6 @@ public class Arguments {
 		appName = args[2];
 		mutantsFolder = args[3];
 		Operator = args[4];
-		leakPath = args[5];
 	}
 
 	public static void extractArguments(File file) {
@@ -62,6 +61,10 @@ public class Arguments {
 		}
 	}
 
+	public static void setLeakPath(String leakPath) {
+		Arguments.leakPath = leakPath;
+	}
+	
 	public static void setRootPath(String rootPath) {
 		Arguments.rootPath = rootPath;
 	}
@@ -79,7 +82,7 @@ public class Arguments {
 	 * @return the path where the leak string file resides.
 	 */
 	public static String getLeakPath() {
-		leakPath = "C:\\Users\\Ian\\Downloads\\leak.txt";
+		//leakPath = "C:\\Users\\Ian\\Downloads\\leak.txt";
 		return leakPath;
 	}
 
