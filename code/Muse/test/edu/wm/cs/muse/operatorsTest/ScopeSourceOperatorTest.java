@@ -46,7 +46,7 @@ public class ScopeSourceOperatorTest {
 			return;
 		}
 		nodeChanges = new ArrayList<SourceNodeChangeContainers>();
-		root = ASTHelper.getAST(source, Arguments.getBinariesFolder(), Arguments.getRootPath());
+		root = ASTHelper.getTestingAST(source, Arguments.getRootPath());
 		rewriter = ASTRewrite.create(root.getAST());
 		scopeSourceSchema = new ScopeSourceSchema();
 		root.accept(scopeSourceSchema);

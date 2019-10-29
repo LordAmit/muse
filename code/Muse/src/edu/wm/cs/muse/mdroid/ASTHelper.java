@@ -49,6 +49,30 @@ public static CompilationUnit getAST(String source, String binariesFolder, Strin
 		return (CompilationUnit) parser.createAST(new NullProgressMonitor());
 	}
 	
+public static CompilationUnit getTestingAST(String source, String sourceRootFolder) {
+	
+	
+	HashMap options = new HashMap();
+	
+	String[] srcPath = {sourceRootFolder};
+	
+	ASTParser parser = ASTParser.newParser(AST.JLS8);
+	options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
+	options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_8);
+	options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_8);
+	options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_8);
+	parser.setCompilerOptions(options);
+	
+	parser.setSource(source.toCharArray());
+	parser.setEnvironment(null, srcPath, null, false);
+	   
+	parser.setKind(ASTParser.K_COMPILATION_UNIT);
+	parser.setResolveBindings(true);
+	parser.setBindingsRecovery(true);
+	
+	
+	return (CompilationUnit) parser.createAST(new NullProgressMonitor());
+}
 	
 	public static CompilationUnit getASTAndBindings(String source, String projectPath, String binariesFolder, String unitName) {
  	  
