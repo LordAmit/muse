@@ -12,20 +12,22 @@ Alternatively, you can use the Muse.jar file by downloading it from the releases
 # Usage
 Muse relies on [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus). You will need the `libs4ast` folder of that project in order to run Muse. 
 
-To run Muse, use the following command, specifying the required arguments:
+To run Muse, use the following command, specifying the arguments. `(arg)` specifies required arguments and `[arg]` specifies optional arguments:
 ```
-java -jar Muse-1.0.0.jar <libs4ast> <AppSourceCode> <AppName> <OutputPath> <OperatorType>
+java -jar Muse-1.0.0.jar (<libs4ast>) (<AppSourceCode>) (<AppName>) (<OutputPath>) (<OperatorType>) [-d <LeakFile>]
 ```
 
 If running Muse within a IDE like Eclipse, import only the Muse folder within the code subdirectory, or else you might get a java.lang.SecurityException error when running Muse.java
 
 ### Arguments
 Provide the following list of required arguments when running Muse: 
-1. ``libs4ast``:  path of the lib4ast folder, from [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus/tree/master/libs4ast);
-2. ``AppSourceCode``: path of the Android app source code folder, which you want to apply mutation on;
+1. ``libs4ast``:  Path of the lib4ast folder, from [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus/tree/master/libs4ast);
+2. ``AppSourceCode``: Path of the Android app source code folder, which you want to apply mutation on;
 3. ``AppName``:  Name of the App;
 4. ``Output``: Path of the folder where the mutants will be created;
 5. `OperatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
+6. -d --dataleak  Option flag for defining custom data leak string
+7. ``LeakFile ``: Path of the custom data leak definition file
  
 
 ### Example
@@ -34,6 +36,12 @@ java -jar Muse-1.0.0.jar MDroidPlus/libs4ast/ /tmp/AppFoo/src/ AppFoo /tmp/mutan
 ```
 
 This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored. 
+
+```
+java -jar Muse-1.0.0.jar MDroidPlus/libs4ast/ /tmp/AppFoo/src/ AppFoo /tmp/mutants/ REACHABILITY -d /tmp/dataleak/
+```
+
+This will execute REACHABILITY in Muse with a custom data leak string defined in tmp/dataleak/
 
 
 # Muse Processor Helper Utility
@@ -50,10 +58,6 @@ Currently Muse is oriented towards the evaluation of static analysis tools for A
 
 This repository is for a refactoring and expansion of the original muse tool built by Richie Bonnett.
 
-## Past Team Members
-- Liz Weech
-- Yang Zhang
-
 ## Current Team Members
 - Amit Seal Ami
 - Scott Murphy
@@ -61,3 +65,7 @@ This repository is for a refactoring and expansion of the original muse tool bui
 - Ian Wolff
 - Jeff Petit-Freres
 - Will Elliot
+  
+## Past Team Members
+- Liz Weech
+- Yang Zhang
