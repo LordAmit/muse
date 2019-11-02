@@ -16,10 +16,15 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Statement;
+import edu.wm.cs.muse.dataleak.support.Arguments;
 
 public class ASTHelper {
 	
 public static CompilationUnit getAST(String source, String binariesFolder, String sourceRootFolder) {
+	
+		if(Arguments.getTestMode()) {
+			return getTestingAST(source, sourceRootFolder);
+		}
 		
 		
 		//HashMap options = new HashMap();

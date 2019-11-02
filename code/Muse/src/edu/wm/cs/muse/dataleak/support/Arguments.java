@@ -21,6 +21,7 @@ public class Arguments {
 	private static String mutantsFolder;
 	private static String Operator;
 	private static String leakPath = "src/edu/wm/cs/muse/dataleak/default_leak_strings.txt";
+	private static Boolean testmode = false;
 
 	/**
 	 * private constructor makes sure that no constructor can ever be used.
@@ -69,7 +70,15 @@ public class Arguments {
 		Arguments.rootPath = rootPath;
 	}
 
+	public static void setTestMode(Boolean mode) {
+		testmode = mode;
+	}
 
+	public static Boolean getTestMode() {
+		return testmode;
+	}
+	
+	
 	/**
 	 * @return the folder that contains the binaries related to lib4ast
 	 */

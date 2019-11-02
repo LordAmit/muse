@@ -23,9 +23,11 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.junit.Test;
 
+import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.dataleak.support.Utility;
+import  edu.wm.cs.muse.mdroid.ASTHelper;
 
 /*
  * We will be focusing on creating behavior based test cases. AAA pattern, i.e. 
@@ -206,6 +208,7 @@ public class MuseTest {
 	}
 
 	private void execute_muse(OperatorType operator) throws BadLocationException, MalformedTreeException, IOException {
+		Arguments.setTestMode(true);
 		rewriter = ASTRewrite.create(root.getAST());
 		sourceDoc = new Document(content);
 		muse.operatorExecution(root, rewriter, sourceDoc.get(), output, operator);
@@ -260,7 +263,7 @@ public class MuseTest {
 		}
 		
 		muse = new Muse();
-		root = getTestAST(content);
+		root = ASTHelper.getTestingAST(content, Arguments.getRootPath());
 	}
 
 		private CompilationUnit getTestAST(String source) {
