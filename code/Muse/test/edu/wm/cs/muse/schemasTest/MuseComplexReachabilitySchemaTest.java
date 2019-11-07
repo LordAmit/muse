@@ -1,7 +1,6 @@
 package edu.wm.cs.muse.schemasTest;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,7 +21,6 @@ import org.junit.Test;
 
 import edu.wm.cs.muse.Muse;
 import edu.wm.cs.muse.dataleak.schemas.ComplexReachabilitySchema;
-import edu.wm.cs.muse.dataleak.schemas.ReachabilitySchema;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.ReachabilityNodeChangeContainers;
@@ -384,6 +382,11 @@ public class MuseComplexReachabilitySchemaTest {
     case ANONYMOUS:
         content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_anonymous.txt").toString();
         break;
+        
+	case NULL:
+		break;
+	default:
+		break;
     }
 
     muse = new Muse();

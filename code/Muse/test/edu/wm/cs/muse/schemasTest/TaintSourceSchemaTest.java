@@ -1,13 +1,11 @@
 package edu.wm.cs.muse.schemasTest;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -56,7 +54,7 @@ public class TaintSourceSchemaTest {
 	File output = new File("test/output/source_schema_output.txt");
 
 	@Test
-	public void source_operation_on_hello_world_static() {
+	public void taint_source_operation_on_hello_world_static() {
 		try {
 			prepare_test_files(ComponentType.STATICMETHOD);
 			execute_muse(OperatorType.TAINTSOURCE);
@@ -89,7 +87,7 @@ public class TaintSourceSchemaTest {
 	 * Correct Behavior: There should still be 6 nodes in changes.
 	 ***/
 	@Test
-	public void source_operation_on_hello_world_try() {
+	public void taint_source_operation_on_hello_world_try() {
 		try {
 			prepare_test_files(ComponentType.TRY);
 			execute_muse(OperatorType.TAINTSOURCE);
@@ -119,7 +117,7 @@ public class TaintSourceSchemaTest {
 	 * Correct Behavior: There should be 6 nodes in changes, as there are 3 method declarations
 	 ***/
 	@Test
-	public void source_operation_on_hello_world_switch() {
+	public void taint_source_operation_on_hello_world_switch() {
 		try {
 			prepare_test_files(ComponentType.SWITCH);
 			execute_muse(OperatorType.TAINTSOURCE);
@@ -150,7 +148,7 @@ public class TaintSourceSchemaTest {
 	 * Correct Behavior: 2 methods are inside switch, both should be included
 	 ***/
 	@Test
-	public void source_operation_on_hello_world_switch_method() {
+	public void taint_source_operation_on_hello_world_switch_method() {
 		try {
 			prepare_test_files(ComponentType.SWITCHMETHOD);
 			execute_muse(OperatorType.TAINTSOURCE);
@@ -181,7 +179,7 @@ public class TaintSourceSchemaTest {
 	 * Correct Behavior: There should still be 8 nodes, as there are 4 method declarations
 	 ***/
 	@Test
-	public void source_operation_on_hello_world_try_method() {
+	public void taint_source_operation_on_hello_world_try_method() {
 		try {
 			prepare_test_files(ComponentType.TRYMETHOD);
 			execute_muse(OperatorType.TAINTSOURCE);

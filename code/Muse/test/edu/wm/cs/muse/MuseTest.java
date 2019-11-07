@@ -102,7 +102,7 @@ public class MuseTest {
 	}
 	
 	@Test
-	public void source_operation_on_hello_world() {
+	public void taint_source_operation_on_hello_world() {
 		try {
 			prepare_test_files(OperatorType.TAINTSOURCE, 1);
 			execute_muse(OperatorType.TAINTSOURCE);
@@ -122,7 +122,7 @@ public class MuseTest {
 	}
 
 	@Test
-	public void sink_operation_on_hello_world() {
+	public void taint_sink_operation_on_hello_world() {
 
 		try {
 			prepare_test_files(OperatorType.TAINTSINK, 1);
@@ -144,7 +144,7 @@ public class MuseTest {
 	}
 
 	@Test
-	public void taint_operation_on_hello_world() {
+	public void scope_source_operation_on_hello_world() {
 		try {
 
 			prepare_test_files(OperatorType.SCOPESOURCE, 1);
@@ -166,7 +166,7 @@ public class MuseTest {
 	}
 
 	@Test
-	public void taint_operation_on_multi_class() {
+	public void scope_source_operation_on_multi_class() {
 		try {
 
 			prepare_test_files(OperatorType.SCOPESOURCE, 2);
@@ -188,7 +188,7 @@ public class MuseTest {
 	}
 	
 	@Test
-	public void taint_sink_operation_on_multi_class() {
+	public void scope_sink_operation_on_multi_class() {
 		try {
 			prepare_test_files(OperatorType.SCOPESINK, 1);
 			execute_muse(OperatorType.SCOPESINK);

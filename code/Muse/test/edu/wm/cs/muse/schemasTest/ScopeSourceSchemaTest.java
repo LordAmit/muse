@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -50,10 +49,10 @@ public class ScopeSourceSchemaTest {
    * updating when a behavior is defined.
    */
   @Test
-  public void taint_operation_on_multilevelclass_static() {
+  public void scope_source_operation_on_multilevelclass_static() {
     try {      
       prepare_test_files(ComponentType.STATICMETHOD);
-      execute_muse_taint();
+      execute_muse_scope_source();
       ArrayList<SourceNodeChangeContainers> taintChanges = scopeSourceSchema.getNodeChanges();
 
       assertEquals(10, taintChanges.size());
@@ -79,10 +78,10 @@ public class ScopeSourceSchemaTest {
    * Correct Behavior: 24 scope changes should be found
    */
   @Test
-  public void taint_operation_on_multilevelclass_switch() {
+  public void scope_source_operation_on_multilevelclass_switch() {
     try {      
       prepare_test_files(ComponentType.SWITCH);
-      execute_muse_taint();
+      execute_muse_scope_source();
       ArrayList<SourceNodeChangeContainers> taintChanges = scopeSourceSchema.getNodeChanges();
 
       assertEquals(24, taintChanges.size());
@@ -108,10 +107,10 @@ public class ScopeSourceSchemaTest {
    * Correct Behavior: 24 scope changes should be found
    */
   @Test
-  public void taint_operation_on_multilevelclass_try() {
+  public void scope_source_operation_on_multilevelclass_try() {
     try {      
       prepare_test_files(ComponentType.TRY);
-      execute_muse_taint();
+      execute_muse_scope_source();
       ArrayList<SourceNodeChangeContainers> taintChanges = scopeSourceSchema.getNodeChanges();
 
       assertEquals(24, taintChanges.size());
@@ -137,10 +136,10 @@ public class ScopeSourceSchemaTest {
    * Correct Behavior: 24 scope changes should be found
    */
   @Test
-  public void taint_operation_on_multilevelclass_try_method() {
+  public void scope_source_operation_on_multilevelclass_try_method() {
     try {      
       prepare_test_files(ComponentType.TRYMETHOD);
-      execute_muse_taint();
+      execute_muse_scope_source();
       ArrayList<SourceNodeChangeContainers> taintChanges = scopeSourceSchema.getNodeChanges();
 
       assertEquals(24, taintChanges.size());
@@ -166,10 +165,10 @@ public class ScopeSourceSchemaTest {
    * Correct Behavior: 36 scope changes should be found
    */
   @Test
-  public void taint_operation_on_multilevelclass_switch_method() {
+  public void scope_source_operation_on_multilevelclass_switch_method() {
     try {      
       prepare_test_files(ComponentType.SWITCHMETHOD);
-      execute_muse_taint();
+      execute_muse_scope_source();
       ArrayList<SourceNodeChangeContainers> taintChanges = scopeSourceSchema.getNodeChanges();
 
       assertEquals(36, taintChanges.size());
@@ -194,10 +193,10 @@ public class ScopeSourceSchemaTest {
    * Correct Behavior: 10 scope changes should be found
    */
   @Test
-  public void taint_operation_on_multilevelclass_private_method() {
+  public void scope_source_operation_on_multilevelclass_private_method() {
     try {      
       prepare_test_files(ComponentType.PRIVATE);
-      execute_muse_taint();
+      execute_muse_scope_source();
       ArrayList<SourceNodeChangeContainers> taintChanges = scopeSourceSchema.getNodeChanges();
 
       assertEquals(10, taintChanges.size());
@@ -222,10 +221,10 @@ public class ScopeSourceSchemaTest {
    * Correct Behavior: 12 scope changes should be found
    */
   @Test
-  public void taint_operation_on_multilevelclass_protected_method() {
+  public void scope_source_operation_on_multilevelclass_protected_method() {
     try {      
       prepare_test_files(ComponentType.PROTECTED);
-      execute_muse_taint();
+      execute_muse_scope_source();
       ArrayList<SourceNodeChangeContainers> taintChanges = scopeSourceSchema.getNodeChanges();
 
       assertEquals(12, taintChanges.size());
@@ -250,10 +249,10 @@ public class ScopeSourceSchemaTest {
    * Correct Behavior: 24 scope changes should be found
    */
   @Test
-  public void taint_operation_on_multilevelclass_anonymous() {
+  public void scope_source_operation_on_multilevelclass_anonymous() {
     try {      
       prepare_test_files(ComponentType.ANONYMOUS);
-      execute_muse_taint();
+      execute_muse_scope_source();
       ArrayList<SourceNodeChangeContainers> taintChanges = scopeSourceSchema.getNodeChanges();
 
       assertEquals(28, taintChanges.size());
@@ -275,7 +274,7 @@ public class ScopeSourceSchemaTest {
    * @throws MalformedTreeException
    * @throws IOException
    */
-  private void execute_muse_taint() throws BadLocationException, MalformedTreeException, IOException {
+  private void execute_muse_scope_source() throws BadLocationException, MalformedTreeException, IOException {
 	scopeSourceSchema = new ScopeSourceSchema();
     rewriter = ASTRewrite.create(root.getAST());
   

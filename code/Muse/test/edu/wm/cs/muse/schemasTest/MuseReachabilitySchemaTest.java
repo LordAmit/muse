@@ -335,6 +335,9 @@ public class MuseReachabilitySchemaTest {
     case ANONYMOUS:
         content = FileUtility.readSourceFile("test/input/taintSourceInput/taint_source_sample_anonymous.txt").toString();
         break;
+        
+	default:
+		break;
     }
 
     muse = new Muse();

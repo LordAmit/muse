@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -16,12 +15,10 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.junit.Test;
 
-import edu.wm.cs.muse.dataleak.schemas.TaintSourceSchema;
 import edu.wm.cs.muse.Muse;
 import edu.wm.cs.muse.dataleak.schemas.TaintSinkSchema;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
@@ -59,10 +56,10 @@ public class TaintSinkSchemaTest {
    * Correct Behavior: 6 changes should be found in SinkNodeChangeContainers
    */
   @Test
-  public void sink_operation_on_hello_world_static() {
+  public void taint_sink_operation_on_hello_world_static() {
     try {      
       prepare_test_files(ComponentType.STATICMETHOD);
-      execute_muse_sink();
+      execute_muse_taint_sink();
       ArrayList<SinkNodeChangeContainers> sinkChanges = taintSinkSchema.getNodeChanges();
 
       assertEquals(6, sinkChanges.size());
@@ -87,10 +84,10 @@ public class TaintSinkSchemaTest {
    * Correct Behavior: 9 changes should be found in SinkNodeChangeContainers
    */
   @Test
-  public void sink_operation_on_hello_world_switch() {
+  public void taint_sink_operation_on_hello_world_switch() {
     try {      
       prepare_test_files(ComponentType.SWITCH);
-      execute_muse_sink();
+      execute_muse_taint_sink();
       ArrayList<SinkNodeChangeContainers> sinkChanges = taintSinkSchema.getNodeChanges();
 
       assertEquals(9, sinkChanges.size());
@@ -115,10 +112,10 @@ public class TaintSinkSchemaTest {
    * Correct Behavior: 9 changes should be found in SinkNodeChangeContainers
    */
   @Test
-  public void sink_operation_on_hello_world_try() {
+  public void taint_sink_operation_on_hello_world_try() {
     try {      
       prepare_test_files(ComponentType.TRY);
-      execute_muse_sink();
+      execute_muse_taint_sink();
       ArrayList<SinkNodeChangeContainers> sinkChanges = taintSinkSchema.getNodeChanges();
 
       assertEquals(9, sinkChanges.size());
@@ -143,10 +140,10 @@ public class TaintSinkSchemaTest {
    * Correct Behavior: 12 changes should be found in SinkNodeChangeContainers
    */
   @Test
-  public void sink_operation_on_hello_world_try_method() {
+  public void taint_sink_operation_on_hello_world_try_method() {
     try {      
       prepare_test_files(ComponentType.TRYMETHOD);
-      execute_muse_sink();
+      execute_muse_taint_sink();
       ArrayList<SinkNodeChangeContainers> sinkChanges = taintSinkSchema.getNodeChanges();
 
       assertEquals(12, sinkChanges.size());
@@ -171,10 +168,10 @@ public class TaintSinkSchemaTest {
    * Correct Behavior: 15 changes should be found in SinkNodeChangeContainers
    */
   @Test
-  public void sink_operation_on_hello_world_switch_method() {
+  public void taint_sink_operation_on_hello_world_switch_method() {
     try {      
       prepare_test_files(ComponentType.SWITCHMETHOD);
-      execute_muse_sink();
+      execute_muse_taint_sink();
       ArrayList<SinkNodeChangeContainers> sinkChanges = taintSinkSchema.getNodeChanges();
 
       assertEquals(15, sinkChanges.size());
@@ -192,10 +189,10 @@ public class TaintSinkSchemaTest {
   }
 
   @Test
-  public void sink_operation_on_hello_world_enum_method() {
+  public void taint_sink_operation_on_hello_world_enum_method() {
     try {      
       prepare_test_files(ComponentType.ENUMMETHOD);
-      execute_muse_sink();
+      execute_muse_taint_sink();
       ArrayList<SinkNodeChangeContainers> sinkChanges = taintSinkSchema.getNodeChanges();
 
       assertEquals(9, sinkChanges.size());
@@ -218,7 +215,7 @@ public class TaintSinkSchemaTest {
    * @throws MalformedTreeException
    * @throws IOException
    */
-  private void execute_muse_sink() throws BadLocationException, MalformedTreeException, IOException {
+  private void execute_muse_taint_sink() throws BadLocationException, MalformedTreeException, IOException {
     taintSinkSchema = new TaintSinkSchema();
     rewriter = ASTRewrite.create(root.getAST());
   
