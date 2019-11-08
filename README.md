@@ -26,8 +26,7 @@ Provide the following list of required arguments when running Muse:
 3. ``AppName``:  Name of the App;
 4. ``Output``: Path of the folder where the mutants will be created;
 5. `OperatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
-6. -d --dataleak  Option flag for defining custom data leak string
-7. ``LeakFile ``: Path of the custom data leak definition file
+6. ``-d LeakFile``:  Option flag and path of the custom data leak definition file
  
 
 ### Example
@@ -38,10 +37,20 @@ java -jar Muse-1.0.0.jar MDroidPlus/libs4ast/ /tmp/AppFoo/src/ AppFoo /tmp/mutan
 This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored. 
 
 ```
-java -jar Muse-1.0.0.jar MDroidPlus/libs4ast/ /tmp/AppFoo/src/ AppFoo /tmp/mutants/ REACHABILITY -d /tmp/dataleak/
+java -jar Muse-1.0.0.jar MDroidPlus/libs4ast/ /tmp/AppFoo/src/ AppFoo /tmp/mutants/ REACHABILITY -d /tmp/dataLeak.txt
 ```
 
-This will execute REACHABILITY in Muse with a custom data leak string defined in tmp/dataleak/
+This will execute REACHABILITY in Muse with a custom data leak string defined in `tmp/dataLeak.txt`
+
+# Defining a Custom Data Leak String
+Muse allows the user to define their own custom data leak string to be used in the execution of Muse. The dataLeak.txt file should be formatted as follows:
+
+```
+"CUSTOM_SOURCE_LEAK_STRING"
+"CUSTOM_SINK_LEAK_STRING"
+```
+
+The first line of the Leak file should define the custom source and the second line should define the custom sink. If either line is empty, meaning no custom leak is defineed, Muse will use it's default leak strings. If no file is specified, Muse will also use it's defualt leak strings.
 
 
 # Muse Processor Helper Utility
