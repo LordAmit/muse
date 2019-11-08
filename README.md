@@ -42,7 +42,7 @@ java -jar Muse-1.0.0.jar MDroidPlus/libs4ast/ /tmp/AppFoo/src/ AppFoo /tmp/mutan
 
 This will execute REACHABILITY in Muse with a custom data leak string defined in `tmp/dataLeak.txt`
 
-# Defining a Custom Data Leak String
+### Defining a Custom Data Leak String
 Muse allows the user to define their own custom data leak string to be used in the execution of Muse. The dataLeak.txt file should be formatted as follows:
 
 ```
