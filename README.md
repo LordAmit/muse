@@ -46,8 +46,8 @@ This will execute REACHABILITY in Muse with a custom data leak string defined in
 Muse allows the user to define their own custom data leak string to be used in the execution of Muse. The dataLeak.txt file should be formatted as follows:
 
 ```
-"CUSTOM_SOURCE_LEAK_STRING"
-"CUSTOM_SINK_LEAK_STRING"
+"CUSTOM_SOURCE_LEAK_STRING%d"
+"CUSTOM_SINK_LEAK_STRING%d"
 ```
 
 The first line of the Leak file should define the custom source and the second line should define the custom sink. If either line is empty, meaning no custom leak is defineed, Muse will use it's default leak strings. If no file is specified, Muse will also use it's defualt leak strings.
