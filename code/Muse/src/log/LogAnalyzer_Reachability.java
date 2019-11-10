@@ -142,13 +142,13 @@ public class LogAnalyzer_Reachability {
 		String outputLines = "";
 		boolean addThrowAwayLine = false;		
 		// rawLeak separates the substrings before and after the custom leak string "%d" placeholder
-		String[] rawLeakSource = DataLeak.getRawLeak()[0].split("%d");
-		String[] rawLeakSink = DataLeak.getRawLeak()[1].split("%d");
+		String[] rawLeakSource = DataLeak.getRawLeak()[0].split("%d",2);
+		String[] rawLeakSink = DataLeak.getRawLeak()[1].split("%d",2);
 		
 		for (String line : lines) {
 			if (line.contains(rawLeakSource[0])) {
-				// isolates the index from the leak string
-				int index = Integer.parseInt(line.split(rawLeakSource[0])[1].split(rawLeakSource[1])[0]);
+				// isolates the index from the leak string and removes any leftover whitespace
+				int index = Integer.parseInt(line.replace(rawLeakSource[0], "").replace(rawLeakSource[1],"").replaceAll("\\s+",""));
 				if (indicesFromLog.contains(index)) {
 					outputLines += line + "\n";
 					addThrowAwayLine = true;
