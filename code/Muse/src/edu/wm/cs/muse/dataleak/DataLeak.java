@@ -126,7 +126,7 @@ public class DataLeak {
 	}
 
 	/**
-	 * Formats the leak string and returns it. Accepts only OperatorType Reachability and ComplexReachabilityOperator
+	 * Formats the leak string and returns it. Accepts only OperatorType Reachability and ComplexReachability
 	 * 
 	 * @param identifier an instance of the global counter utility used to identify
 	 *                   the leak string
