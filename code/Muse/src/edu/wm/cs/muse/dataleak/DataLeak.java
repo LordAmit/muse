@@ -87,6 +87,43 @@ public class DataLeak {
 	}
 
 	/**
+	 * Returns an unformatted version of the leak string. Currently only used by the
+	 * reachability log analyzer.
+	 * 
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 * 
+	 * @returns the string version of a data leak as used by the reachability
+	 *          operator schema with the "%d" placeholder
+	 */
+	public static String[] getRawLeak() {
+		try {
+			String[] leakStrings = FileUtility.readSourceFile(Arguments.getLeakPath()).toString().split("\\n");
+			// first line read in as leak source string or default leak source string if empty
+			if (leakStrings.length > 0 && !leakStrings[0].isEmpty()) {
+				reachabilitySource = leakStrings[0];
+			}
+			else {
+				reachabilitySource = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+			}
+			// second line read in as leak sink string or default leak sink string if empty
+			if (leakStrings.length > 1 && !leakStrings[1].isEmpty()) {
+				reachabilitySink = leakStrings[1];
+			}
+			else {
+				reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
+			}
+			// if no file found, default leak strings are used
+		} catch (IOException e) {
+			reachabilitySource = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+			reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
+			e.printStackTrace();
+		}
+		String[] leakText = {reachabilitySource, reachabilitySink};
+		return leakText;
+	}
+	
+	/**
 	 * Formats the leak string and returns it. Currently only used by the
 	 * reachability operator schema.
 	 * 
@@ -106,7 +143,7 @@ public class DataLeak {
 				reachabilitySource = leakStrings[0];
 			}
 			else {
-				reachabilitySource = "java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+				reachabilitySource = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
 			}
 			// second line read in as leak sink string or default leak sink string if empty
 			if (leakStrings.length > 1 && !leakStrings[1].isEmpty()) {
@@ -117,7 +154,7 @@ public class DataLeak {
 			}
 			// if no file found, default leak strings are used
 		} catch (IOException e) {
-			reachabilitySource = "java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+			reachabilitySource = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
 			reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
 			e.printStackTrace();
 		}
@@ -126,7 +163,7 @@ public class DataLeak {
 	}
 
 	/**
-	 * Formats the leak string and returns it. Accepts only OperatorType Reachability and ComplexReachability
+	 * Formats the leak string and returns it. Accepts only OperatorType Reachability and ComplexReachabilityOperator
 	 * 
 	 * @param identifier an instance of the global counter utility used to identify
 	 *                   the leak string
