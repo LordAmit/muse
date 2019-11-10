@@ -1,0 +1,26 @@
+C:\Users\Ian\Downloads\OutputLog\BMIMain
+In file: BMIMain.java
+Input operator: REACHABILITY
+leak-0: <BMIMain.<init>>
+leak-1: BMIMain.onCreate
+leak-2: BMIMain.onCreate
+leak-3: BMIMain.calculateClickHandler
+leak-4: BMIMain.calculateClickHandler
+leak-5: BMIMain.calculateClickHandler
+leak-6: BMIMain.calculateClickHandler
+leak-7: BMIMain.calculateClickHandler
+leak-8: BMIMain.calculateClickHandler
+leak-9: BMIMain.calculateClickHandler
+leak-10: BMIMain.calculateClickHandler
+leak-11: BMIMain.calculateBMI
+leak-12: BMIMain.interpretBMI
+leak-13: BMIMain.interpretBMI
+leak-14: BMIMain.interpretBMI
+leak-15: BMIMain.interpretBMI
+leak-16: BMIMain.interpretBMI
+leak-17: BMIMain.interpretBMI
+leak-18: BMIMain.interpretBMI
+leak-19: BMIMain.interpretBMI
+leak-20: <PlaceholderFragment.<init>>
+leak-21: PlaceholderFragment.PlaceholderFragment
+leak-22: PlaceholderFragment.onCreateView
