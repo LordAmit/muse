@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import edu.wm.cs.muse.dataleak.DataLeak;
+
 /**
  * This class is introduced for better handling of arguments, and adding
  * documentation to each parameter.
@@ -62,8 +64,22 @@ public class Arguments {
 		}
 	}
 
-	public static void setLeakPath(String leakPath) {
-		Arguments.leakPath = leakPath;
+	public static boolean setLeaks(OperatorType op, String leakPath) {
+		try {
+			String[] leakStrings = FileUtility.readSourceFile(leakPath).toString().split("\\n");
+			// first line read in as leak source string or default leak source string if empty
+			if (leakStrings.length > 0 && !leakStrings[0].isEmpty()) {
+				DataLeak.setSource(op, leakStrings[0]);
+			}
+			// second line read in as leak sink string or default leak sink string if empty
+			if (leakStrings.length > 1 && !leakStrings[1].isEmpty()) {
+				DataLeak.setSink(op, leakStrings[1]);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	public static void setRootPath(String rootPath) {
@@ -84,14 +100,6 @@ public class Arguments {
 	 */
 	public static String getBinariesFolder() {
 		return binariesFolder;
-	}
-	
-	/**
-	 * @return the path where the leak string file resides.
-	 */
-	public static String getLeakPath() {
-		//leakPath = "C:\\Users\\Ian\\Downloads\\leak.txt";
-		return leakPath;
 	}
 
 

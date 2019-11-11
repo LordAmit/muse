@@ -17,6 +17,7 @@ import org.eclipse.jface.text.Document;
 import edu.wm.cs.muse.dataleak.DataLeak;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
+import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 /**
  * Reachability log analyzer requires two string contents. Log and Source.
@@ -60,7 +61,7 @@ public class LogAnalyzer_Reachability {
 		//sets the leakPath to the file specified
 		if (cmd.hasOption("d")) {
 			System.out.println("DataLeak set");
-			Arguments.setLeakPath(cmd.getOptionValue("d"));
+			Arguments.setLeaks(OperatorType.REACHABILITY, cmd.getOptionValue("d"));
 		}	
 		
 		///////
@@ -142,8 +143,8 @@ public class LogAnalyzer_Reachability {
 		String outputLines = "";
 		boolean addThrowAwayLine = false;		
 		// rawLeak separates the substrings before and after the custom leak string "%d" placeholder
-		String[] rawLeakSource = DataLeak.getRawLeak()[0].split("%d",2);
-		String[] rawLeakSink = DataLeak.getRawLeak()[1].split("%d",2);
+		String[] rawLeakSource = DataLeak.getSource(OperatorType.REACHABILITY).split("%d",2);
+		String[] rawLeakSink = DataLeak.getSink(OperatorType.REACHABILITY).split("%d",2);
 		
 		for (String line : lines) {
 			if (line.contains(rawLeakSource[0])) {

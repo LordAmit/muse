@@ -25,9 +25,59 @@ import edu.wm.cs.muse.dataleak.support.OperatorType;
 public class DataLeak {
 
 	// source and sink strings used by the reachability operator schema
-	private static String reachabilitySource;
-	private static String reachabilitySink;
-
+	private static String reachabilitySource = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+	private static String reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
+	private static String complexReachabilitySource = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+	private static String complexReachabilitySink = "android.util.Log.d(\"leak-%d\", dataLeAkPath%d);";
+	private static String taintSourceSource = "dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+	private static String taintSourceSink = "android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);";
+	private static String taintSinkSource =  "final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+	private static String taintSinkSink = "android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);";
+	private static String scopeSource = "Object scope_LeAk%d = android.util.Log.d(\"scope-leak-%d\", dataLeAk%d);";
+	private static String scopeSink = "android.util.Log.d(\"leak-%s-%s\", dataLeAk%s);";
+	
+	public static void setSource(OperatorType op, String source) {
+		if (op == OperatorType.TAINTSOURCE) {
+			taintSourceSource = source;
+		}
+		else if (op == OperatorType.TAINTSINK) {
+			taintSinkSource = source;
+		}
+		else if (op == OperatorType.SCOPESOURCE) {
+			scopeSource = source;
+		}
+		else if (op == OperatorType.REACHABILITY) {
+			reachabilitySource = source;
+		}
+		else if (op == OperatorType.COMPLEXREACHABILITY) {
+			complexReachabilitySource = source;
+		}
+		else {
+			throw new IllegalArgumentException("Type must be valid Operator.");
+		}
+	}
+	
+	public static void setSink(OperatorType op, String sink) {
+		if (op == OperatorType.TAINTSOURCE) {
+			taintSourceSink =sink;
+		}
+		else if (op == OperatorType.TAINTSINK) {
+			taintSinkSink = sink;
+		}
+		else if (op == OperatorType.SCOPESINK) {
+			scopeSink = sink;
+		}
+		else if (op == OperatorType.REACHABILITY) {
+			reachabilitySink = sink;
+		}
+		else if (op == OperatorType.COMPLEXREACHABILITY) {
+			complexReachabilitySink = sink;
+		}
+		else {
+			throw new IllegalArgumentException("Type must be valid Operator.");
+		}
+	}
+	
 	/**
 	 * Formats the source string and returns the correct source string based on the
 	 * operator type specified.
@@ -38,25 +88,39 @@ public class DataLeak {
 	 * @returns the appropriate source for the operator type specified.
 	 */
 	public static String getSource(OperatorType op, int identifier) {
-		if (op == OperatorType.TAINTSINK) {
-			return String.format(
-					"final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-					identifier);
-		}
 		if (op == OperatorType.TAINTSOURCE) {
-			return String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-					identifier);
+			return String.format(taintSourceSource, identifier);
 		}
-		if (op == OperatorType.SCOPESOURCE) {
-			return String.format("Object tainted_LeAk%d = android.util.Log.d(\\\"taint-leak-%d\\\", dataLeAk%d);",
-					identifier);
+		else if (op == OperatorType.TAINTSINK) {
+			return String.format(taintSinkSource, identifier);
 		}
-		if (op == OperatorType.REACHABILITY) {
+		else if (op == OperatorType.SCOPESOURCE) {
+			return String.format(scopeSource, identifier);
+		}
+		else if (op == OperatorType.REACHABILITY) {
+			return String.format(reachabilitySource, identifier);
+		}
+		else if (op == OperatorType.COMPLEXREACHABILITY) {
+			return String.format(complexReachabilitySource, identifier);
+		}
+		return null;
+	}
+	
+	public static String getSource(OperatorType op) {
+		if (op == OperatorType.TAINTSOURCE) {
+			return taintSourceSource;
+		}
+		else if (op == OperatorType.TAINTSINK) {
+			return taintSinkSource;
+		}
+		else if (op == OperatorType.SCOPESOURCE) {
+			return scopeSource;
+		}
+		else if (op == OperatorType.REACHABILITY) {
 			return reachabilitySource;
 		}
-		if (op == OperatorType.COMPLEXREACHABILITY) {
-			return String.format("String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-					identifier);
+		else if (op == OperatorType.COMPLEXREACHABILITY) {
+			return complexReachabilitySource;
 		}
 		return null;
 	}
@@ -76,51 +140,35 @@ public class DataLeak {
 	 */
 	public static String getSink(OperatorType op, int sourceIdentifier, int sinkIdentifier) {
 		if (op == OperatorType.TAINTSINK) {
-			return String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", sourceIdentifier, sinkIdentifier,
-					sourceIdentifier);
+			return String.format(taintSinkSink, sourceIdentifier, sinkIdentifier, sourceIdentifier);
 		}
-		if (op == OperatorType.REACHABILITY) {
-			return reachabilitySink;
+		else if (op == OperatorType.TAINTSOURCE) {
+			return String.format(taintSourceSink, sourceIdentifier, sinkIdentifier, sourceIdentifier);
+		}
+		else if (op == OperatorType.REACHABILITY) {
+			return String.format(reachabilitySink, sinkIdentifier, sinkIdentifier, sinkIdentifier);
 		}
 
 		return null;
 	}
-
-	/**
-	 * Returns an unformatted version of the leak string. Currently only used by the
-	 * reachability log analyzer.
-	 * 
-	 * @throws IOException 
-	 * @throws FileNotFoundException 
-	 * 
-	 * @returns the string version of a data leak as used by the reachability
-	 *          operator schema with the "%d" placeholder
-	 */
-	public static String[] getRawLeak() {
-		try {
-			String[] leakStrings = FileUtility.readSourceFile(Arguments.getLeakPath()).toString().split("\\n");
-			// first line read in as leak source string or default leak source string if empty
-			if (leakStrings.length > 0 && !leakStrings[0].isEmpty()) {
-				reachabilitySource = leakStrings[0];
-			}
-			else {
-				reachabilitySource = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
-			}
-			// second line read in as leak sink string or default leak sink string if empty
-			if (leakStrings.length > 1 && !leakStrings[1].isEmpty()) {
-				reachabilitySink = leakStrings[1];
-			}
-			else {
-				reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
-			}
-			// if no file found, default leak strings are used
-		} catch (IOException e) {
-			reachabilitySource = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
-			reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
-			e.printStackTrace();
+	
+	public static String getSink(OperatorType op) {
+		if (op == OperatorType.TAINTSINK) {
+			return taintSinkSink;
 		}
-		String[] leakText = {reachabilitySource, reachabilitySink};
-		return leakText;
+		else if (op == OperatorType.TAINTSOURCE) {
+			return taintSourceSink;
+		}
+		else if (op == OperatorType.SCOPESINK) {
+			return scopeSink;
+		}
+		else if (op == OperatorType.REACHABILITY) {
+			return reachabilitySink;
+		}
+		else if (op == OperatorType.COMPLEXREACHABILITY) {
+			return complexReachabilitySink;
+		}
+		return null;
 	}
 	
 	/**
@@ -136,28 +184,6 @@ public class DataLeak {
 	 *          operator schema.
 	 */
 	public static String getLeak(int identifier) {
-		try {
-			String[] leakStrings = FileUtility.readSourceFile(Arguments.getLeakPath()).toString().split("\\n");
-			// first line read in as leak source string or default leak source string if empty
-			if (leakStrings.length > 0 && !leakStrings[0].isEmpty()) {
-				reachabilitySource = leakStrings[0];
-			}
-			else {
-				reachabilitySource = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
-			}
-			// second line read in as leak sink string or default leak sink string if empty
-			if (leakStrings.length > 1 && !leakStrings[1].isEmpty()) {
-				reachabilitySink = leakStrings[1];
-			}
-			else {
-				reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
-			}
-			// if no file found, default leak strings are used
-		} catch (IOException e) {
-			reachabilitySource = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
-			reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
-			e.printStackTrace();
-		}
 		return String.format(reachabilitySource, identifier) + "\n"
 				+ String.format(reachabilitySink, identifier, identifier, identifier);
 	}

@@ -56,7 +56,8 @@ public class Muse {
 	// not detected in java ast as static
 
 	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
-		
+		Boolean customLeak = false;
+		String leakPath = "src/edu/wm/cs/muse/dataleak/default_leak_strings.txt";
 		Options options = new Options();
 		//adding an option flag that can be used on command line
 		options.addOption("d", "dataleak", true, "Run Muse with a custom data leak file");
@@ -76,7 +77,8 @@ public class Muse {
 		//sets the leakPath to the file specified
 		if (cmd.hasOption("d")) {
 			System.out.println("DataLeak set");
-			Arguments.setLeakPath(cmd.getOptionValue("d"));
+			customLeak = true;
+			leakPath = cmd.getOptionValue("d");
 		}	
 		
 		///////
@@ -96,7 +98,11 @@ public class Muse {
 
 		Collection<File> files = FileUtils.listFiles(new File(Arguments.getRootPath()), TrueFileFilter.INSTANCE,
 				TrueFileFilter.INSTANCE);
-
+		
+		if (customLeak) {
+			Arguments.setLeaks(getOperatorType(Arguments.getOperator()), leakPath);	
+		}
+		
 		for (File file : files) {
 			try {
 				if (file.getName().endsWith(".java")
