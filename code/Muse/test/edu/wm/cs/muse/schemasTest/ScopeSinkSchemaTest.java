@@ -2,216 +2,295 @@ package edu.wm.cs.muse.schemasTest;
 
 import static org.junit.Assert.assertEquals;
 
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.junit.Test;
 
 import edu.wm.cs.muse.Muse;
-import edu.wm.cs.muse.dataleak.schemas.ScopeSourceSchema;
 import edu.wm.cs.muse.dataleak.schemas.ScopeSinkSchema;
-import edu.wm.cs.muse.dataleak.support.*;
+import edu.wm.cs.muse.dataleak.support.FileUtility;
+import edu.wm.cs.muse.dataleak.support.Utility;
+import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
+import edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers;
 
-//These test cases will focus on the TaintSinkSchema method
-public class ScopeSinkSchemaTest{
+/**
+ * 
+ * @author Scott Murphy
+ * 
+ * Class to test the functionality of Sink Schema
+ * All sink schemas run with 3 data leaks already in place
+ */
 
-	File expectedOutput;
+public class ScopeSinkSchemaTest {
+
+  public enum ComponentType {
+		STATICMETHOD, SWITCH, TRY, TRYMETHOD, SWITCHMETHOD, ENUMMETHOD
+	} 
+	
 	String content = null;
 	Muse muse;
 	CompilationUnit root;
-	Document sourceDoc;
 	ASTRewrite rewriter;
 	TextEdit edits;
 	File processedOutput;
-	File output = new File("test/output/schemastestoutput/output.txt");
-	
-	/**
-	 * Test Case: Checks to see that all methods are being traversed
-	 * 
-	 * Method under test: visit
-	 * 
-	 * Correct Behavior: 6 changes should be found
-	 */
-	@Test
-	public void number_of_methods() {
-		try {
-			prepare_test_files(OperatorType.SCOPESINK);
+	ScopeSinkSchema scopeSinkSchema;
 
-		} catch (IOException e) {
-			e.printStackTrace();
 
-		} catch (MalformedTreeException e) {
-			e.printStackTrace();
+  /**
+   * Test Case: Checks if TaintSinkSchema traverses static method in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 6 changes should be found in SinkNodeChangeContainers
+   */
+  @Test
+  public void taint_sink_operation_on_hello_world_static() {
+    try {      
+      prepare_test_files(ComponentType.STATICMETHOD);
+      execute_muse_taint_sink();
+      ArrayList<TaintNodeChangeContainers> sinkFieldChanges = scopeSinkSchema.getFieldNodeChanges();
+      assertEquals(5, sinkFieldChanges.size());
+      
+      ArrayList<SinkNodeChangeContainers> sinkMethodChanges = scopeSinkSchema.getMethodNodeChanges();
+      assertEquals(2, sinkMethodChanges.size());
+      
+    } catch (IOException e) {
+      e.printStackTrace();
 
-		}
-		ScopeSinkSchemaStub testTaintSinkSchema = new ScopeSinkSchemaStub();
-		root.accept(testTaintSinkSchema);	
-		sourceDoc = new Document(content);
-		assertEquals(6,testTaintSinkSchema.returnMethodCounter());
+    } catch (MalformedTreeException e) {
+      e.printStackTrace();
 
-	}
-	
-	
-	/**
-	 * Test Case: Checks to see if the correct number of sinks are being inputted
-	 * 
-	 * Method under test: visit
-	 * 
-	 * Correct Behavior: 6 changes should be found
-	 */
-	@Test
-	public void number_of_Sinks() {
-		try {
-			prepare_test_files(OperatorType.SCOPESINK);
+    } catch (BadLocationException e) {
+      e.printStackTrace();
+    }
+  
+  }
 
-		} catch (IOException e) {
-			e.printStackTrace();
+  /**
+   * Test Case: Checks if TaintSinkSchema traverses switch cases in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 9 changes should be found in SinkNodeChangeContainers
+   */
+  @Test
+  public void taint_sink_operation_on_hello_world_switch() {
+    try {      
+      prepare_test_files(ComponentType.SWITCH);
+      execute_muse_taint_sink();
+      ArrayList<TaintNodeChangeContainers> sinkFieldChanges = scopeSinkSchema.getFieldNodeChanges();
+      assertEquals(5, sinkFieldChanges.size());
+      
+      ArrayList<SinkNodeChangeContainers> sinkMethodChanges = scopeSinkSchema.getMethodNodeChanges();
+      assertEquals(3, sinkMethodChanges.size());
 
-		} catch (MalformedTreeException e) {
-			e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
 
-		}
-		ScopeSinkSchemaStub testTaintSinkSchema = new ScopeSinkSchemaStub();
-		root.accept(testTaintSinkSchema);	
-		sourceDoc = new Document(content);
-		assertEquals(6,testTaintSinkSchema.returnSinkCounter());
+    } catch (MalformedTreeException e) {
+      e.printStackTrace();
 
-	}
-	
-	
-	/**
-	 * Test Case: Checks to see if the correct methods are being returned
-	 * 
-	 * Method under test: visit
-	 * 
-	 * Correct Behavior: list of methods should be returned
-	 */
-	@Test
-	public void correct_method_calls() {
-		ArrayList<String> correctList = new ArrayList<>();
-		correctList.add("METHODA");
-		correctList.add("METHODB");
-		correctList.add("METHODCONEA");
-		correctList.add("METHODCONEB");
-		correctList.add("METHODCTWOA");
-		correctList.add("METHODCTWOB");
-		
-		try {
-			prepare_test_files(OperatorType.SCOPESINK);
+    } catch (BadLocationException e) {
+      e.printStackTrace();
+    }
+  
+  }
 
-		} catch (IOException e) {
-			e.printStackTrace();
+  /**
+   * Test Case: Checks if TaintSinkSchema traverse try statement in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 9 changes should be found in SinkNodeChangeContainers
+   */
+  @Test
+  public void taint_sink_operation_on_hello_world_try() {
+    try {      
+      prepare_test_files(ComponentType.TRY);
+      execute_muse_taint_sink();
+      ArrayList<TaintNodeChangeContainers> sinkFieldChanges = scopeSinkSchema.getFieldNodeChanges();
+      assertEquals(6, sinkFieldChanges.size());
+      
+      ArrayList<SinkNodeChangeContainers> sinkMethodChanges = scopeSinkSchema.getMethodNodeChanges();
+      assertEquals(3, sinkMethodChanges.size());
 
-		} catch (MalformedTreeException e) {
-			e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
 
-		}
-		ScopeSinkSchemaStub testTaintSinkSchema = new ScopeSinkSchemaStub();
-		root.accept(testTaintSinkSchema);	
-		sourceDoc = new Document(content);
-		assertEquals(correctList,testTaintSinkSchema.returnMethodNames());
-	}
-	
-	/**
-	 * Test case: checks to see if subclasses are being traversed properly
-	 * 
-	 * Method under test: visit
-	 * 
-	 * Correct behavior: 2 changes should be returned
-	 */
-	@Test
-	public void number_of_subClasses() {
-		
-		
-		try {
-			prepare_test_files(OperatorType.SCOPESINK);
+    } catch (MalformedTreeException e) {
+      e.printStackTrace();
 
-		} catch (IOException e) {
-			e.printStackTrace();
+    } catch (BadLocationException e) {
+      e.printStackTrace();
+    }
+  
+  }
 
-		} catch (MalformedTreeException e) {
-			e.printStackTrace();
+  /**
+   * Test Case: Checks if TaintSinkSchema traverses try statement around a method in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 12 changes should be found in SinkNodeChangeContainers
+   */
+  @Test
+  public void taint_sink_operation_on_hello_world_try_method() {
+    try {      
+      prepare_test_files(ComponentType.TRYMETHOD);
+      execute_muse_taint_sink();
+      ArrayList<TaintNodeChangeContainers> sinkFieldChanges = scopeSinkSchema.getFieldNodeChanges();
+      assertEquals(6, sinkFieldChanges.size());
+      
+      ArrayList<SinkNodeChangeContainers> sinkMethodChanges = scopeSinkSchema.getMethodNodeChanges();
+      assertEquals(4, sinkMethodChanges.size());
 
-		}
-		ScopeSinkSchemaStub testTaintSinkSchema = new ScopeSinkSchemaStub();
-		root.accept(testTaintSinkSchema);	
-		sourceDoc = new Document(content);
-		assertEquals(2,testTaintSinkSchema.returnSubClassCount());
-	}
-	
-	/**
-	 * Test Case: checks to see if there is a correct number of dataleaks
-	 * 
-	 * Method under test: visit
-	 * 
-	 * Correct Behavior: 11 leaks should be returned
-	 */
-	@Test
-	public void number_of_dataLeaks() {
-		
-		
-		try {
-			prepare_test_files(OperatorType.SCOPESINK);
+    } catch (IOException e) {
+      e.printStackTrace();
 
-		} catch (IOException e) {
-			e.printStackTrace();
+    } catch (MalformedTreeException e) {
+      e.printStackTrace();
 
-		} catch (MalformedTreeException e) {
-			e.printStackTrace();
+    } catch (BadLocationException e) {
+      e.printStackTrace();
+    }
+  
+  }
 
-		}
-		ScopeSinkSchemaStub testTaintSinkSchema = new ScopeSinkSchemaStub();
-		root.accept(testTaintSinkSchema);	
-		sourceDoc = new Document(content);
-		assertEquals(11,testTaintSinkSchema.returndataLeakCount());
-	}
-	
-	/**
-	 * Prepares test files
-	 * @param operator
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	private void prepare_test_files(OperatorType operator) throws FileNotFoundException, IOException {
-		Utility.COUNTER_GLOBAL = 0;
-		output = new File("test/output/schemastestoutput/output.txt");
-	
-		this.content = FileUtility.readSourceFile("test/output/sample_multilevelclass_taint.txt").toString();
-		expectedOutput = new File("test/output/sample_multilevelclass_taint.txt");
-	
-		
-		
-		this.muse = new Muse();
-		this.root = getTestAST(content);
-	}
-	
+  /**
+   * Test Case: Checks if TaintSinkSchema traverses switch statements that include methods in input file
+   * 
+   * Method under Test: visit
+   * 
+   * Correct Behavior: 15 changes should be found in SinkNodeChangeContainers
+   */
+  @Test
+  public void taint_sink_operation_on_hello_world_switch_method() {
+    try {      
+      prepare_test_files(ComponentType.SWITCHMETHOD);
+      execute_muse_taint_sink();
+      ArrayList<TaintNodeChangeContainers> sinkFieldChanges = scopeSinkSchema.getFieldNodeChanges();
+      assertEquals(5, sinkFieldChanges.size());
+      
+      ArrayList<SinkNodeChangeContainers> sinkMethodChanges = scopeSinkSchema.getMethodNodeChanges();
+      assertEquals(5, sinkMethodChanges.size());
+
+    } catch (IOException e) {
+      e.printStackTrace();
+
+    } catch (MalformedTreeException e) {
+      e.printStackTrace();
+
+    } catch (BadLocationException e) {
+      e.printStackTrace();
+    }
+  
+  }
+
+  @Test
+  public void taint_sink_operation_on_hello_world_enum_method() {
+    try {      
+      prepare_test_files(ComponentType.ENUMMETHOD);
+      execute_muse_taint_sink();
+      ArrayList<TaintNodeChangeContainers> sinkFieldChanges = scopeSinkSchema.getFieldNodeChanges();
+      assertEquals(5, sinkFieldChanges.size());
+      
+      ArrayList<SinkNodeChangeContainers> sinkMethodChanges = scopeSinkSchema.getMethodNodeChanges();
+      assertEquals(3, sinkMethodChanges.size());
+
+    } catch (IOException e) {
+      e.printStackTrace();
+
+    } catch (MalformedTreeException e) {
+      e.printStackTrace();
+
+    } catch (BadLocationException e) {
+      e.printStackTrace();
+    }
+  
+  }
+  
+  /**
+   * Executes muse
+   * @throws BadLocationException
+   * @throws MalformedTreeException
+   * @throws IOException
+   */
+  private void execute_muse_taint_sink() throws BadLocationException, MalformedTreeException, IOException {
+    scopeSinkSchema = new ScopeSinkSchema();
+    rewriter = ASTRewrite.create(root.getAST());
+  
+    root.accept(scopeSinkSchema);
+  }
+
+  /**
+   * prepares test files
+   * @param component
+   * @throws FileNotFoundException
+   * @throws IOException
+   */
+  private void prepare_test_files(ComponentType component) throws FileNotFoundException, IOException {
+    Utility.COUNTER_GLOBAL = 0;
+
+    switch (component) {
+    case STATICMETHOD:
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_static_method.txt").toString();
+      break;
+
+    case SWITCH:
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_switch.txt").toString();
+      break;
+      
+    case SWITCHMETHOD:
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_switch_method.txt").toString();
+      break;
+
+    case TRY:
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_try.txt").toString();
+      break;
+    
+    case TRYMETHOD:
+      content = FileUtility.readSourceFile("test/input/taintSinkInput/taint_sink_sample_try_method.txt").toString();
+      break;
+      
+    case ENUMMETHOD:
+        content = FileUtility.readSourceFile("test/input/sink_sample_enum_method.txt").toString();
+        break;
+    }
+
+    muse = new Muse();
+		root = getTestAST(content);
+  }
+
+  //Taken directly from muse test
 	private CompilationUnit getTestAST(String source) {
-		HashMap<String, String> options = new HashMap<String, String>();
+		
 		ASTParser parser = ASTParser.newParser(AST.JLS8);
+		Map options = JavaCore.getOptions();
 		options.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, JavaCore.ENABLED);
+		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_8);
+		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_8);
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_8);		
 		parser.setCompilerOptions(options);
+
 		parser.setSource(source.toCharArray());
+
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setResolveBindings(true);
 		parser.setBindingsRecovery(true);
+
 		return (CompilationUnit) parser.createAST(new NullProgressMonitor());
-	}
-	
+  } 
 }
