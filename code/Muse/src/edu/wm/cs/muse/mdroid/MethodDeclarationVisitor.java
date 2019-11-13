@@ -38,7 +38,7 @@ public class MethodDeclarationVisitor extends ASTVisitor{
 			
 		}else if(declaration.getParent() instanceof ClassInstanceCreation){
 			ClassInstanceCreation type = (ClassInstanceCreation)declaration.getParent();
-			className = type.getName().toString();
+			className = type.getType().toString();
 			if(type.resolveTypeBinding().getSuperclass() != null){
 				className = type.resolveTypeBinding().getSuperclass().toString();
 				

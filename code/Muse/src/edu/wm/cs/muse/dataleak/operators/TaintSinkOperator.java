@@ -1,112 +1,87 @@
 package edu.wm.cs.muse.dataleak.operators;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
-import edu.wm.cs.muse.dataleak.support.SchemaOperatorUtility;
+import edu.wm.cs.muse.dataleak.DataLeak;
+import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
-import edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers;
 
 /**
- * The TaintSinkOperator class will insert the sink aspect of the taint mutation
- * scheme on the modified file through comparisons of the parent classes between
- * the field and methods.
- * 
- * @author Yang Zhang, Amit Seal Ami
+ * The SinkOperator class formats and inserts the string-based sink markers according to the Sink Schema
+ * @author Yang Zhang
  */
+
 public class TaintSinkOperator {
-
-	ArrayList<TaintNodeChangeContainers> fieldChanges;
-	ArrayList<SinkNodeChangeContainers> methodChanges;
+	ArrayList<SinkNodeChangeContainers> nodeChanges;
 	ASTRewrite rewriter;
+	HashMap<Integer, Integer> repeatCounts = new HashMap<Integer, Integer>();
 
-	public TaintSinkOperator(ASTRewrite rewriter, ArrayList<TaintNodeChangeContainers> fieldChanges,
-			ArrayList<SinkNodeChangeContainers> methodChanges) {
+	public TaintSinkOperator(ASTRewrite rewriter) {
 		this.rewriter = rewriter;
-		this.fieldChanges = fieldChanges;
-		this.methodChanges = methodChanges;
-
 	}
-
+	
+	public TaintSinkOperator(ASTRewrite rewriter, ArrayList<SinkNodeChangeContainers> nodeChanges) {
+		this.rewriter = rewriter;
+		this.nodeChanges = nodeChanges;
+	}
+	
 	/**
-	 * Modifies compares the parent classes between the two nodeChangeContainers,
-	 * then inserts the appropriate number of sinks into the correct methods
-	 * according to the number of fields.
-	 * 
+	 * Modifies the ASTRewrite to swap between insertions based on the nodeChanges and returns it.
 	 * @return
 	 */
 	public ASTRewrite InsertChanges() {
 
-		for (TaintNodeChangeContainers fieldChanges : fieldChanges) {
-			for (SinkNodeChangeContainers methodChanges : methodChanges) {
-				if (methodChanges.node == fieldChanges.node) {
-					insertSink((Block) methodChanges.method, methodChanges.index, fieldChanges.fieldBoys,
-							methodChanges.propertyDescriptor);
-				}
+		for (SinkNodeChangeContainers nodeChange : nodeChanges) {
+		
+			if (nodeChange.insertionType == 0)
+			{
+				insertSink(nodeChange.node, nodeChange.index, nodeChange.count, nodeChange.propertyDescriptor, nodeChange.method);
+			}
+			
+			else
+			{
+				insertSource(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor, nodeChange.count);
 			}
 		}
-
 		return rewriter;
 	}
-
-	// for sink insertion
-	void insertSink(Block node, int index, ArrayList<FieldDeclaration> fieldBoys,
-			ChildListPropertyDescriptor nodeProperty) {
-		ListRewrite listRewrite = null;
-		if (node == null)
-			return;
-		//if it is an empty method.
-		if(node.statements().size()==0) {
-			return;
-		}
-		for (int i = 0; i < fieldBoys.size(); i++) {
-			try {
-				listRewrite = rewriter.getListRewrite(node, nodeProperty);
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(0);
+	
+	void insertSink(ASTNode node, int index, int count, ChildListPropertyDescriptor nodeProperty,
+			ASTNode method) {
+		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
+		int cur = repeatCounts.containsKey(count) ? repeatCounts.get(count) : -1;
+		repeatCounts.put(count, cur + 1);
+		
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT);
+		listRewrite.insertAt(placeHolder, index, null);
+		String methodName = ((MethodDeclaration) method).getName().toString();
+		String className = "";
+		method = method.getParent();
+		while (method != null) {
+			if (method.getNodeType() == ASTNode.TYPE_DECLARATION) {
+				className = ((TypeDeclaration) method).getName().toString();
+				break;
+			} else if (method.getNodeType() == ASTNode.ANONYMOUS_CLASS_DECLARATION) {
+				className = "1";
+				break;
 			}
-			int index_equal = fieldBoys.get(i).toString().indexOf("=");
-			String tempString = fieldBoys.get(i).toString().substring(15, index_equal);
-			tempString = tempString.trim();
-			MethodDeclaration methodNode = (MethodDeclaration) node.getParent();
-			System.out.println(String.format("leak-%s-%s: %s.%s", tempString, index,
-					SchemaOperatorUtility.getClassNameOfMethod(node), methodNode.getName()));
-			String sink = String.format("android.util.Log.d(\"leak-%s-%s\", dataLeAk%s);", tempString, index,
-					tempString);
-			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
-			
-			int placement = 1;
-			int statement_counter = 0;
-			
-			for (Object obj : node.statements()) {
-				
-				if (obj.toString().startsWith("super") || obj.toString().startsWith("this(")) {
-					// will only change placement if the super is at top and there is only one
-					// statement
-					System.out.println("SUper found");
-
-					if (statement_counter == 0) {
-						placement = 0;
-					}
-					placement++;
-				} else if (obj.toString().startsWith("return ")) {
-					// will only change placement if the return is the first statement in node.
-					if (statement_counter == 0)
-						placement = 0;
-				}
-				statement_counter++;
-			}
-			listRewrite.insertAt(placeHolder, placement, null);
+			method = method.getParent();
 		}
+		System.out.println(String.format("leak-%d-%d: %s.%s", count, repeatCounts.get(count), className, methodName));
+	}
 
+	void insertSource(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty, int count) {
+		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getSource(OperatorType.TAINTSINK, count), ASTNode.EMPTY_STATEMENT);
+		listRewrite.insertAt(placeHolder, index, null);
 	}
 
 }

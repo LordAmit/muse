@@ -3,6 +3,7 @@ package edu.wm.cs.muse;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
@@ -16,20 +17,27 @@ import org.eclipse.text.edits.TextEdit;
 
 import edu.wm.cs.muse.dataleak.operators.ComplexReachability;
 import edu.wm.cs.muse.dataleak.operators.ReachabilityOperator;
-import edu.wm.cs.muse.dataleak.operators.SinkOperator;
-import edu.wm.cs.muse.dataleak.operators.SourceOperator;
-import edu.wm.cs.muse.dataleak.operators.TaintOperator;
 import edu.wm.cs.muse.dataleak.operators.TaintSinkOperator;
+import edu.wm.cs.muse.dataleak.operators.TaintSourceOperator;
+import edu.wm.cs.muse.dataleak.operators.ScopeSourceOperator;
+import edu.wm.cs.muse.dataleak.operators.ScopeSinkOperator;
 import edu.wm.cs.muse.dataleak.schemas.ComplexReachabilitySchema;
 import edu.wm.cs.muse.dataleak.schemas.ReachabilitySchema;
-import edu.wm.cs.muse.dataleak.schemas.SinkSchema;
-import edu.wm.cs.muse.dataleak.schemas.SourceSchema;
-import edu.wm.cs.muse.dataleak.schemas.TaintSchema;
 import edu.wm.cs.muse.dataleak.schemas.TaintSinkSchema;
+import edu.wm.cs.muse.dataleak.schemas.TaintSourceSchema;
+import edu.wm.cs.muse.dataleak.schemas.ScopeSourceSchema;
+import edu.wm.cs.muse.dataleak.schemas.ScopeSinkSchema;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.mdroid.ASTHelper;
+
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 /**
  *
@@ -39,6 +47,7 @@ import edu.wm.cs.muse.mdroid.ASTHelper;
 public class Muse {
 
 	ASTRewrite rewriter;
+	CommandLine cmd = null;
 	// TODO: Does not handle anonymous declarations and try_catch clauses well.
 	// currently just ignores such methods.
 	// TODO: Make schema for inserting leaks in static methods, since regular
@@ -47,13 +56,39 @@ public class Muse {
 	// not detected in java ast as static
 
 	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
-		// Usage Error
-		if (args.length != 5) {
+		
+		Options options = new Options();
+		//adding an option flag that can be used on command line
+		options.addOption("d", "dataleak", true, "Run Muse with a custom data leak file");
+
+		CommandLineParser parser = new DefaultParser();
+
+		//parse the command line input
+		try {
+			cmd = parser.parse(options, args);
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+			return;
+		}
+
+		///////Add control flow based on the option flag parsed here
+			
+		//sets the leakPath to the file specified
+		if (cmd.hasOption("d")) {
+			System.out.println("DataLeak set");
+			Arguments.setLeakPath(cmd.getOptionValue("d"));
+		}	
+		
+		///////
+		
+		// Usage Error, check length of remaining arguments
+		if (cmd.getArgs().length != 5) {
 			printArgumentError();
 			return;
 		}
 
-		Arguments.extractArguments(args);
+		//any non option arguments are passed in 
+		Arguments.extractArguments(cmd.getArgs());
 
 		FileUtility.setupMutantsDirectory();
 
@@ -95,17 +130,17 @@ public class Muse {
 	}
 
 	private OperatorType getOperatorType(String inputOperator) {
-		// SOURCE, SINK, TAINT, TAINTSINK and REACHABILITY
+		// TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY
 		System.out.println("Input operator: " + inputOperator);
 		switch (inputOperator) {
-		case "SOURCE":
-			return OperatorType.SOURCE;
-		case "SINK":
-			return OperatorType.SINK;
-		case "TAINT":
-			return OperatorType.TAINT;
+		case "TAINTSOURCE":
+			return OperatorType.TAINTSOURCE;
 		case "TAINTSINK":
 			return OperatorType.TAINTSINK;
+		case "SCOPESOURCE":
+			return OperatorType.SCOPESOURCE;
+		case "SCOPESINK":
+			return OperatorType.SCOPESINK;
 		case "REACHABILITY":
 			return OperatorType.REACHABILITY;
 		case "COMPLEXREACHABILITY":
@@ -164,10 +199,10 @@ public class Muse {
 		String newSource;
 		CompilationUnit newRoot;
 		switch (operatorType) {
-		case SINK:
-			SourceSchema sourceSchema_s = new SourceSchema();
+		case TAINTSINK:
+			TaintSourceSchema sourceSchema_s = new TaintSourceSchema();
 			root.accept(sourceSchema_s);
-			SourceOperator sourceOperator_s = new SourceOperator(rewriter, sourceSchema_s.getNodeChanges());
+			TaintSourceOperator sourceOperator_s = new TaintSourceOperator(rewriter, sourceSchema_s.getNodeChanges());
 			rewriter = sourceOperator_s.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			String sink_temp_file_path = "test/temp/temp_file.java";
@@ -180,19 +215,20 @@ public class Muse {
 			root = newRoot;
 			source = newSource;
 			rewriter = ASTRewrite.create(root.getAST());
-			SinkSchema sinkSchema = new SinkSchema();
-			root.accept(sinkSchema);
-			SinkOperator sinkOperator = new SinkOperator(rewriter, sinkSchema.getNodeChanges());
-			rewriter = sinkOperator.InsertChanges();
+			
+			TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
+			root.accept(taintSinkSchema);
+			TaintSinkOperator taintSinkOperator = new TaintSinkOperator(rewriter, taintSinkSchema.getNodeChanges());
+			rewriter = taintSinkOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			Files.delete(temp_file.toPath());
 			break;
 
-		case SOURCE:
-			SourceSchema sourceSchema = new SourceSchema();
-			root.accept(sourceSchema);
-			SourceOperator sourceOperator = new SourceOperator(rewriter, sourceSchema.getNodeChanges());
-			rewriter = sourceOperator.InsertChanges();
+		case TAINTSOURCE:
+			TaintSourceSchema taintSourceSchema = new TaintSourceSchema();
+			root.accept(taintSourceSchema);
+			TaintSourceOperator taintSourceOperator = new TaintSourceOperator(rewriter, taintSourceSchema.getNodeChanges());
+			rewriter = taintSourceOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			break;
 
@@ -205,18 +241,18 @@ public class Muse {
 			applyChangesToFile(file, source, rewriter);
 			break;
 
-		case TAINT:
-			TaintSchema taintSchema = new TaintSchema();
-			root.accept(taintSchema);
-			TaintOperator taintOperator = new TaintOperator(rewriter, taintSchema.getNodeChanges());
-			rewriter = taintOperator.InsertChanges();
+		case SCOPESOURCE:
+			ScopeSourceSchema scopeSourceSchema = new ScopeSourceSchema();
+			root.accept(scopeSourceSchema);
+			ScopeSourceOperator scopeSourceOperator = new ScopeSourceOperator(rewriter, scopeSourceSchema.getNodeChanges());
+			rewriter = scopeSourceOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			break;
 
-		case TAINTSINK:
-			TaintSchema taintSchema_ts = new TaintSchema();
+		case SCOPESINK:
+			ScopeSourceSchema taintSchema_ts = new ScopeSourceSchema();
 			root.accept(taintSchema_ts);
-			TaintOperator taintOperator_ts = new TaintOperator(rewriter, taintSchema_ts.getNodeChanges());
+			ScopeSourceOperator taintOperator_ts = new ScopeSourceOperator(rewriter, taintSchema_ts.getNodeChanges());
 			rewriter = taintOperator_ts.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			String taintsink_temp_file_path = "test/temp/temp_file_taintsink.java";
@@ -230,10 +266,10 @@ public class Muse {
 			source = newSource;
 			rewriter = ASTRewrite.create(root.getAST());
 
-			TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
-			root.accept(taintSinkSchema);
-			TaintSinkOperator operator = new TaintSinkOperator(rewriter, taintSinkSchema.getFieldNodeChanges(),
-					taintSinkSchema.getMethodNodeChanges());
+			ScopeSinkSchema scopeSinkSchema = new ScopeSinkSchema();
+			root.accept(scopeSinkSchema);
+			ScopeSinkOperator operator = new ScopeSinkOperator(rewriter, scopeSinkSchema.getFieldNodeChanges(),
+					scopeSinkSchema.getMethodNodeChanges());
 			rewriter = operator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			Files.delete(temp_file.toPath());
@@ -283,7 +319,7 @@ public class Muse {
 		System.out.println("2. App Source Code path");
 		System.out.println("3. App Name");
 		System.out.println("4. Mutants path");
-		System.out.println("5. MutationScheme: SOURCE, SINK, TAINT, TAINTSINK and REACHABILITY (caseSensitive).");
+		System.out.println("5. MutationScheme: TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY (caseSensitive).");
 	}
 
 	public static void main(String[] args) throws MalformedTreeException, BadLocationException {

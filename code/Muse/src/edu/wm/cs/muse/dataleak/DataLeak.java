@@ -1,5 +1,10 @@
 package edu.wm.cs.muse.dataleak;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import edu.wm.cs.muse.dataleak.support.Arguments;
+import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 /**
@@ -12,7 +17,7 @@ import edu.wm.cs.muse.dataleak.support.OperatorType;
  *         Sample data leak formats: Declaration: String dataLeak{{ IDENTIFIER
  *         }}; Source: dataLeak{{ IDENTIFIER }} =
  *         java.util.Calendar.getInstance().getTimeZone().getDisplayName();
- *         Sink: android.util.Log.d(“leak-{{ IDENTIFIER }}”, dataLeak{{
+ *         Sink: android.util.Log.d("leak-{{ IDENTIFIER }}", dataLeak{{
  *         IDENTIFIER }}); Hop: dataLeak{{ IDENTIFIER }} = dataLeak{{ IDENTIFIER
  *         }};
  * 
@@ -20,8 +25,8 @@ import edu.wm.cs.muse.dataleak.support.OperatorType;
 public class DataLeak {
 
 	// source and sink strings used by the reachability operator schema
-	private static String reachabilitySource = "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
-	private static String reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
+	private static String reachabilitySource;
+	private static String reachabilitySink;
 
 	/**
 	 * Formats the source string and returns the correct source string based on the
@@ -33,16 +38,16 @@ public class DataLeak {
 	 * @returns the appropriate source for the operator type specified.
 	 */
 	public static String getSource(OperatorType op, int identifier) {
-		if (op == OperatorType.SINK) {
+		if (op == OperatorType.TAINTSINK) {
 			return String.format(
 					"final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
 					identifier);
 		}
-		if (op == OperatorType.SOURCE) {
+		if (op == OperatorType.TAINTSOURCE) {
 			return String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
 					identifier);
 		}
-		if (op == OperatorType.TAINT) {
+		if (op == OperatorType.SCOPESOURCE) {
 			return String.format("Object tainted_LeAk%d = android.util.Log.d(\\\"taint-leak-%d\\\", dataLeAk%d);",
 					identifier);
 		}
@@ -70,7 +75,7 @@ public class DataLeak {
 	 * @returns the appropriate sink for the operator type specified.
 	 */
 	public static String getSink(OperatorType op, int sourceIdentifier, int sinkIdentifier) {
-		if (op == OperatorType.SINK) {
+		if (op == OperatorType.TAINTSINK) {
 			return String.format("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);", sourceIdentifier, sinkIdentifier,
 					sourceIdentifier);
 		}
@@ -87,11 +92,35 @@ public class DataLeak {
 	 * 
 	 * @param identifier an instance of the global counter utility used to identify
 	 *                   the leak string
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 * 
 	 * @returns the string version of a data leak as used by the reachability
 	 *          operator schema.
 	 */
 	public static String getLeak(int identifier) {
+		try {
+			String[] leakStrings = FileUtility.readSourceFile(Arguments.getLeakPath()).toString().split("\\n");
+			// first line read in as leak source string or default leak source string if empty
+			if (leakStrings.length > 0 && !leakStrings[0].isEmpty()) {
+				reachabilitySource = leakStrings[0];
+			}
+			else {
+				reachabilitySource = "java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+			}
+			// second line read in as leak sink string or default leak sink string if empty
+			if (leakStrings.length > 1 && !leakStrings[1].isEmpty()) {
+				reachabilitySink = leakStrings[1];
+			}
+			else {
+				reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
+			}
+			// if no file found, default leak strings are used
+		} catch (IOException e) {
+			reachabilitySource = "java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+			reachabilitySink = "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);";
+			e.printStackTrace();
+		}
 		return String.format(reachabilitySource, identifier) + "\n"
 				+ String.format(reachabilitySink, identifier, identifier, identifier);
 	}
