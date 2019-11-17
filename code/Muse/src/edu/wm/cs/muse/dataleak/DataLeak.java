@@ -26,7 +26,7 @@ import edu.wm.cs.muse.dataleak.support.OperatorType;
  */
 public class DataLeak {
 
-	// defaultsource and sink strings
+	// default source and sink strings
 	private static HashMap<OperatorType, String> sourceLeaks = new HashMap<OperatorType, String>() {{
 	    put(OperatorType.REACHABILITY,"String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
 	    put(OperatorType.COMPLEXREACHABILITY,"String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
@@ -51,9 +51,9 @@ public class DataLeak {
 	 * @param sourceString     is the string to set
 	 */
 	public static void setSource(OperatorType op, String sourceString) {
-		sourceLeaks.replace(op, sourceString);
+		sourceLeaks.replace(getOperatorSource(op), sourceString);
 	}
-	
+
 	/**
 	 * Sets the sink leak string for based on the operator specified
 	 *  
@@ -61,7 +61,27 @@ public class DataLeak {
 	 * @param sinkString     is the string to set
 	 */
 	public static void setSink(OperatorType op, String sinkString) {
-		sinkLeaks.replace(op, sinkString);
+		sinkLeaks.replace(getOperatorSink(op), sinkString);
+	}
+	
+	private static OperatorType getOperatorSource(OperatorType op) {
+		if(op == OperatorType.SCOPESINK) {
+			op = OperatorType.SCOPESOURCE;
+		}
+		else if(op == OperatorType.TAINTSINK) {
+			op = OperatorType.TAINTSOURCE;
+		}
+		return op;
+	}
+	
+	private static OperatorType getOperatorSink(OperatorType op) {
+		if(op == OperatorType.SCOPESOURCE) {
+			op = OperatorType.SCOPESINK;
+		}
+		else if(op == OperatorType.TAINTSOURCE) {
+			op = OperatorType.TAINTSINK;
+		}
+		return op;
 	}
 	
 	/**
@@ -71,7 +91,7 @@ public class DataLeak {
 	 * @param sinkString     is the string to set
 	 */
 	public static void setVariableDeclaration(OperatorType op, String sinkString) {
-		variableDeclarations.replace(op, sinkString);
+		variableDeclarations.replace(getOperatorSource(op), sinkString);
 	}
 	
 	/**
@@ -83,7 +103,7 @@ public class DataLeak {
 	 * @returns the appropriate source for the operator type specified.
 	 */
 	public static String getSource(OperatorType op, int identifier) {
-		return String.format(sourceLeaks.get(op), identifier);
+		return String.format(sourceLeaks.get(getOperatorSource(op)), identifier);
 	}
 	
 	/**
@@ -100,7 +120,7 @@ public class DataLeak {
 	 * @returns the appropriate sink for the operator type specified.
 	 */
 	public static String getSink(OperatorType op, int sourceIdentifier, int sinkIdentifier) {
-		return String.format(sinkLeaks.get(op), sourceIdentifier, sinkIdentifier, sourceIdentifier);
+		return String.format(sinkLeaks.get(getOperatorSink(op)), sourceIdentifier, sinkIdentifier, sourceIdentifier);
 	}
 	
 	/**
@@ -110,7 +130,7 @@ public class DataLeak {
 	 * @returns the appropriate variable declaration for the operator type specified.
 	 */
 	public static String getVariableDeclaration(OperatorType op) {
-		return variableDeclarations.get(op);
+		return variableDeclarations.get(getOperatorSource(op));
 	}
 	
 	/**
@@ -119,7 +139,7 @@ public class DataLeak {
 	 * @param op               is the operator type
 	 */
 	public static String getRawSource(OperatorType op) {
-		return sourceLeaks.get(op);
+		return sourceLeaks.get(getOperatorSource(op));
 	}
 
 	/**
@@ -128,7 +148,7 @@ public class DataLeak {
 	 * @param op               is the operator type
 	 */
 	public static String getRawSink(OperatorType op) {
-		return sinkLeaks.get(op);
+		return sinkLeaks.get(getOperatorSink(op));
 	}
 
 	/**
