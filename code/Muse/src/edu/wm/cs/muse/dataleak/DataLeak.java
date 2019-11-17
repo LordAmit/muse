@@ -180,9 +180,8 @@ public class DataLeak {
 					"String dataLeAkPath%d;" + "try {" + "throw new Exception(dataLeAk%d);"
 							+ "} catch (Exception leakErRor%d) {" + "dataLeAkPath%d = leakErRor%d.getMessage();"
 							+ "}" };
-			String source = String.format(
-					"String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();", identifier);
-			String sink = String.format("android.util.Log.d(\"leak-%d\", dataLeAkPath%d);", identifier, identifier);
+			String source = getSource(OperatorType.COMPLEXREACHABILITY, identifier);
+			String sink = String.format(getRawSink(OperatorType.COMPLEXREACHABILITY), identifier, identifier);
 			String leak = source + "\n" + String.format(paths[identifier % paths.length], identifier, identifier,
 					identifier, identifier, identifier, identifier, identifier) + "\n" + sink;
 			return leak;
