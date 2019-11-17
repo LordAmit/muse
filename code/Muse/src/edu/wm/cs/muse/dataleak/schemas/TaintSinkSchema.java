@@ -14,6 +14,8 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
+import edu.wm.cs.muse.dataleak.DataLeak;
+import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 
@@ -43,6 +45,12 @@ public class TaintSinkSchema extends ASTVisitor {
 	 * and insertSink
 	 */
 	public boolean visit(MethodDeclaration method) {
+		String vd = DataLeak.getVariableDeclaration(OperatorType.TAINTSINK);
+		// the type and the name of the variable declaration (e.g. "String dataLeAk")
+		String vdType = vd.split("%d")[0];
+		// the name of the variable declaration (e.g. "dataLeAk")
+		String vdName = vdType.split(" ")[1];
+		variablePattern = Pattern.compile("(.*" + vdType + ")(\\d+).*"); // the pattern to search for
 		// Methods
 		int count = 0;
 		int index = 0;
@@ -56,7 +64,7 @@ public class TaintSinkSchema extends ASTVisitor {
 		}
 		for (Object obj : node.statements()) {
 			if (obj.toString().startsWith("super") || obj.toString().startsWith("this(")
-					|| obj.toString().startsWith("dataLeAk")) {
+					|| obj.toString().startsWith(vdName)) {
 				index++;
 			}
 		}
@@ -83,7 +91,10 @@ public class TaintSinkSchema extends ASTVisitor {
 				for (Object field : ((TypeDeclaration) n).bodyDeclarations()) {
 					if (((BodyDeclaration) field).getNodeType() == ASTNode.FIELD_DECLARATION) {
 						Matcher matcher = variablePattern.matcher(field.toString());
-						if (matcher.find() && field.toString().trim().startsWith("String dataLeAk")) {
+						if (matcher.find() && field.toString().trim().startsWith(vdType)) {
+							System.out.println("------------");
+							System.out.println(field.toString().trim());
+							System.out.println(vdType);
 							count = Integer.valueOf(matcher.group(2));
 							nodeChanges.add(new SinkNodeChangeContainers(node, index, count, Block.STATEMENTS_PROPERTY,
 									method, 0));
@@ -99,7 +110,7 @@ public class TaintSinkSchema extends ASTVisitor {
 				for (Object field : ((AnonymousClassDeclaration) n).bodyDeclarations()) {
 					if (((BodyDeclaration) field).getNodeType() == ASTNode.FIELD_DECLARATION) {
 						Matcher matcher = variablePattern.matcher(field.toString());
-						if (matcher.find() && field.toString().trim().startsWith("String dataLeAk")) {
+						if (matcher.find() && field.toString().trim().startsWith(vdType)) {
 							count = Integer.valueOf(matcher.group(2));
 							nodeChanges.add(new SinkNodeChangeContainers(node, index, count, Block.STATEMENTS_PROPERTY,
 									method, 0));
