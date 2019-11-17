@@ -10,6 +10,8 @@ import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
+import edu.wm.cs.muse.dataleak.DataLeak;
+import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.dataleak.support.SchemaOperatorUtility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 import edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers;
@@ -47,7 +49,7 @@ public class ScopeSinkOperator {
 		for (TaintNodeChangeContainers fieldChanges : fieldChanges) {
 			for (SinkNodeChangeContainers methodChanges : methodChanges) {
 				if (methodChanges.node == fieldChanges.node) {
-					insertSink((Block) methodChanges.method, methodChanges.index, fieldChanges.fieldBoys,
+					insertSink((Block) methodChanges.method, methodChanges.index, fieldChanges.fieldHolder,
 							methodChanges.propertyDescriptor);
 				}
 			}
@@ -57,7 +59,7 @@ public class ScopeSinkOperator {
 	}
 
 	// for sink insertion
-	void insertSink(Block node, int index, ArrayList<FieldDeclaration> fieldBoys,
+	void insertSink(Block node, int index, ArrayList<FieldDeclaration> fieldHolder,
 			ChildListPropertyDescriptor nodeProperty) {
 		ListRewrite listRewrite = null;
 		if (node == null)
@@ -66,21 +68,20 @@ public class ScopeSinkOperator {
 		if(node.statements().size()==0) {
 			return;
 		}
-		for (int i = 0; i < fieldBoys.size(); i++) {
+		for (int i = 0; i < fieldHolder.size(); i++) {
 			try {
 				listRewrite = rewriter.getListRewrite(node, nodeProperty);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);
 			}
-			int index_equal = fieldBoys.get(i).toString().indexOf("=");
-			String tempString = fieldBoys.get(i).toString().substring(15, index_equal);
+			int index_equal = fieldHolder.get(i).toString().indexOf("=");
+			String tempString = fieldHolder.get(i).toString().substring(15, index_equal);
 			tempString = tempString.trim();
 			MethodDeclaration methodNode = (MethodDeclaration) node.getParent();
 			System.out.println(String.format("leak-%s-%s: %s.%s", tempString, index,
 					SchemaOperatorUtility.getClassNameOfMethod(node), methodNode.getName()));
-			String sink = String.format("android.util.Log.d(\"leak-%s-%s\", dataLeAk%s);", tempString, index,
-					tempString);
+			String sink = String.format(DataLeak.getSink(OperatorType.SCOPESINK, Integer.parseInt(tempString), index));
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
 			
 			int placement = 1;
@@ -91,7 +92,7 @@ public class ScopeSinkOperator {
 				if (obj.toString().startsWith("super") || obj.toString().startsWith("this(")) {
 					// will only change placement if the super is at top and there is only one
 					// statement
-					System.out.println("SUper found");
+					//System.out.println("SUper found");
 
 					if (statement_counter == 0) {
 						placement = 0;

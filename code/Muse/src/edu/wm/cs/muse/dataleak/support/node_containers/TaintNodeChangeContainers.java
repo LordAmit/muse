@@ -19,18 +19,18 @@ public class TaintNodeChangeContainers {
 	public int index;
 	public ChildListPropertyDescriptor propertyDescriptor;
 	public int count;
-	public ArrayList<FieldDeclaration> fieldBoys;
+	public ArrayList<FieldDeclaration> fieldHolder;
 	
 	//Uses the class node to check which fields go with which methods, then adds all the sink-fields
 	//to those methods
-	public TaintNodeChangeContainers(ASTNode node, ArrayList<FieldDeclaration> fieldBoys, int index, 
+	public TaintNodeChangeContainers(ASTNode node, ArrayList<FieldDeclaration> fieldHolder, int index, 
 			ChildListPropertyDescriptor childListPropertyDescriptor, int count)
 	{
 		this.node = node;
 		this.index = index;
 		propertyDescriptor = childListPropertyDescriptor;
 		this.count = count;
-		this.fieldBoys = fieldBoys;
+		this.fieldHolder = fieldHolder;
 	}
 
 }
