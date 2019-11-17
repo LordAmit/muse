@@ -1,2 +1,0 @@
-String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
-Object throwawayLeAk%d = android.util.Log.d("leak-%d", dataLeAk%d);
