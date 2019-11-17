@@ -21,7 +21,7 @@ public class Arguments {
 	private static String mutantsFolder;
 	private static String Operator;
 	private static String leakPath = "src/edu/wm/cs/muse/dataleak/default_leak_strings.txt";
-	private static Boolean testmode = false;
+	private static Boolean testmode = false;  //set true for test cases. To deal with lack of binaries folder.
 
 	/**
 	 * private constructor makes sure that no constructor can ever be used.
