@@ -40,32 +40,38 @@ public class DataLeak {
 	    put(OperatorType.TAINTSINK,"android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
 	}};
 
-	
+	/**
+	 * Sets the source leak string for based on the operator specified
+	 *  
+	 * @param op               is the operator type
+	 * @param sourceString     is the string to set
+	 */
 	public static void setSource(OperatorType op, String sourceString) {
 		sourceLeaks.replace(op, sourceString);
 	}
 	
+	/**
+	 * Sets the sink leak string for based on the operator specified
+	 *  
+	 * @param op               is the operator type
+	 * @param sinkString     is the string to set
+	 */
 	public static void setSink(OperatorType op, String sinkString) {
 		sinkLeaks.replace(op, sinkString);
 	}
 	
 	/**
-	 * Formats the source string and returns the correct source string based on the
+	 * Formats the sink string and returns the correct sink string based on the
 	 * operator type specified.
 	 * 
-	 * @param op         is the operator type
-	 * @param identifier is an instance of the global counter utility and is used to
-	 *                   identify the source string.
+	 * @param op               is the operator type
+	 * @param identifier       the identifier for the source
 	 * @returns the appropriate source for the operator type specified.
 	 */
 	public static String getSource(OperatorType op, int identifier) {
 		return String.format(sourceLeaks.get(op), identifier);
 	}
 	
-	public static String getRawSource(OperatorType op) {
-		return sourceLeaks.get(op);
-	}
-
 	/**
 	 * Formats the sink string and returns the correct sink string based on the
 	 * operator type specified.
@@ -83,6 +89,20 @@ public class DataLeak {
 		return String.format(sinkLeaks.get(op), sourceIdentifier, sinkIdentifier, sourceIdentifier);
 	}
 	
+	/**
+	 * Returns an unformatted source string based on the operator type specified.
+	 * 
+	 * @param op               is the operator type
+	 */
+	public static String getRawSource(OperatorType op) {
+		return sourceLeaks.get(op);
+	}
+
+	/**
+	 * Returns an unformatted sink string based on the operator type specified.
+	 * 
+	 * @param op               is the operator type
+	 */
 	public static String getRawSink(OperatorType op) {
 		return sinkLeaks.get(op);
 	}
