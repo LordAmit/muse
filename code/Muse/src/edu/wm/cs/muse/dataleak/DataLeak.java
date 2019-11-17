@@ -36,8 +36,12 @@ public class DataLeak {
 	private static HashMap<OperatorType, String> sinkLeaks = new HashMap<OperatorType, String>() {{
 	    put(OperatorType.REACHABILITY,"Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);");
 	    put(OperatorType.COMPLEXREACHABILITY,"android.util.Log.d(\"leak-%d\", dataLeAkPath%d);");
-	    put(OperatorType.SCOPESINK,"android.util.Log.d(\"leak-%s-%s\", dataLeAk%s);");
+	    put(OperatorType.SCOPESINK,"android.util.Log.d(\"leak-%d-%d\", dataLeAk%s);");
 	    put(OperatorType.TAINTSINK,"android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
+	}};
+	private static HashMap<OperatorType, String> variableDeclarations = new HashMap<OperatorType, String>() {{
+		put(OperatorType.SCOPESOURCE,"String dataLeAk%d = \"%d\";");
+	    put(OperatorType.TAINTSOURCE,"String dataLeAk%d = \"\";");
 	}};
 
 	/**
@@ -58,6 +62,16 @@ public class DataLeak {
 	 */
 	public static void setSink(OperatorType op, String sinkString) {
 		sinkLeaks.replace(op, sinkString);
+	}
+	
+	/**
+	 * Sets the variable declaration leak string for based on the operator specified
+	 *  
+	 * @param op               is the operator type
+	 * @param sinkString     is the string to set
+	 */
+	public static void setVariableDeclaration(OperatorType op, String sinkString) {
+		variableDeclarations.replace(op, sinkString);
 	}
 	
 	/**
@@ -87,6 +101,16 @@ public class DataLeak {
 	 */
 	public static String getSink(OperatorType op, int sourceIdentifier, int sinkIdentifier) {
 		return String.format(sinkLeaks.get(op), sourceIdentifier, sinkIdentifier, sourceIdentifier);
+	}
+	
+	/**
+	 * Returns the correct variable declaration string based on the operator type specified.
+	 * 
+	 * @param op               is the operator type
+	 * @returns the appropriate variable declaration for the operator type specified.
+	 */
+	public static String getVariableDeclaration(OperatorType op) {
+		return variableDeclarations.get(op);
 	}
 	
 	/**
