@@ -20,12 +20,12 @@ import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 /**
- * TaintSink log analyzer requires two string contents. Log and Source.
+ * ScopeSink log analyzer requires two string contents. Log and Source.
  * Based on the log file, it removes the unused log sinks and only keeps the true positive logs.
  * @author Amit Seal Ami
  * 
  */
-public class LogAnalyzer_TaintSink {
+public class LogAnalyzer_ScopeSink {
 	//RuntimeLogs.txt
 	static String testString;
 	//ModifiedFile.txt
@@ -59,7 +59,7 @@ public class LogAnalyzer_TaintSink {
 		//sets the leakPath to the file specified
 		if (cmd.hasOption("d")) {
 			System.out.println("DataLeak set");
-			Arguments.setLeaks(OperatorType.TAINTSINK, cmd.getOptionValue("d"));
+			Arguments.setLeaks(OperatorType.SCOPESINK, cmd.getOptionValue("d"));
 		}	
 		
 		///////
@@ -109,9 +109,9 @@ public class LogAnalyzer_TaintSink {
 	}
 
 	/**
-	 * Analyze source string, based on input, non true positive sinks for taintSink. 
+	 * Analyze source string, based on input, non true positive sinks for scopeSink. 
 	 * @param string contains the source code in one string, with multiple lines.
-	 * @param maps {@link log.LogAnalyzer_TaintSink#getLogMaps(String) maps} contains the maps of source and sinks
+	 * @param maps {@link log.LogAnalyzer_ScopeSink#getLogMaps(String) maps} contains the maps of source and sinks
 	 * @return modified source code.
 	 * @throws Exception 
 	 * @author Amit Seal Ami
@@ -179,6 +179,6 @@ public class LogAnalyzer_TaintSink {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new LogAnalyzer_TaintSink().runLogAnalysis(args);
+		new LogAnalyzer_ScopeSink().runLogAnalysis(args);
 	}
 }

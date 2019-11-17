@@ -36,7 +36,7 @@ public class DataLeak {
 	private static HashMap<OperatorType, String> sinkLeaks = new HashMap<OperatorType, String>() {{
 	    put(OperatorType.REACHABILITY,"Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);");
 	    put(OperatorType.COMPLEXREACHABILITY,"android.util.Log.d(\"leak-%d\", dataLeAkPath%d);");
-	    put(OperatorType.SCOPESINK,"android.util.Log.d(\"leak-%d-%d\", dataLeAk%s);");
+	    put(OperatorType.SCOPESINK,"android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
 	    put(OperatorType.TAINTSINK,"android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
 	}};
 	private static HashMap<OperatorType, String> variableDeclarations = new HashMap<OperatorType, String>() {{

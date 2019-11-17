@@ -61,7 +61,7 @@ public class LogAnalyzer_Reachability {
 		//sets the leakPath to the file specified
 		if (cmd.hasOption("d")) {
 			System.out.println("DataLeak set");
-			Arguments.setLeaks(OperatorType.REACHABILITY, cmd.getOptionValue("d"));
+			Arguments.setLeaks(OperatorType.TAINTSINK, cmd.getOptionValue("d"));
 		}	
 		
 		///////
@@ -125,6 +125,7 @@ public class LogAnalyzer_Reachability {
 		String[] lines = string.split("\n");
 		for (String line : lines) {
 			if (line.contains("leak-")) {
+				System.out.println(line);
 				indices.add(Integer.parseInt(line.split("leak-")[1].split(":")[0]));
 			}
 		}
@@ -143,8 +144,8 @@ public class LogAnalyzer_Reachability {
 		String outputLines = "";
 		boolean addThrowAwayLine = false;		
 		// rawLeak separates the substrings before and after the custom leak string "%d" placeholder
-		String[] rawLeakSource = DataLeak.getSource(OperatorType.REACHABILITY).split("%d",2);
-		String[] rawLeakSink = DataLeak.getSink(OperatorType.REACHABILITY).split("%d",2);
+		String[] rawLeakSource = DataLeak.getRawSource(OperatorType.REACHABILITY).split("%d",2);
+		String[] rawLeakSink = DataLeak.getRawSink(OperatorType.REACHABILITY).split("%d",2);
 		
 		for (String line : lines) {
 			if (line.contains(rawLeakSource[0])) {
