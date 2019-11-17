@@ -69,8 +69,7 @@ public class ScopeSourceOperator {
 		int identifier = Utility.COUNTER_GLOBAL - 1;
 		
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-				identifier);
+		String source = DataLeak.getSource(OperatorType.SCOPESOURCE, identifier);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
 		// listRewrite.insertAt(placeHolder, index, null);
 		listRewrite.insertAt(placeHolder, placement, null);

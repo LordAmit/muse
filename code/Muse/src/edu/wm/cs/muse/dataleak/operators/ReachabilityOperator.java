@@ -8,6 +8,7 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
 import edu.wm.cs.muse.dataleak.DataLeak;
+import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.ReachabilityNodeChangeContainers;
 
@@ -39,7 +40,7 @@ public class ReachabilityOperator {
 			System.out.println(String.format(nodeChange.changedSource, Utility.COUNTER_GLOBAL));
 
 			Statement placeHolder = (Statement) rewriter
-					.createStringPlaceholder(DataLeak.getLeak(Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
+					.createStringPlaceholder(DataLeak.getLeak(OperatorType.REACHABILITY, Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
 
 			Utility.COUNTER_GLOBAL++;
 			

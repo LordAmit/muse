@@ -12,6 +12,7 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
 import edu.wm.cs.muse.dataleak.DataLeak;
+import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.dataleak.support.Utility;
 
 public class ReachabilityVisitor extends ASTVisitor{
@@ -24,7 +25,7 @@ public class ReachabilityVisitor extends ASTVisitor{
 	protected void insertion(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 		// Creates and returns a new rewriter for describing modifications to the given list property of the given node.
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getLeak(Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
+		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getLeak(OperatorType.REACHABILITY, Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
 		Utility.COUNTER_GLOBAL++;
 		listRewrite.insertAt(placeHolder, index, null);
 	}

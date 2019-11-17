@@ -9,6 +9,8 @@ import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 
+import edu.wm.cs.muse.dataleak.DataLeak;
+import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 import edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers;;
@@ -75,6 +77,11 @@ public class ScopeSinkSchema extends ASTVisitor {
 	// the taintNodeChanges container, then in conjunction with the methods part
 	// insert the sinks
 	public boolean visit(FieldDeclaration field) {
+		String vd = DataLeak.getVariableDeclaration(OperatorType.SCOPESINK);
+		// the type and the name of the variable declaration (e.g. "String dataLeAk")
+		String vdType = vd.split("%d")[0];
+		// the name of the variable declaration (e.g. "dataLeAk")
+		String vdName = vdType.split(" ")[1];
 
 // The getParent loop was found unnecessary, getParent will always find a TYPE_DECLARATION
 		parent = field.getParent();
@@ -84,8 +91,8 @@ public class ScopeSinkSchema extends ASTVisitor {
 		if (parent == classRetainer) {
 			// check for strings of the declaration "String dataLeAk%d"
 
-			if (field.toString().contains("dataLeAk")
-					&& field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
+			if (field.toString().contains(vdName)
+					&& field.toString().substring(0, 15).compareTo(vdType) == 0) {
 				fieldHolder.add(field);
 				previousFieldHolder.add(field);
 			}
@@ -102,15 +109,14 @@ public class ScopeSinkSchema extends ASTVisitor {
 
 		// A new FieldDeclaration ArrayList called previousFieldHolder was made in order
 		// to add all the sink strings from an earlier outer class into the subclass. It
-		// will add the same field as fieldBoys(now called fieldHolder) as it traverses
+		// will add the same field as fieldHolder as it traverses
 		// the tree, but does NOT get cleared if the parent of the method is in the same
 		// class as the previous method.
 		if (parent != classRetainer) {
 
 			if (classRetainer != null) {
-
-				if (field.toString().contains("dataLeAk")
-						&& field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
+				if (field.toString().contains(vdName)
+						&& field.toString().substring(0, 15).compareTo(vdType) == 0) {
 					previousFieldHolder.add(field);
 				}
 				classRetainer = parent;
@@ -118,8 +124,8 @@ public class ScopeSinkSchema extends ASTVisitor {
 
 			if (classRetainer == null) {
 
-				if (field.toString().contains("dataLeAk")
-						&& field.toString().substring(0, 15).compareTo("String dataLeAk") == 0) {
+				if (field.toString().contains(vdName)
+						&& field.toString().substring(0, 15).compareTo(vdType) == 0) {
 					previousFieldHolder.add(field);
 				}
 				classRetainer = parent;

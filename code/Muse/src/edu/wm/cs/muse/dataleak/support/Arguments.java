@@ -75,13 +75,17 @@ public class Arguments {
 			if (leakStrings.length > 1 && !leakStrings[1].isEmpty()) {
 				DataLeak.setSink(op, leakStrings[1]);
 			}
+			// third line read in as variable declaration string or default variable declaration string if empty
+			if (leakStrings.length > 2 && !leakStrings[2].isEmpty()) {
+				DataLeak.setVariableDeclaration(op, leakStrings[2]);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
 		return true;
 	}
-	
+
 	public static void setRootPath(String rootPath) {
 		Arguments.rootPath = rootPath;
 	}
