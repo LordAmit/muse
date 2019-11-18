@@ -12,45 +12,62 @@ Alternatively, you can use the Muse.jar file by downloading it from the releases
 # Usage
 Muse relies on [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus). You will need the `libs4ast` folder of that project in order to run Muse. 
 
-To run Muse, use the following command, specifying the arguments. `(arg)` specifies required arguments and `[arg]` specifies optional arguments:
+To run Muse, use the following command, all arguments will be specified in a configuration file you provide. `(arg)` specifies required arguments:
 ```
-java -jar Muse-1.0.0.jar (<libs4ast>) (<AppSourceCode>) (<AppName>) (<OutputPath>) (<OperatorType>) [-d <LeakFile>]
+java -jar Muse-1.0.0.jar (<ConfigFilePath>)
 ```
 
 If running Muse within a IDE like Eclipse, import only the Muse folder within the code subdirectory, or else you might get a java.lang.SecurityException error when running Muse.java
 
 ### Arguments
 Provide the following list of required arguments when running Muse: 
-1. ``libs4ast``:  Path of the lib4ast folder, from [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus/tree/master/libs4ast);
-2. ``AppSourceCode``: Path of the Android app source code folder, which you want to apply mutation on;
-3. ``AppName``:  Name of the App;
-4. ``Output``: Path of the folder where the mutants will be created;
-5. `OperatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
-6. ``-d LeakFile``:  Option flag and path of the custom data leak definition file
- 
+1. ``ConfigFilePath``: This is the path to the config.properties file that Muse uses to read arguments. These arguments defined in the config.properties file include:
+   - ``libs4ast``:  Path of the lib4ast folder, from [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus/tree/master/libs4ast);
+   - ``appSrc``: Path of the Android app source code folder, which you want to apply mutation on;
+   - ``appName``:  Name of the App;
+   - ``output``: Path of the folder where the mutants will be created;
+   - `operatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
 
-### Example
+These arguments are optional and should only be used if custom strings what to be used for execution:
+
+   - ``source``: Value of the custom source to be used in Muse
+   - ``sink``: Value of the custom sink to be used in Muse
+   - ``varDec``: Value of the custom variable declaration to be used in Muse
+
+
+### Examples
 ```
-java -jar Muse-1.0.0.jar MDroidPlus/libs4ast/ /tmp/AppFoo/src/ AppFoo /tmp/mutants/ SCOPESINK
+java -jar Muse-1.0.0.jar /config.properties
+```
+
+The `config.properties` file is defined as:
+```
+lib4ast = MDroidPlus//libs4ast//
+appSrc = //tmp/AppFoo//src//
+appName = AppFoo
+output = //tmp//mutants//
+operatorType = SCOPESINK
 ```
 
 This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored. 
 
-```
-java -jar Muse-1.0.0.jar MDroidPlus/libs4ast/ /tmp/AppFoo/src/ AppFoo /tmp/mutants/ REACHABILITY -d /tmp/dataLeak.txt
-```
-
-This will execute REACHABILITY in Muse with a custom data leak string defined in `tmp/dataLeak.txt`
-
-### Defining a Custom Data Leak String
-Muse allows the user to define their own custom data leak string to be used in the execution of Muse. The dataLeak.txt file should be formatted as follows:
+Another example is the following, showcasing the custom data leak argument.
 
 ```
-"CUSTOM_SOURCE_LEAK_STRING%d"
-"CUSTOM_SINK_LEAK_STRING%d"
+java -jar Muse-1.0.0.jar /config.properties
 ```
 
-The first line of the Leak file should define the custom source and the second line should define the custom sink. If either line is empty, meaning no custom leak is defineed, Muse will use it's default leak strings. If no file is specified, Muse will also use it's defualt leak strings.
+The `config.properties` file is defined as:
+```
+lib4ast = MDroidPlus//libs4ast//
+appSrc = //tmp/AppFoo//src//
+appName = AppFoo
+output = //tmp//mutants//
+operatorType = REACHABILITY
+leakFile = //tmp//dataleak.txt
+```
+
+This will execute REACHABILITY in Muse with a custom data leak string defined in tmp/dataleak.txt during execution.
 
 
 # Muse Processor Helper Utility

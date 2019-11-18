@@ -1,9 +1,12 @@
 package edu.wm.cs.muse.dataleak.support;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Properties;
 
 import edu.wm.cs.muse.dataleak.DataLeak;
 
@@ -22,9 +25,14 @@ public class Arguments {
 	private static String rootPath;
 	private static String appName;
 	private static String mutantsFolder;
-	private static String Operator;
+	private static String operator;
 	private static String leakPath = "src/edu/wm/cs/muse/dataleak/default_leak_strings.txt";
 	private static Boolean testmode = false;
+	
+	private static String[] argsList;
+	private static Properties prop;
+
+	private static HashMap<String, String> leakMap;
 
 	/**
 	 * private constructor makes sure that no constructor can ever be used.
@@ -49,7 +57,7 @@ public class Arguments {
 		rootPath = args[1];
 		appName = args[2];
 		mutantsFolder = args[3];
-		Operator = args[4];
+		operator = args[4];
 	}
 
 	public static void extractArguments(File file) {
@@ -63,6 +71,84 @@ public class Arguments {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public static int extractArguments(String path) {
+		
+		try (InputStream input = new FileInputStream(path)) {
+			prop = new Properties();
+			prop.load(input);		
+		} catch (IOException e) {
+			return -1;
+		}
+		
+		try {
+			argsList = extractProperties(prop);
+		} catch (Exception e) {
+			return -1;
+		}
+		
+		extractArguments(argsList);
+		
+		return 0;
+	}
+	
+	/*
+	 * This method extracts the 5 args Muse needs to run and
+	 * places them into a string array
+	 * 
+	 * This array will be sent to the Arguments class
+	 */
+	private static String[] extractProperties(Properties properties) throws Exception {
+
+		if (properties.getProperty("lib4ast") == null) {
+			throw new Exception();
+		}
+		if (properties.getProperty("appSrc") == null) {
+			throw new Exception();
+		}
+		if (properties.getProperty("appName") == null) {
+			throw new Exception();
+		}
+		if (properties.getProperty("output") == null) {
+			throw new Exception();
+		}
+		if (properties.getProperty("operatorType") == null) {
+			throw new Exception();
+		}
+		
+		binariesFolder = properties.getProperty("lib4ast");
+		rootPath = properties.getProperty("appSrc");
+		appName = properties.getProperty("appName");
+		mutantsFolder = properties.getProperty("output");
+		operator = properties.getProperty("operatorType");
+
+		leakMap = new HashMap<String, String>();
+
+		if (properties.getProperty("source") != null) {
+			System.out.println("Custom source leak being used");
+			leakMap.put("source", properties.getProperty("source"));
+		} else {
+			System.out.println("Using default source leak");
+		}
+
+		if (properties.getProperty("sink") != null) {
+			System.out.println("Custom sink leak being used");
+			leakMap.put("sink", properties.getProperty("sink"));
+		} else {
+			System.out.println("Using default sink leak");
+		}
+
+		if (properties.getProperty("varDec") != null) {
+			System.out.println("Custom variable declaration being used");
+			leakMap.put("varDec", properties.getProperty("varDec"));
+		} else {
+			System.out.println("Using default variable declaration");
+		}
+		
+		setLeaks(getOperatorEnumType(operator), leakMap);
+		
+		return new String[] {binariesFolder, rootPath, appName, mutantsFolder, operator};
 	}
 
 	public static boolean setLeaks(OperatorType op, String leakPath) {
@@ -153,9 +239,28 @@ public class Arguments {
 	 * TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY
 	 */
 	public static String getOperator() {
-		return Operator;
+		return operator;
 	}
 	
+	private static OperatorType getOperatorEnumType(String inputOperator) {
+		// TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY
+		System.out.println("Input operator: " + inputOperator);
+		switch (inputOperator) {
+		case "TAINTSOURCE":
+			return OperatorType.TAINTSOURCE;
+		case "TAINTSINK":
+			return OperatorType.TAINTSINK;
+		case "SCOPESOURCE":
+			return OperatorType.SCOPESOURCE;
+		case "SCOPESINK":
+			return OperatorType.SCOPESINK;
+		case "REACHABILITY":
+			return OperatorType.REACHABILITY;
+		case "COMPLEXREACHABILITY":
+			return OperatorType.COMPLEXREACHABILITY;
+		default:
+			return null;
+		}
+	}
 	
-
 }

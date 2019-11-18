@@ -56,6 +56,8 @@ public class Muse {
 	// not detected in java ast as static
 
 	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
+		
+		/*
 		Boolean customLeak = false;
 		String leakPath = "src/edu/wm/cs/muse/dataleak/default_leak_strings.txt";
 		Options options = new Options();
@@ -88,9 +90,22 @@ public class Muse {
 			printArgumentError();
 			return;
 		}
+		
+		*/
+		
+		if (args.length != 1) {
+			printArgumentError();
+			return;
+		}
+		
+		// get the path to the config.properties, it will always be the only argument
+		if (Arguments.extractArguments(args[0]) < 0) {
+			printArgumentError();
+			return;
+		}
 
 		//any non option arguments are passed in 
-		Arguments.extractArguments(cmd.getArgs());
+		Arguments.extractArguments(args[0]);
 
 		FileUtility.setupMutantsDirectory();
 
@@ -99,9 +114,11 @@ public class Muse {
 		Collection<File> files = FileUtils.listFiles(new File(Arguments.getRootPath()), TrueFileFilter.INSTANCE,
 				TrueFileFilter.INSTANCE);
 		
+		/*
 		if (customLeak) {
 			Arguments.setLeaks(getOperatorType(Arguments.getOperator()), leakPath);	
 		}
+		*/
 		
 		for (File file : files) {
 			try {
