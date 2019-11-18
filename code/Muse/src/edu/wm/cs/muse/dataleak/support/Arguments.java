@@ -3,6 +3,7 @@ package edu.wm.cs.muse.dataleak.support;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 
 import edu.wm.cs.muse.dataleak.DataLeak;
 
@@ -85,7 +86,22 @@ public class Arguments {
 		}
 		return true;
 	}
-
+	
+	public static boolean setLeaks(OperatorType op, HashMap<String, String> configData) {
+		if (configData.get("source") != null) {
+			DataLeak.setSource(op, configData.get("source").toString());
+		}
+		// second line read in as leak sink string or default leak sink string if empty
+		if (configData.get("sink") != null) {
+			DataLeak.setSink(op, configData.get("sink").toString());
+		}
+		// third line read in as variable declaration string or default variable declaration string if empty
+		if (configData.get("varDec") != null) {
+			DataLeak.setVariableDeclaration(op, configData.get("varDec").toString());
+		}
+		return true;
+	}
+	
 	public static void setRootPath(String rootPath) {
 		Arguments.rootPath = rootPath;
 	}
