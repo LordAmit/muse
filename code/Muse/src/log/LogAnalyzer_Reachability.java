@@ -1,9 +1,12 @@
 package log;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
@@ -32,6 +35,7 @@ public class LogAnalyzer_Reachability {
 	//ModifiedFile.txt
 	static String sourceString;
 	private CommandLine cmd = null;
+	private static Properties prop;
 
 	/**
 	 * Iterates through the modified file directory and compares the occurrence of
@@ -42,45 +46,29 @@ public class LogAnalyzer_Reachability {
 	 * @author Yang Zhang
 	 */
 	public void runLogAnalysis(String[] args) throws FileNotFoundException, IOException {
-		Options options = new Options();
-		//adding an option flag that can be used on command line
-		options.addOption("d", "dataleak", true, "Run LogAnalyzer with a custom data leak file");
-
-		CommandLineParser parser = new DefaultParser();
-
-		//parse the command line input
-		try {
-			cmd = parser.parse(options, args);
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-			return;
-		}
-
-		///////Add control flow based on the option flag parsed here
-			
-		//sets the leakPath to the file specified
-		if (cmd.hasOption("d")) {
-			System.out.println("DataLeak set");
-			Arguments.setLeaks(OperatorType.TAINTSINK, cmd.getOptionValue("d"));
-		}	
-		
-		///////
-		
-		// Usage Error, check length of remaining arguments
-		if (cmd.getArgs().length != 3) {
+		if (args.length != 1) {
 			printArgumentError();
 			return;
 		}
 		
-		args = cmd.getArgs();
-			
-		testString = FileUtility.readSourceFile(args[0].toString()).toString();
+
+		//any non option arguments are passed in 
+		Arguments.extractArguments(args[0]);
+		
+		try (InputStream input = new FileInputStream(args[0])) {
+			prop = new Properties();
+			prop.load(input);		
+		} catch (IOException e) {
+		}
+		
+		
+		testString = FileUtility.readSourceFile(prop.getProperty("logPath")).toString();
 		//modified files directory
-		File mod_file_path = new File(args[1].toString());
+		File mod_file_path = new File(prop.getProperty("appSrc"));
 		File [] mod_files = mod_file_path.listFiles();
 		
 		//mutant folder directory
-		File mutant_file_path = new File(args[2].toString());
+		File mutant_file_path = new File(prop.getProperty("output"));
 		File [] mutated_files = mutant_file_path.listFiles();
 
 		for (File mod_file : mod_files) {
