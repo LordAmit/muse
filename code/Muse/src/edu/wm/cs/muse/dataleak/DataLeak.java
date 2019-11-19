@@ -10,7 +10,7 @@ import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 /**
- * @author liz, Ian Wolff
+* @author liz, Ian Wolff
  *
  *         This class contains all the information pertaining to the data leak
  *         security operator. More specifically, it contains the sink and source
@@ -116,6 +116,7 @@ public class DataLeak {
 		return String.format(sourceLeaks.get(getOperatorSource(op)), identifier);
 	}
 	
+
 	/**
 	 * Formats the sink string and returns the correct sink string based on the
 	 * operator type specified.
@@ -171,7 +172,6 @@ public class DataLeak {
 	 * @returns the string version of a data leak as used by the reachability
 	 *          operator schema.
 	 */
-
 	public static String getLeak(OperatorType op, int identifier) {
 		if (op == OperatorType.REACHABILITY)
 			return String.format(sourceLeaks.get(op), identifier) + "\n"
@@ -181,6 +181,7 @@ public class DataLeak {
 			String[] paths = getPaths();
 			String source = getSource(OperatorType.COMPLEXREACHABILITY, identifier);
 			String sink = String.format(getRawSink(OperatorType.COMPLEXREACHABILITY), identifier, identifier);
+
 			String leak = source + "\n" + String.format(paths[identifier % paths.length], identifier, identifier,
 					identifier, identifier, identifier, identifier, identifier) + "\n" + sink;
 			return leak;

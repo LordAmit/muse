@@ -30,7 +30,6 @@ public class Arguments {
 	
 	private static String[] argsList;
 	private static Properties prop;
-
 	private static HashMap<String, String> leakMap;
 
 	/**

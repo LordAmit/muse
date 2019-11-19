@@ -1,0 +1,18 @@
+@startuml
+
+title "Muse - Sequence Diagram"
+
+actor User
+User -> Muse : code, schema selection, operator selection
+Muse <- ASTHelper : Compilation Unit
+Muse <- "Compilation Unit" : AST
+Muse -> ASTRewrite : AST
+Muse <- ASTRewrite : AST Rewriter
+Muse -> "Compilation Unit" : Schema
+Muse <- Schema : Node Change Containers
+Muse -> Operator : ASTRewriter , Node Change Containers
+Muse <- Operator : Modified ASTRewriter
+Muse <- ASTRewriter : Mutated Code
+User <- Muse : Mutated Code
+
+@enduml
