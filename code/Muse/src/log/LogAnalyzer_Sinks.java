@@ -19,8 +19,9 @@ import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 /**
- * TaintSink log analyzer requires two string contents. Log and Source.
+ * Sinks log analyzer requires two string contents. Log and Source.
  * Based on the log file, it removes the unused log sinks and only keeps the true positive logs.
+ * It can be used with the ScopeSink and TaintSink operators
  * @author Amit Seal Ami
  * 
  */
@@ -116,7 +117,7 @@ public class LogAnalyzer_Sinks {
 	}
 
 	/**
-	 * Analyze source string, based on input, non true positive sinks for taintSink. 
+	 * Analyze source string, based on input, non true positive sinks for taintSink or scopeSink. 
 	 * @param string contains the source code in one string, with multiple lines.
 	 * @param maps {@link log.LogAnalyzer_Sinks#getLogMaps(String) maps} contains the maps of source and sinks
 	 * @return modified source code.

@@ -36,6 +36,7 @@ public class LogAnalyzer_Reachability {
 	static String sourceString;
 	private CommandLine cmd = null;
 	private static Properties prop;
+	private static OperatorType op;
 
 	/**
 	 * Iterates through the modified file directory and compares the occurrence of
@@ -59,17 +60,40 @@ public class LogAnalyzer_Reachability {
 			prop = new Properties();
 			prop.load(input);		
 		} catch (IOException e) {
+			printArgumentError();
+			return;
 		}
 		
-		
+		//path to log file from Muse for input
+		if (prop.getProperty("logPath") == null) {
+			printArgumentError();
+			return;
+		}
 		testString = FileUtility.readSourceFile(prop.getProperty("logPath")).toString();
-		//modified files directory
+
+		
+		//path to modified file with inserted leaks for input
+		if (prop.getProperty("appSrc") == null) {
+			printArgumentError();
+			return;
+		}
 		File mod_file_path = new File(prop.getProperty("appSrc"));
 		File [] mod_files = mod_file_path.listFiles();
 		
-		//mutant folder directory
+		//path to mutant folder directory for output
+		if (prop.getProperty("output") == null) {
+			printArgumentError();
+			return;
+		}
 		File mutant_file_path = new File(prop.getProperty("output"));
 		File [] mutated_files = mutant_file_path.listFiles();
+		
+		if (prop.getProperty("operatorType") == null) {
+			printArgumentError();
+			return;
+		}
+		op = Arguments.getOperatorEnumType(prop.getProperty("operatorType"));
+
 
 		for (File mod_file : mod_files) {
 			try {
@@ -114,7 +138,7 @@ public class LogAnalyzer_Reachability {
 		for (String line : lines) {
 			if (line.contains("leak-")) {
 				System.out.println(line);
-				indices.add(Integer.parseInt(line.split("leak-")[1]));
+				indices.add(Integer.parseInt(line.split("leak-")[1].split(":")[0]));
 			}
 		}
 		return indices;
