@@ -114,7 +114,7 @@ public class LogAnalyzer_Reachability {
 		for (String line : lines) {
 			if (line.contains("leak-")) {
 				System.out.println(line);
-				indices.add(Integer.parseInt(line.split("leak-")[1].split(":")[0]));
+				indices.add(Integer.parseInt(line.split("leak-")[1]));
 			}
 		}
 		return indices;
@@ -131,19 +131,19 @@ public class LogAnalyzer_Reachability {
 		String[] lines = string.split("\n");
 		String outputLines = "";
 		boolean addThrowAwayLine = false;		
-		// rawLeak separates the substrings before and after the custom leak string "%d" placeholder
-		String[] rawLeakSource = DataLeak.getRawSource(OperatorType.REACHABILITY).split("%d",2);
-		String[] rawLeakSink = DataLeak.getRawSink(OperatorType.REACHABILITY).split("%d",2);
+		// rawsink and rawSource separate the substrings before and after the "%d" placeholder
+		String[] rawSource = DataLeak.getRawSource(OperatorType.REACHABILITY).split("%d",2);
+		String[] rawSink = DataLeak.getRawSink(OperatorType.REACHABILITY).split("%d",2);
 		
 		for (String line : lines) {
-			if (line.contains(rawLeakSource[0])) {
+			if (line.contains(rawSource[0])) {
 				// isolates the index from the leak string and removes any leftover whitespace
-				int index = Integer.parseInt(line.replace(rawLeakSource[0], "").replace(rawLeakSource[1],"").replaceAll("\\s+",""));
+				int index = Integer.parseInt(line.replace(rawSource[0], "").replace(rawSource[1],"").replaceAll("\\s+",""));
 				if (indicesFromLog.contains(index)) {
 					outputLines += line + "\n";
 					addThrowAwayLine = true;
 				}
-			} else if (line.contains(rawLeakSink[0])) {
+			} else if (line.contains(rawSink[0]) && line.contains(rawSink[1])) {
 				if (addThrowAwayLine) {
 					outputLines += line + "\n";
 					addThrowAwayLine = false;

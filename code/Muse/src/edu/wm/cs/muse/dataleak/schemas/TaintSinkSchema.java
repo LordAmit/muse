@@ -92,9 +92,6 @@ public class TaintSinkSchema extends ASTVisitor {
 					if (((BodyDeclaration) field).getNodeType() == ASTNode.FIELD_DECLARATION) {
 						Matcher matcher = variablePattern.matcher(field.toString());
 						if (matcher.find() && field.toString().trim().startsWith(vdType)) {
-							System.out.println("------------");
-							System.out.println(field.toString().trim());
-							System.out.println(vdType);
 							count = Integer.valueOf(matcher.group(2));
 							nodeChanges.add(new SinkNodeChangeContainers(node, index, count, Block.STATEMENTS_PROPERTY,
 									method, 0));
