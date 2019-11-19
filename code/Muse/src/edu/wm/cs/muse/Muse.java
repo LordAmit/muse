@@ -337,12 +337,16 @@ public class Muse {
 
 	private void printArgumentError() {
 		System.out.println("******* ERROR: INCORRECT USAGE *******");
-		System.out.println("Argument List:");
-		System.out.println("1. Binaries path");
-		System.out.println("2. App Source Code path");
-		System.out.println("3. App Name");
-		System.out.println("4. Mutants path");
-		System.out.println("5. MutationScheme: TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY (caseSensitive).");
+		System.out.println("Values need to be defined in config.properties in order to run Muse:");
+		System.out.println("lib4ast: -----------");
+		System.out.println("appSrc: -----------");
+		System.out.println("appName: -----------");
+		System.out.println("output: -----------");
+		System.out.println("operatorType: TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK or REACHABILITY");
+		System.out.println("source: -----------");
+		System.out.println("sink: -----------");
+		System.out.println("varDec: -----------");
+		System.out.println("Please provide the path to the config.properties file on command line");
 	}
 
 	public static void main(String[] args) throws MalformedTreeException, BadLocationException {
