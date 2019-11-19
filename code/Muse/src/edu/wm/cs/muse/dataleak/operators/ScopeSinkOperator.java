@@ -68,6 +68,7 @@ public class ScopeSinkOperator {
 		if(node.statements().size()==0) {
 			return;
 		}
+		String[] rawVarDec = DataLeak.getVariableDeclaration(OperatorType.SCOPESINK).split("%d",2);
 		for (int i = 0; i < fieldHolder.size(); i++) {
 			try {
 				listRewrite = rewriter.getListRewrite(node, nodeProperty);
@@ -75,13 +76,12 @@ public class ScopeSinkOperator {
 				e.printStackTrace();
 				System.exit(0);
 			}
-			int index_equal = fieldHolder.get(i).toString().indexOf("=");
-			String tempString = fieldHolder.get(i).toString().substring(15, index_equal);
-			tempString = tempString.trim();
+			String placeholderValue = fieldHolder.get(i).toString().split(rawVarDec[0])[1].split("=")[0];
 			MethodDeclaration methodNode = (MethodDeclaration) node.getParent();
-			System.out.println(String.format("leak-%s-%s: %s.%s", tempString, index,
+			System.out.println(String.format("leak-%s-%s: %s.%s", placeholderValue, index,
 					SchemaOperatorUtility.getClassNameOfMethod(node), methodNode.getName()));
-			String sink = String.format(DataLeak.getSink(OperatorType.SCOPESINK, Integer.parseInt(tempString), index));
+			
+			String sink = String.format(DataLeak.getSink(OperatorType.SCOPESINK, Integer.parseInt(placeholderValue), index));
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
 			
 			int placement = 1;
@@ -109,5 +109,4 @@ public class ScopeSinkOperator {
 		}
 
 	}
-
 }

@@ -5,15 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jface.text.Document;
 
@@ -36,6 +34,12 @@ public class LogAnalyzer_Reachability {
 	static String sourceString;
 	private CommandLine cmd = null;
 	private static Properties prop;
+	private static OperatorType op;
+	private static File mod_file_path;
+	private static File [] mod_files;
+	private static File mutant_file_path;
+	private static File [] mutated_files;
+	private static ArrayList<String> paths = new ArrayList<String>();
 
 	/**
 	 * Iterates through the modified file directory and compares the occurrence of
@@ -46,31 +50,6 @@ public class LogAnalyzer_Reachability {
 	 * @author Yang Zhang
 	 */
 	public void runLogAnalysis(String[] args) throws FileNotFoundException, IOException {
-		if (args.length != 1) {
-			printArgumentError();
-			return;
-		}
-		
-
-		//any non option arguments are passed in 
-		Arguments.extractArguments(args[0]);
-		
-		try (InputStream input = new FileInputStream(args[0])) {
-			prop = new Properties();
-			prop.load(input);		
-		} catch (IOException e) {
-		}
-		
-		
-		testString = FileUtility.readSourceFile(prop.getProperty("logPath")).toString();
-		//modified files directory
-		File mod_file_path = new File(prop.getProperty("appSrc"));
-		File [] mod_files = mod_file_path.listFiles();
-		
-		//mutant folder directory
-		File mutant_file_path = new File(prop.getProperty("output"));
-		File [] mutated_files = mutant_file_path.listFiles();
-
 		for (File mod_file : mod_files) {
 			try {
 				if (mod_file.getName().endsWith(".txt")) {
@@ -101,7 +80,7 @@ public class LogAnalyzer_Reachability {
 	}
 	
 	/**
-	 * Extracts indices of true positive data leaks
+	 * Extracts indices of true positive data leaks from the log file
 	 * 
 	 * @param string source code contents from formatted text file with new lines
 	 * @return set of indices based on true positive leaks
@@ -120,34 +99,63 @@ public class LogAnalyzer_Reachability {
 		return indices;
 	}
 
-	/**
+	/**Analyzes the source string and based on input, removes false positive sources 
+	 * and sinks for the reachability operator as well as variable declarations and
+	 * paths for the complex reachability operators.
+	 * 
 	 * @param string           String content of the source file
 	 * @param indicesFromLog   extracted indices of dataleaks from log file
 	 * @return String content  of file that only contains true positive for
 	 *         reachability
-	 * @author Ian Wolff
+	 * @author Amit Seal Ami, Ian Wolff
 	 */
 	public String removeUnusedIndicesFromSource(String string, Set<Integer> indicesFromLog) {
 		String[] lines = string.split("\n");
 		String outputLines = "";
-		boolean addThrowAwayLine = false;		
-		// rawLeak separates the substrings before and after the custom leak string "%d" placeholder
-		String[] rawLeakSource = DataLeak.getRawSource(OperatorType.REACHABILITY).split("%d",2);
-		String[] rawLeakSink = DataLeak.getRawSink(OperatorType.REACHABILITY).split("%d",2);
+		//boolean addThrowAwayLine = false;	
+		boolean pathFound = false;	
+		// rawsink and rawSource separate the substrings before and after the "%d" placeholder
+		String[] rawSource = DataLeak.getRawSource(op).split("%d");
+		String[] rawSink = DataLeak.getRawSink(op).split("%d");
 		
 		for (String line : lines) {
-			if (line.contains(rawLeakSource[0])) {
+			// removes sinks that do not appear in the log
+			if (line.contains(rawSink[0])) {
 				// isolates the index from the leak string and removes any leftover whitespace
-				int index = Integer.parseInt(line.replace(rawLeakSource[0], "").replace(rawLeakSource[1],"").replaceAll("\\s+",""));
-				if (indicesFromLog.contains(index)) {
+				String placeholderVal = line.split(Pattern.quote(rawSink[0]))[1].split(Pattern.quote(rawSink[1]))[0].trim();
+				if (indicesFromLog.contains(Integer.parseInt(placeholderVal))) {
 					outputLines += line + "\n";
-					addThrowAwayLine = true;
+					//addThrowAwayLine = true;
 				}
-			} else if (line.contains(rawLeakSink[0])) {
-				if (addThrowAwayLine) {
+			// removes sources that do not appear in the log
+			} else if (line.contains(rawSource[0])) {
+				String placeholderVal = line.split(Pattern.quote(rawSource[0]))[1].split(Pattern.quote(rawSource[1]))[0].trim();
+				if (indicesFromLog.contains(Integer.parseInt(placeholderVal))) {
 					outputLines += line + "\n";
-					addThrowAwayLine = false;
+					//addThrowAwayLine = false;
 				}
+			// removes additional paths for complex reachability operator
+			} else if (op == OperatorType.COMPLEXREACHABILITY) {
+				// checks if a line is equivalent to any of the paths
+				for(String pathLine : paths) {
+					String[] rawPath = pathLine.split("%d");
+					// checks to make sure path has not already been found
+					if (pathFound == false && line.trim().startsWith(rawPath[0]) && line.contains(rawPath[1])) {
+						pathFound = true;
+						String placeholderVal = line.trim().split(Pattern.quote(rawPath[0]))[1].split(Pattern.quote(rawPath[1]))[0];
+						// includes line only if index appears in the log file
+						if (indicesFromLog.contains(Integer.parseInt(placeholderVal))) {
+							outputLines += line + "\n";
+						}
+					}
+				}
+				if (pathFound) {
+					pathFound = false;
+				// if no leak is found, output regularly
+				} else {
+					outputLines += line + "\n";
+				}
+			// outputs line regularly
 			} else {
 				outputLines += line += "\n";
 			}
@@ -155,16 +163,64 @@ public class LogAnalyzer_Reachability {
 		return outputLines;
 	}
 	
-	private void printArgumentError() {
+	/**
+	 * Reads in arguments from a properties file and raises an exception if any are missing.
+	 * @param args
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	private static void prepareArguments(String[] args) throws FileNotFoundException, IOException {
+		if (args.length != 1) {
+			printArgumentError();
+			return;
+		}
+		//any non option arguments are passed in 
+		Arguments.extractArguments(args[0]);
+		try (InputStream input = new FileInputStream(args[0])) {
+			prop = new Properties();
+			prop.load(input);		
+		} catch (IOException e) {
+			printArgumentError();
+			return;
+		}
+		if (prop.getProperty("logPath") == null) {
+			printArgumentError();
+			return;
+		} else if (prop.getProperty("appSrc") == null) {
+			printArgumentError();
+			return;
+		} else if (prop.getProperty("output") == null) {
+			printArgumentError();
+			return;
+		} else if (prop.getProperty("operatorType") == null) {
+			printArgumentError();
+			return;
+		}
+		//path to log file from Muse for input
+		testString = FileUtility.readSourceFile(prop.getProperty("logPath")).toString();
+		//path to modified file with inserted leaks for input
+		mod_file_path = new File(prop.getProperty("appSrc"));
+		mod_files = mod_file_path.listFiles();
+		//path to mutant folder directory for output
+		mutant_file_path = new File(prop.getProperty("output"));
+		mutated_files = mutant_file_path.listFiles();	
+		op = Arguments.getOperatorEnumType(prop.getProperty("operatorType"));
+		if (op == OperatorType.COMPLEXREACHABILITY) {
+			for(String path : DataLeak.getPaths()) {
+				String[] pathLines = path.split("\\n");
+				for(String pathLine : pathLines) {
+					paths.add(pathLine);
+				}
+			}
+		}
+	}
+	
+	private static void printArgumentError() {
 		System.out.println("******* ERROR: INCORRECT USAGE *******");
-		System.out.println("Argument List:");
-		System.out.println("1. Runtime Logs File");
-		System.out.println("2. Modified Files Directory");
-		System.out.println("3. Mutants path");
 	}
 
 	public static void main(String[] args) throws IOException {
-		
+		prepareArguments(args);
 		new LogAnalyzer_Reachability().runLogAnalysis(args);
 
 	}

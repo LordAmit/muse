@@ -26,12 +26,10 @@ public class Arguments {
 	private static String appName;
 	private static String mutantsFolder;
 	private static String operator;
-	private static String leakPath = "src/edu/wm/cs/muse/dataleak/default_leak_strings.txt";
 	private static Boolean testmode = false;
 	
 	private static String[] argsList;
 	private static Properties prop;
-
 	private static HashMap<String, String> leakMap;
 
 	/**
@@ -126,24 +124,18 @@ public class Arguments {
 		leakMap = new HashMap<String, String>();
 
 		if (properties.getProperty("source") != null) {
-			System.out.println("Custom source leak being used");
 			leakMap.put("source", properties.getProperty("source"));
 		} else {
-			System.out.println("Using default source leak");
 		}
 
 		if (properties.getProperty("sink") != null) {
-			System.out.println("Custom sink leak being used");
 			leakMap.put("sink", properties.getProperty("sink"));
 		} else {
-			System.out.println("Using default sink leak");
 		}
 
 		if (properties.getProperty("varDec") != null) {
-			System.out.println("Custom variable declaration being used");
 			leakMap.put("varDec", properties.getProperty("varDec"));
 		} else {
-			System.out.println("Using default variable declaration");
 		}
 		
 		setLeaks(getOperatorEnumType(operator), leakMap);
@@ -242,9 +234,8 @@ public class Arguments {
 		return operator;
 	}
 	
-	private static OperatorType getOperatorEnumType(String inputOperator) {
+	public static OperatorType getOperatorEnumType(String inputOperator) {
 		// TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY
-		System.out.println("Input operator: " + inputOperator);
 		switch (inputOperator) {
 		case "TAINTSOURCE":
 			return OperatorType.TAINTSOURCE;

@@ -22,6 +22,7 @@ public class ASTHelper {
 	
 public static CompilationUnit getAST(String source, String binariesFolder, String sourceRootFolder) {
 	
+		//set true for test cases. To deal with lack of binaries folder.
 		if(Arguments.getTestMode()) {
 			return getTestingAST(source, sourceRootFolder);
 		}
@@ -54,6 +55,7 @@ public static CompilationUnit getAST(String source, String binariesFolder, Strin
 		return (CompilationUnit) parser.createAST(new NullProgressMonitor());
 	}
 	
+	//called when test mode is set. Similar to getAST but does not require a binaries folder be provided.
 public static CompilationUnit getTestingAST(String source, String sourceRootFolder) {
 	
 	
