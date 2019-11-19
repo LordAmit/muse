@@ -1,8 +1,14 @@
 package edu.wm.cs.muse.dataleak.support;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Properties;
+
+import edu.wm.cs.muse.dataleak.DataLeak;
 
 /**
  * This class is introduced for better handling of arguments, and adding
@@ -19,9 +25,12 @@ public class Arguments {
 	private static String rootPath;
 	private static String appName;
 	private static String mutantsFolder;
-	private static String Operator;
-	private static String leakPath = "src/edu/wm/cs/muse/dataleak/default_leak_strings.txt";
-	private static Boolean testmode = false;  //set true for test cases. To deal with lack of binaries folder.
+	private static String operator;
+	private static Boolean testmode = false;
+	
+	private static String[] argsList;
+	private static Properties prop;
+	private static HashMap<String, String> leakMap;
 
 	/**
 	 * private constructor makes sure that no constructor can ever be used.
@@ -46,7 +55,7 @@ public class Arguments {
 		rootPath = args[1];
 		appName = args[2];
 		mutantsFolder = args[3];
-		Operator = args[4];
+		operator = args[4];
 	}
 
 	public static void extractArguments(File file) {
@@ -61,9 +70,114 @@ public class Arguments {
 			e.printStackTrace();
 		}
 	}
+	
+	public static int extractArguments(String path) {
+		
+		try (InputStream input = new FileInputStream(path)) {
+			prop = new Properties();
+			prop.load(input);		
+		} catch (IOException e) {
+			return -1;
+		}
+		
+		try {
+			argsList = extractProperties(prop);
+		} catch (Exception e) {
+			return -1;
+		}
+		
+		extractArguments(argsList);
+		
+		return 0;
+	}
+	
+	/*
+	 * This method extracts the 5 args Muse needs to run and
+	 * places them into a string array
+	 * 
+	 * This array will be sent to the Arguments class
+	 */
+	private static String[] extractProperties(Properties properties) throws Exception {
 
-	public static void setLeakPath(String leakPath) {
-		Arguments.leakPath = leakPath;
+		if (properties.getProperty("lib4ast") == null) {
+			throw new Exception();
+		}
+		if (properties.getProperty("appSrc") == null) {
+			throw new Exception();
+		}
+		if (properties.getProperty("appName") == null) {
+			throw new Exception();
+		}
+		if (properties.getProperty("output") == null) {
+			throw new Exception();
+		}
+		if (properties.getProperty("operatorType") == null) {
+			throw new Exception();
+		}
+		
+		binariesFolder = properties.getProperty("lib4ast");
+		rootPath = properties.getProperty("appSrc");
+		appName = properties.getProperty("appName");
+		mutantsFolder = properties.getProperty("output");
+		operator = properties.getProperty("operatorType");
+
+		leakMap = new HashMap<String, String>();
+
+		if (properties.getProperty("source") != null) {
+			leakMap.put("source", properties.getProperty("source"));
+		} else {
+		}
+
+		if (properties.getProperty("sink") != null) {
+			leakMap.put("sink", properties.getProperty("sink"));
+		} else {
+		}
+
+		if (properties.getProperty("varDec") != null) {
+			leakMap.put("varDec", properties.getProperty("varDec"));
+		} else {
+		}
+		
+		setLeaks(getOperatorEnumType(operator), leakMap);
+		
+		return new String[] {binariesFolder, rootPath, appName, mutantsFolder, operator};
+	}
+
+	public static boolean setLeaks(OperatorType op, String leakPath) {
+		try {
+			String[] leakStrings = FileUtility.readSourceFile(leakPath).toString().split("\\n");
+			// first line read in as leak source string or default leak source string if empty
+			if (leakStrings.length > 0 && !leakStrings[0].isEmpty()) {
+				DataLeak.setSource(op, leakStrings[0]);
+			}
+			// second line read in as leak sink string or default leak sink string if empty
+			if (leakStrings.length > 1 && !leakStrings[1].isEmpty()) {
+				DataLeak.setSink(op, leakStrings[1]);
+			}
+			// third line read in as variable declaration string or default variable declaration string if empty
+			if (leakStrings.length > 2 && !leakStrings[2].isEmpty()) {
+				DataLeak.setVariableDeclaration(op, leakStrings[2]);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean setLeaks(OperatorType op, HashMap<String, String> configData) {
+		if (configData.get("source") != null) {
+			DataLeak.setSource(op, configData.get("source").toString());
+		}
+		// second line read in as leak sink string or default leak sink string if empty
+		if (configData.get("sink") != null) {
+			DataLeak.setSink(op, configData.get("sink").toString());
+		}
+		// third line read in as variable declaration string or default variable declaration string if empty
+		if (configData.get("varDec") != null) {
+			DataLeak.setVariableDeclaration(op, configData.get("varDec").toString());
+		}
+		return true;
 	}
 	
 	public static void setRootPath(String rootPath) {
@@ -84,14 +198,6 @@ public class Arguments {
 	 */
 	public static String getBinariesFolder() {
 		return binariesFolder;
-	}
-	
-	/**
-	 * @return the path where the leak string file resides.
-	 */
-	public static String getLeakPath() {
-		//leakPath = "C:\\Users\\Ian\\Downloads\\leak.txt";
-		return leakPath;
 	}
 
 
@@ -125,9 +231,27 @@ public class Arguments {
 	 * TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY
 	 */
 	public static String getOperator() {
-		return Operator;
+		return operator;
 	}
 	
+	public static OperatorType getOperatorEnumType(String inputOperator) {
+		// TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY
+		switch (inputOperator) {
+		case "TAINTSOURCE":
+			return OperatorType.TAINTSOURCE;
+		case "TAINTSINK":
+			return OperatorType.TAINTSINK;
+		case "SCOPESOURCE":
+			return OperatorType.SCOPESOURCE;
+		case "SCOPESINK":
+			return OperatorType.SCOPESINK;
+		case "REACHABILITY":
+			return OperatorType.REACHABILITY;
+		case "COMPLEXREACHABILITY":
+			return OperatorType.COMPLEXREACHABILITY;
+		default:
+			return null;
+		}
+	}
 	
-
 }

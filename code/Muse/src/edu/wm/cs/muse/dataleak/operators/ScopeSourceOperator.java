@@ -10,6 +10,8 @@ import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
+import edu.wm.cs.muse.dataleak.DataLeak;
+import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.dataleak.support.SchemaOperatorUtility;
 import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;
@@ -67,8 +69,7 @@ public class ScopeSourceOperator {
 		int identifier = Utility.COUNTER_GLOBAL - 1;
 		
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		String source = String.format("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();",
-				identifier);
+		String source = DataLeak.getSource(OperatorType.SCOPESOURCE, identifier);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
 		// listRewrite.insertAt(placeHolder, index, null);
 		listRewrite.insertAt(placeHolder, placement, null);
@@ -78,7 +79,8 @@ public class ScopeSourceOperator {
 	private void insertVariableDeclaration(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
 
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		String variable = String.format("String dataLeAk%d = \"%d\";", Utility.COUNTER_GLOBAL, Utility.COUNTER_GLOBAL);
+		String variable = String.format(DataLeak.getVariableDeclaration(OperatorType.SCOPESOURCE), Utility.COUNTER_GLOBAL, 
+				Utility.COUNTER_GLOBAL);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
 		Utility.COUNTER_GLOBAL++;
