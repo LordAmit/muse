@@ -91,8 +91,7 @@ public class ScopeSinkSchema extends ASTVisitor {
 		if (parent == classRetainer) {
 			// check for strings of the declaration "String dataLeAk%d"
 
-			if (field.toString().contains(vdName)
-					&& field.toString().substring(0, 15).compareTo(vdType) == 0) {
+			if (field.toString().startsWith(vdType)) {
 				fieldHolder.add(field);
 				previousFieldHolder.add(field);
 			}
@@ -115,15 +114,15 @@ public class ScopeSinkSchema extends ASTVisitor {
 		if (parent != classRetainer) {
 
 			if (classRetainer != null) {
+				
 				if (field.toString().contains(vdName)
 						&& field.toString().substring(0, 15).compareTo(vdType) == 0) {
 					previousFieldHolder.add(field);
 				}
 				classRetainer = parent;
 			}
-
-			if (classRetainer == null) {
-
+			else {
+				
 				if (field.toString().contains(vdName)
 						&& field.toString().substring(0, 15).compareTo(vdType) == 0) {
 					previousFieldHolder.add(field);

@@ -1,36 +1,36 @@
 package log;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jface.text.Document;
 
+import edu.wm.cs.muse.dataleak.DataLeak;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 /**
- * ScopeSink log analyzer requires two string contents. Log and Source.
+ * TaintSink log analyzer requires two string contents. Log and Source.
  * Based on the log file, it removes the unused log sinks and only keeps the true positive logs.
  * @author Amit Seal Ami
  * 
  */
-public class LogAnalyzer_ScopeSink {
+public class LogAnalyzer_Sinks {
 	//RuntimeLogs.txt
 	static String testString;
 	//ModifiedFile.txt
 	static String sourceString;
-	private CommandLine cmd = null;
+	private static Properties prop;
+	private static OperatorType op;
 	
 	/**
 	 * Iterates through the modified file directory to remove false positive data leaks.
@@ -40,46 +40,53 @@ public class LogAnalyzer_ScopeSink {
 	 * @author Yang Zhang
 	 */
 	public void runLogAnalysis(String[] args) throws Exception {
-		Options options = new Options();
-		//adding an option flag that can be used on command line
-		options.addOption("d", "dataleak", true, "Run LogAnalyzer with a custom data leak file");
-
-		CommandLineParser parser = new DefaultParser();
-
-		//parse the command line input
-		try {
-			cmd = parser.parse(options, args);
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-			return;
-		}
-
-		///////Add control flow based on the option flag parsed here
-			
-		//sets the leakPath to the file specified
-		if (cmd.hasOption("d")) {
-			System.out.println("DataLeak set");
-			Arguments.setLeaks(OperatorType.SCOPESINK, cmd.getOptionValue("d"));
-		}	
-		
-		///////
-		
-		// Usage Error, check length of remaining arguments
-		if (cmd.getArgs().length != 3) {
+		if (args.length != 1) {
 			printArgumentError();
 			return;
 		}
 		
-		args = cmd.getArgs();
-			
-		testString = FileUtility.readSourceFile(args[0].toString()).toString();
-		//modified files directory
-		File mod_file_path = new File(args[1].toString());
+
+		//any non option arguments are passed in 
+		Arguments.extractArguments(args[0]);
+		
+		try (InputStream input = new FileInputStream(args[0])) {
+			prop = new Properties();
+			prop.load(input);		
+		} catch (IOException e) {
+			printArgumentError();
+			return;
+		}
+		
+		//path to log file from Muse for input
+		if (prop.getProperty("logPath") == null) {
+			printArgumentError();
+			return;
+		}
+		testString = FileUtility.readSourceFile(prop.getProperty("logPath")).toString();
+
+		
+		//path to modified file with inserted leaks for input
+		if (prop.getProperty("appSrc") == null) {
+			printArgumentError();
+			return;
+		}
+		File mod_file_path = new File(prop.getProperty("appSrc"));
 		File [] mod_files = mod_file_path.listFiles();
 		
-		//mutant folder directory
-		File mutant_file_path = new File(args[2].toString());
+		//path to mutant folder directory for output
+		if (prop.getProperty("output") == null) {
+			printArgumentError();
+			return;
+		}
+		File mutant_file_path = new File(prop.getProperty("output"));
 		File [] mutated_files = mutant_file_path.listFiles();
+		
+		if (prop.getProperty("operatorType") == null) {
+			printArgumentError();
+			return;
+		}
+		op = Arguments.getOperatorEnumType(prop.getProperty("operatorType"));
+
 
 		for (File mod_file : mod_files) {
 			try {
@@ -109,9 +116,9 @@ public class LogAnalyzer_ScopeSink {
 	}
 
 	/**
-	 * Analyze source string, based on input, non true positive sinks for scopeSink. 
+	 * Analyze source string, based on input, non true positive sinks for taintSink. 
 	 * @param string contains the source code in one string, with multiple lines.
-	 * @param maps {@link log.LogAnalyzer_ScopeSink#getLogMaps(String) maps} contains the maps of source and sinks
+	 * @param maps {@link log.LogAnalyzer_Sinks#getLogMaps(String) maps} contains the maps of source and sinks
 	 * @return modified source code.
 	 * @throws Exception 
 	 * @author Amit Seal Ami
@@ -122,15 +129,20 @@ public class LogAnalyzer_ScopeSink {
 		}
 		String[] lines = string.split("\n");
 		String outputLines = "";
+		// rawsink and rawSource separate the substrings before and after the "%d" placeholder
+		String[] rawSource = DataLeak.getRawSource(op).split("%d",4);
+		String[] rawSink = DataLeak.getRawSink(op).split("%d",4);
 
 		for (String line : lines) {
 
-			if (line.contains("leak-")) {
-
-				String[] source_sink = line.split("leak-")[1].split("\"")[0].split("-");
-				Integer source = Integer.parseInt(source_sink[0]);
-				Integer sink = Integer.parseInt(source_sink[1]);
-				if (!maps.get(source).contains(sink)) {
+			//if (line.contains("leak-")) {
+			if (line.contains(rawSink[0])) {
+				//isolate the "%d-%d" placeholder string and split it into two indices
+				String[] source_sink = line.replace(rawSink[0],"").split(rawSink[2])[0].split("-");
+				//remove whitespace
+				Integer source = Integer.parseInt(source_sink[0].replaceAll("\\s+",""));
+				Integer sink = Integer.parseInt(source_sink[1].replaceAll("\\s+",""));
+				if (maps.get(source) == null || !maps.get(source).contains(sink)) {
 					continue;
 				}else {
 					outputLines += line + "\n";
@@ -151,10 +163,11 @@ public class LogAnalyzer_ScopeSink {
 	 */
 	public static Map<Integer, Set<Integer>> getLogMaps(String allLogs) {
 		String[] lines = allLogs.split("\n");
-
+		String[] rawSink = DataLeak.getRawSink(op).split("%d",4);
 		Map<Integer, Set<Integer>> maps = new HashMap<Integer, Set<Integer>>();
 		for (String line : lines) {
 			if (line.contains("leak-")) {
+				System.out.println(line);
 				String[] source_sink = line.split("leak-")[1].split(":")[0].split("-");
 				Integer source = Integer.parseInt(source_sink[0]);
 				Integer sink = Integer.parseInt(source_sink[1]);
@@ -179,6 +192,6 @@ public class LogAnalyzer_ScopeSink {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new LogAnalyzer_ScopeSink().runLogAnalysis(args);
+		new LogAnalyzer_Sinks().runLogAnalysis(args);
 	}
 }

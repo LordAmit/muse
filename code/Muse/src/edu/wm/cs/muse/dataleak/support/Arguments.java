@@ -235,7 +235,7 @@ public class Arguments {
 		return operator;
 	}
 	
-	private static OperatorType getOperatorEnumType(String inputOperator) {
+	public static OperatorType getOperatorEnumType(String inputOperator) {
 		// TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY
 		switch (inputOperator) {
 		case "TAINTSOURCE":
