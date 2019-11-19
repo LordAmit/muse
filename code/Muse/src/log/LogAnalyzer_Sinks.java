@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -130,32 +131,47 @@ public class LogAnalyzer_Sinks {
 		}
 		String[] lines = string.split("\n");
 		String outputLines = "";
-		// rawsink and rawSource separate the substrings before and after the "%d" placeholder
-		String[] rawSource = DataLeak.getRawSource(op).split("%d",4);
-		String[] rawSink = DataLeak.getRawSink(op).split("%d",4);
+		String[] rawSource = DataLeak.getRawSource(op).split("%d");
+		String[] rawSink = DataLeak.getRawSink(op).split("%d");
+		String[] rawVarDec = DataLeak.getVariableDeclaration(op).split("%d");
 
 		for (String line : lines) {
-
-			//if (line.contains("leak-")) {
-			if (line.contains(rawSink[0])) {
+			// removes sinks that do not appear in the log
+			if (line.trim().startsWith(rawSink[0])) {
 				//isolate the "%d-%d" placeholder string and split it into two indices
-				String[] source_sink = line.replace(rawSink[0],"").split(rawSink[2])[0].split("-");
+				String[] placeholderVals = line.replace(rawSink[0],"").split(rawSink[2])[0].split("-");
 				//remove whitespace
-				Integer source = Integer.parseInt(source_sink[0].replaceAll("\\s+",""));
-				Integer sink = Integer.parseInt(source_sink[1].replaceAll("\\s+",""));
-				if (maps.get(source) == null || !maps.get(source).contains(sink)) {
-					continue;
-				}else {
+				Integer source = Integer.parseInt(placeholderVals[0].trim());
+				Integer sink = Integer.parseInt(placeholderVals[1].trim());
+				if (maps.get(source) != null && maps.get(source).contains(sink)) {
 					outputLines += line + "\n";
 				}
-			} else {
+			} 
+			// removes sources that do not appear in the log
+			else if (line.trim().startsWith(rawSource[0])) {
+				//isolate the "%d" placeholder string
+				String placeholderVal = line.replace(rawSource[0],"").split("=")[0];
+				Integer source = Integer.parseInt(placeholderVal.trim());
+				if (maps.containsKey(source)) {
+					outputLines += line + "\n";
+				}
+			}
+			// removes variable declarations that not appear in the log
+			else if (line.trim().startsWith(rawVarDec[0])) {
+				//isolate the "%d" placeholder string
+				String placeholderVal = line.replace(rawVarDec[0],"").split(rawVarDec[1])[0];
+				Integer source = Integer.parseInt(placeholderVal.trim());
+				if (maps.containsKey(source)) {
+					outputLines += line + "\n";
+				}
+			}
+			else {
 				outputLines += line + "\n";
 			}
 		}
-
 		return outputLines;
 	}
-
+	
 	/**
 	 * getLogMaps returns a mapping for each source, along with list of its sinks.
 	 * @param allLogs receives all logs in a single string

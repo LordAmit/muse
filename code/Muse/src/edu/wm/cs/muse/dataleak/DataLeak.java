@@ -36,7 +36,7 @@ public class DataLeak {
 	}};
 	private static HashMap<OperatorType, String> sinkLeaks = new HashMap<OperatorType, String>() {{
 	    put(OperatorType.REACHABILITY,"Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);");
-	    put(OperatorType.COMPLEXREACHABILITY,"android.util.Log.d(\"leak-%d\", dataLeAkPath%d);");
+	    put(OperatorType.COMPLEXREACHABILITY,"android.util.Log.d(\"leak-%d\", leAkPath%d);");
 	    put(OperatorType.SCOPESINK,"android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
 	    put(OperatorType.TAINTSINK,"android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
 	}};
@@ -172,15 +172,15 @@ public class DataLeak {
 
 			String[] paths = new String[] {
 					"String[] leakArRay%d = new String[] {\"n/a\", dataLeAk%d};\n"
-							+ "String dataLeAkPath%d = leakArRay%d[leakArRay%d.length - 1];",
+							+ "String leAkPath%d = leakArRay%d[leakArRay%d.length - 1];",
 					"java.util.HashMap<String, java.util.HashMap<String, String>> leakMaP%d = new java.util.HashMap<String, java.util.HashMap<String, String>>();\n"
 							+ "leakMaP%d.put(\"test\", new java.util.HashMap<String, String>());\n"
 							+ "leakMaP%d.get(\"test\").put(\"test\", dataLeAk%d);\n"
-							+ "String dataLeAkPath%d = leakMaP%d.get(\"test\").get(\"test\");",
+							+ "String leAkPath%d = leakMaP%d.get(\"test\").get(\"test\");",
 					"StringBuffer leakBuFFer%d = new StringBuffer();" + "for (char chAr%d : dataLeAk%d.toCharArray()) {"
-							+ "leakBuFFer%d.append(chAr%d);" + "}" + "String dataLeAkPath%d = leakBuFFer%d.toString();",
-					"String dataLeAkPath%d;" + "try {" + "throw new Exception(dataLeAk%d);"
-							+ "} catch (Exception leakErRor%d) {" + "dataLeAkPath%d = leakErRor%d.getMessage();"
+							+ "leakBuFFer%d.append(chAr%d);" + "}" + "String leAkPath%d = leakBuFFer%d.toString();",
+					"String leAkPath%d;" + "try {" + "throw new Exception(dataLeAk%d);"
+							+ "} catch (Exception leakErRor%d) {" + "leAkPath%d = leakErRor%d.getMessage();"
 							+ "}" };
 			String source = getSource(OperatorType.COMPLEXREACHABILITY, identifier);
 			String sink = String.format(getRawSink(OperatorType.COMPLEXREACHABILITY), identifier, identifier);
