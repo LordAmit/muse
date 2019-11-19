@@ -10,19 +10,17 @@ import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 /**
- * @author liz
+ * @author liz, Ian Wolff
  *
  *         This class contains all the information pertaining to the data leak
  *         security operator. More specifically, it contains the sink and source
  *         for each sink, source, and reachability operator schema.
  * 
- *         Sample data leak formats: Declaration: String dataLeak{{ IDENTIFIER
- *         }}; Source: dataLeak{{ IDENTIFIER }} =
- *         java.util.Calendar.getInstance().getTimeZone().getDisplayName();
- *         
- *         Sink: android.util.Log.d("leak-{{ IDENTIFIER }}", dataLeak{{
- *         IDENTIFIER }}); Hop: dataLeak{{ IDENTIFIER }} = dataLeak{{ IDENTIFIER
- *         }};
+ *         Sample data leak formats: 
+ *         Declaration: String dataLeak{{%d}}; 
+ *         Source: dataLeak{{%d}} = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+ *         Sink: android.util.Log.d("leak-{{%d}}", dataLeak{{%d}}); 
+ *         Hop: dataLeak{{%d}} = dataLeak{{%d}};
  * 
  */
 public class DataLeak {
@@ -45,7 +43,19 @@ public class DataLeak {
 	    put(OperatorType.TAINTSOURCE,"String dataLeAk%d = \"\";");
 	    put(OperatorType.COMPLEXREACHABILITY,"String dataLeAk%d = dataLeAk%d");
 	}};
-
+	private static String[] paths = new String[] {
+			"String[] leakArRay%d = new String[] {\"n/a\", dataLeAk%d};\n"
+					+ "String leAkPath%d = leakArRay%d[leakArRay%d.length - 1];",
+			"java.util.HashMap<String, java.util.HashMap<String, String>> leakMaP%d = new java.util.HashMap<String, java.util.HashMap<String, String>>();\n"
+					+ "leakMaP%d.put(\"test\", new java.util.HashMap<String, String>());\n"
+					+ "leakMaP%d.get(\"test\").put(\"test\", dataLeAk%d);\n"
+					+ "String leAkPath%d = leakMaP%d.get(\"test\").get(\"test\");",
+			"StringBuffer leakBuFFer%d = new StringBuffer();" + "for (char chAr%d : dataLeAk%d.toCharArray()) {"
+					+ "leakBuFFer%d.append(chAr%d);" + "}" + "String leAkPath%d = leakBuFFer%d.toString();",
+			"String leAkPath%d;" + "try {" + "throw new Exception(dataLeAk%d);"
+					+ "} catch (Exception leakErRor%d) {" + "leAkPath%d = leakErRor%d.getMessage();"
+					+ "}" };
+	
 	/**
 	 * Sets the source leak string for based on the operator specified
 	 *  
@@ -66,26 +76,6 @@ public class DataLeak {
 		sinkLeaks.replace(getOperatorSink(op), sinkString);
 	}
 	
-	private static OperatorType getOperatorSource(OperatorType op) {
-		if(op == OperatorType.SCOPESINK) {
-			op = OperatorType.SCOPESOURCE;
-		}
-		else if(op == OperatorType.TAINTSINK) {
-			op = OperatorType.TAINTSOURCE;
-		}
-		return op;
-	}
-	
-	private static OperatorType getOperatorSink(OperatorType op) {
-		if(op == OperatorType.SCOPESOURCE) {
-			op = OperatorType.SCOPESINK;
-		}
-		else if(op == OperatorType.TAINTSOURCE) {
-			op = OperatorType.TAINTSINK;
-		}
-		return op;
-	}
-	
 	/**
 	 * Sets the variable declaration leak string for based on the operator specified
 	 *  
@@ -94,6 +84,24 @@ public class DataLeak {
 	 */
 	public static void setVariableDeclaration(OperatorType op, String sinkString) {
 		variableDeclarations.replace(getOperatorSource(op), sinkString);
+	}
+	
+	/**
+	 * Sets the path strings for the ComplexReachability operator
+	 * 
+	 * @param pathStrings
+	 */
+	public static void setPaths(String[] pathStrings) {
+		paths = pathStrings;
+	}
+	
+	/**
+	 * Returns the path strings for the ComplexReachability operator
+	 * 
+	 * @return String[] paths
+	 */
+	public static String[] getPaths() {
+		return paths;
 	}
 	
 	/**
@@ -170,18 +178,7 @@ public class DataLeak {
 			+ String.format(sinkLeaks.get(op), identifier, identifier, identifier);
 		else if (op == OperatorType.COMPLEXREACHABILITY) {
 
-			String[] paths = new String[] {
-					"String[] leakArRay%d = new String[] {\"n/a\", dataLeAk%d};\n"
-							+ "String leAkPath%d = leakArRay%d[leakArRay%d.length - 1];",
-					"java.util.HashMap<String, java.util.HashMap<String, String>> leakMaP%d = new java.util.HashMap<String, java.util.HashMap<String, String>>();\n"
-							+ "leakMaP%d.put(\"test\", new java.util.HashMap<String, String>());\n"
-							+ "leakMaP%d.get(\"test\").put(\"test\", dataLeAk%d);\n"
-							+ "String leAkPath%d = leakMaP%d.get(\"test\").get(\"test\");",
-					"StringBuffer leakBuFFer%d = new StringBuffer();" + "for (char chAr%d : dataLeAk%d.toCharArray()) {"
-							+ "leakBuFFer%d.append(chAr%d);" + "}" + "String leAkPath%d = leakBuFFer%d.toString();",
-					"String leAkPath%d;" + "try {" + "throw new Exception(dataLeAk%d);"
-							+ "} catch (Exception leakErRor%d) {" + "leAkPath%d = leakErRor%d.getMessage();"
-							+ "}" };
+			String[] paths = getPaths();
 			String source = getSource(OperatorType.COMPLEXREACHABILITY, identifier);
 			String sink = String.format(getRawSink(OperatorType.COMPLEXREACHABILITY), identifier, identifier);
 			String leak = source + "\n" + String.format(paths[identifier % paths.length], identifier, identifier,
@@ -203,6 +200,26 @@ public class DataLeak {
 	 */
 	public static String getHop(int identifierOne, int identifierTwo) {
 		return String.format(getVariableDeclaration(OperatorType.COMPLEXREACHABILITY), identifierOne, identifierTwo);
+	}
+	
+	private static OperatorType getOperatorSource(OperatorType op) {
+		if(op == OperatorType.SCOPESINK) {
+			op = OperatorType.SCOPESOURCE;
+		}
+		else if(op == OperatorType.TAINTSINK) {
+			op = OperatorType.TAINTSOURCE;
+		}
+		return op;
+	}
+	
+	private static OperatorType getOperatorSink(OperatorType op) {
+		if(op == OperatorType.SCOPESOURCE) {
+			op = OperatorType.SCOPESINK;
+		}
+		else if(op == OperatorType.TAINTSOURCE) {
+			op = OperatorType.TAINTSINK;
+		}
+		return op;
 	}
 
 }
