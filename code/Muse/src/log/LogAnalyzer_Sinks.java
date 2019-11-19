@@ -2,6 +2,7 @@ package log;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -21,9 +22,10 @@ import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 /**
  * Sinks log analyzer requires two string contents. Log and Source.
+ * It can be used with the ScopeSink and TaintSink operators.
  * Based on the log file, it removes the unused log sinks and only keeps the true positive logs.
- * It can be used with the ScopeSink and TaintSink operators
- * @author Amit Seal Ami
+ * 
+ * @author Amit Seal Ami, Ian Wolff
  * 
  */
 public class LogAnalyzer_Sinks {
@@ -33,63 +35,20 @@ public class LogAnalyzer_Sinks {
 	static String sourceString;
 	private static Properties prop;
 	private static OperatorType op;
+	private static File mod_file_path;
+	private static File [] mod_files;
+	private static File mutant_file_path;
+	private static File [] mutated_files;
 	
 	/**
-	 * Iterates through the modified file directory to remove false positive data leaks.
+	 * Iterates through the modified file directory to remove leak sources, sinks,
+	 * and variable declarations that do not appear in the log file. 
 	 * Then alters the files in mutants folder with the respective changes.
-	 * @param args
-	 * @throws IOException
-	 * @author Yang Zhang
+	 * 
+	 * @author Yang Zhang, Ian Wolff
+	 * @throws Exception 
 	 */
-	public void runLogAnalysis(String[] args) throws Exception {
-		if (args.length != 1) {
-			printArgumentError();
-			return;
-		}
-		
-
-		//any non option arguments are passed in 
-		Arguments.extractArguments(args[0]);
-		
-		try (InputStream input = new FileInputStream(args[0])) {
-			prop = new Properties();
-			prop.load(input);		
-		} catch (IOException e) {
-			printArgumentError();
-			return;
-		}
-		
-		//path to log file from Muse for input
-		if (prop.getProperty("logPath") == null) {
-			printArgumentError();
-			return;
-		}
-		testString = FileUtility.readSourceFile(prop.getProperty("logPath")).toString();
-
-		
-		//path to modified file with inserted leaks for input
-		if (prop.getProperty("appSrc") == null) {
-			printArgumentError();
-			return;
-		}
-		File mod_file_path = new File(prop.getProperty("appSrc"));
-		File [] mod_files = mod_file_path.listFiles();
-		
-		//path to mutant folder directory for output
-		if (prop.getProperty("output") == null) {
-			printArgumentError();
-			return;
-		}
-		File mutant_file_path = new File(prop.getProperty("output"));
-		File [] mutated_files = mutant_file_path.listFiles();
-		
-		if (prop.getProperty("operatorType") == null) {
-			printArgumentError();
-			return;
-		}
-		op = Arguments.getOperatorEnumType(prop.getProperty("operatorType"));
-
-
+	public void runLogAnalysis() throws Exception {
 		for (File mod_file : mod_files) {
 			try {
 				if (mod_file.getName().endsWith(".txt")) {
@@ -109,7 +68,6 @@ public class LogAnalyzer_Sinks {
 						}
 					}
 				}
-
 			} catch (IOException e) {
 				System.err.println(String.format("ERROR PROCESSING \"%s\": %s", mod_file.getAbsolutePath(), e.getMessage()));
 				return;
@@ -118,12 +76,14 @@ public class LogAnalyzer_Sinks {
 	}
 
 	/**
-	 * Analyze source string, based on input, non true positive sinks for taintSink or scopeSink. 
-	 * @param string contains the source code in one string, with multiple lines.
+	 * Analyzes the source string and based on input, removes false positive sources, sinks,
+	 * and variable declarations for the taintSink or scopeSink operator. 
+	 * 
+	 * @param string contains the source code in one string, with multiple new line characters.
 	 * @param maps {@link log.LogAnalyzer_Sinks#getLogMaps(String) maps} contains the maps of source and sinks
-	 * @return modified source code.
+	 * @return modified source code
 	 * @throws Exception 
-	 * @author Amit Seal Ami
+	 * @author Amit Seal Ami, Ian Wolff
 	 */
 	public static String analyzeSourceString(String string, Map<Integer, Set<Integer>> maps) throws Exception {
 		if(string.length()<10) {
@@ -138,33 +98,36 @@ public class LogAnalyzer_Sinks {
 		for (String line : lines) {
 			// removes sinks that do not appear in the log
 			if (line.trim().startsWith(rawSink[0])) {
-				//isolate the "%d-%d" placeholder string and split it into two indices
+				// isolate the "%d-%d" placeholder index values and split it into two indices
 				String[] placeholderVals = line.replace(rawSink[0],"").split(rawSink[2])[0].split("-");
-				//remove whitespace
 				Integer source = Integer.parseInt(placeholderVals[0].trim());
 				Integer sink = Integer.parseInt(placeholderVals[1].trim());
+				// only output if sink index is used in logs
 				if (maps.get(source) != null && maps.get(source).contains(sink)) {
 					outputLines += line + "\n";
 				}
 			} 
 			// removes sources that do not appear in the log
 			else if (line.trim().startsWith(rawSource[0])) {
-				//isolate the "%d" placeholder string
+				//isolate the "%d" placeholder index value
 				String placeholderVal = line.replace(rawSource[0],"").split("=")[0];
 				Integer source = Integer.parseInt(placeholderVal.trim());
+				//only output if index is used in logs
 				if (maps.containsKey(source)) {
 					outputLines += line + "\n";
 				}
 			}
-			// removes variable declarations that not appear in the log
+			// removes variable declarations that do not appear in the log
 			else if (line.trim().startsWith(rawVarDec[0])) {
-				//isolate the "%d" placeholder string
+				//isolate the "%d" placeholder index value
 				String placeholderVal = line.replace(rawVarDec[0],"").split(rawVarDec[1])[0];
 				Integer source = Integer.parseInt(placeholderVal.trim());
+				//only output if index is used in logs
 				if (maps.containsKey(source)) {
 					outputLines += line + "\n";
 				}
 			}
+			// output line regularly
 			else {
 				outputLines += line + "\n";
 			}
@@ -180,35 +143,74 @@ public class LogAnalyzer_Sinks {
 	 */
 	public static Map<Integer, Set<Integer>> getLogMaps(String allLogs) {
 		String[] lines = allLogs.split("\n");
-		String[] rawSink = DataLeak.getRawSink(op).split("%d",4);
 		Map<Integer, Set<Integer>> maps = new HashMap<Integer, Set<Integer>>();
 		for (String line : lines) {
 			if (line.contains("leak-")) {
 				System.out.println(line);
 				String[] source_sink = line.split("leak-")[1].split(":")[0].split("-");
-				Integer source = Integer.parseInt(source_sink[0]);
-				Integer sink = Integer.parseInt(source_sink[1]);
-				if (!maps.containsKey(source)) {
-					maps.put(source, new HashSet<Integer>());
+				Integer sourceInd = Integer.parseInt(source_sink[0]);
+				Integer sinkInd = Integer.parseInt(source_sink[1]);
+				if (!maps.containsKey(sourceInd)) {
+					maps.put(sourceInd, new HashSet<Integer>());
 				}
-				Set<Integer> values = maps.get(source);
-				values.add(sink);
-				maps.put(source, values);
+				Set<Integer> values = maps.get(sourceInd);
+				values.add(sinkInd);
+				maps.put(sourceInd, values);
 			}
 		}
-//		System.out.println(maps);
 		return maps;
 	}
 	
-	private void printArgumentError() {
+	/**
+	 * Reads in arguments from a config file and raises an exception if any are missing.
+	 * @param args
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	private static void prepareArguments(String[] args) throws FileNotFoundException, IOException {
+		if (args.length != 1) {
+			printArgumentError();
+			return;
+		}
+		//any non option arguments are passed in 
+		Arguments.extractArguments(args[0]);
+		try (InputStream input = new FileInputStream(args[0])) {
+			prop = new Properties();
+			prop.load(input);		
+		} catch (IOException e) {
+			printArgumentError();
+			return;
+		}
+		if (prop.getProperty("logPath") == null) {
+			printArgumentError();
+			return;
+		} else if (prop.getProperty("appSrc") == null) {
+			printArgumentError();
+			return;
+		} else if (prop.getProperty("output") == null) {
+			printArgumentError();
+			return;
+		} else if (prop.getProperty("operatorType") == null) {
+			printArgumentError();
+			return;
+		}
+		//path to log file from Muse for input
+		testString = FileUtility.readSourceFile(prop.getProperty("logPath")).toString();
+		//path to modified file with inserted leaks for input
+		mod_file_path = new File(prop.getProperty("appSrc"));
+		mod_files = mod_file_path.listFiles();
+		//path to mutant folder directory for output
+		mutant_file_path = new File(prop.getProperty("output"));
+		mutated_files = mutant_file_path.listFiles();	
+		op = Arguments.getOperatorEnumType(prop.getProperty("operatorType"));
+	}
+	
+	private static void printArgumentError() {
 		System.out.println("******* ERROR: INCORRECT USAGE *******");
-		System.out.println("Argument List:");
-		System.out.println("1. Runtime Logs File");
-		System.out.println("2. Modified Files Directory");
-		System.out.println("3. Mutants path");
 	}
 
 	public static void main(String[] args) throws Exception {
-		new LogAnalyzer_Sinks().runLogAnalysis(args);
+		prepareArguments(args);
+		new LogAnalyzer_Sinks().runLogAnalysis();
 	}
 }
