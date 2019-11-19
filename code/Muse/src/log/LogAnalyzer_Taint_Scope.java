@@ -22,13 +22,13 @@ import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 /**
  * Sinks log analyzer requires two string contents. Log and Source.
- * It can be used with the ScopeSink and TaintSink operators.
+ * It can be used with the Scope and Sink operators.
  * Based on the log file, it removes the unused log sinks and only keeps the true positive logs.
  * 
  * @author Amit Seal Ami, Ian Wolff
  * 
  */
-public class LogAnalyzer_Sinks {
+public class LogAnalyzer_Taint_Scope {
 	//RuntimeLogs.txt
 	static String testString;
 	//ModifiedFile.txt
@@ -77,10 +77,10 @@ public class LogAnalyzer_Sinks {
 
 	/**
 	 * Analyzes the source string and based on input, removes false positive sources, sinks,
-	 * and variable declarations for the taintSink or scopeSink operator. 
+	 * and variable declarations for the Taint or Scope operator. 
 	 * 
 	 * @param string contains the source code in one string, with multiple new line characters.
-	 * @param maps {@link log.LogAnalyzer_Sinks#getLogMaps(String) maps} contains the maps of source and sinks
+	 * @param maps {@link log.LogAnalyzer_Taint_Scope#getLogMaps(String) maps} contains the maps of source and sinks
 	 * @return modified source code
 	 * @throws Exception 
 	 * @author Amit Seal Ami, Ian Wolff
@@ -162,7 +162,7 @@ public class LogAnalyzer_Sinks {
 	}
 	
 	/**
-	 * Reads in arguments from a config file and raises an exception if any are missing.
+	 * Reads in arguments from a properties file and raises an exception if any are missing.
 	 * @param args
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -211,6 +211,6 @@ public class LogAnalyzer_Sinks {
 
 	public static void main(String[] args) throws Exception {
 		prepareArguments(args);
-		new LogAnalyzer_Sinks().runLogAnalysis();
+		new LogAnalyzer_Taint_Scope().runLogAnalysis();
 	}
 }

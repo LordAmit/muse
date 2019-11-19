@@ -37,6 +37,10 @@ public class LogAnalyzer_Reachability {
 	private CommandLine cmd = null;
 	private static Properties prop;
 	private static OperatorType op;
+	private static File mod_file_path;
+	private static File [] mod_files;
+	private static File mutant_file_path;
+	private static File [] mutated_files;
 
 	/**
 	 * Iterates through the modified file directory and compares the occurrence of
@@ -47,54 +51,6 @@ public class LogAnalyzer_Reachability {
 	 * @author Yang Zhang
 	 */
 	public void runLogAnalysis(String[] args) throws FileNotFoundException, IOException {
-		if (args.length != 1) {
-			printArgumentError();
-			return;
-		}
-		
-
-		//any non option arguments are passed in 
-		Arguments.extractArguments(args[0]);
-		
-		try (InputStream input = new FileInputStream(args[0])) {
-			prop = new Properties();
-			prop.load(input);		
-		} catch (IOException e) {
-			printArgumentError();
-			return;
-		}
-		
-		//path to log file from Muse for input
-		if (prop.getProperty("logPath") == null) {
-			printArgumentError();
-			return;
-		}
-		testString = FileUtility.readSourceFile(prop.getProperty("logPath")).toString();
-
-		
-		//path to modified file with inserted leaks for input
-		if (prop.getProperty("appSrc") == null) {
-			printArgumentError();
-			return;
-		}
-		File mod_file_path = new File(prop.getProperty("appSrc"));
-		File [] mod_files = mod_file_path.listFiles();
-		
-		//path to mutant folder directory for output
-		if (prop.getProperty("output") == null) {
-			printArgumentError();
-			return;
-		}
-		File mutant_file_path = new File(prop.getProperty("output"));
-		File [] mutated_files = mutant_file_path.listFiles();
-		
-		if (prop.getProperty("operatorType") == null) {
-			printArgumentError();
-			return;
-		}
-		op = Arguments.getOperatorEnumType(prop.getProperty("operatorType"));
-
-
 		for (File mod_file : mod_files) {
 			try {
 				if (mod_file.getName().endsWith(".txt")) {
@@ -125,7 +81,7 @@ public class LogAnalyzer_Reachability {
 	}
 	
 	/**
-	 * Extracts indices of true positive data leaks
+	 * Extracts indices of true positive data leaks from the log file
 	 * 
 	 * @param string source code contents from formatted text file with new lines
 	 * @return set of indices based on true positive leaks
@@ -144,12 +100,14 @@ public class LogAnalyzer_Reachability {
 		return indices;
 	}
 
-	/**
+	/**Analyzes the source string and based on input, removes false positive sources 
+	 * and sinks for the reachability operator.
+	 * 
 	 * @param string           String content of the source file
 	 * @param indicesFromLog   extracted indices of dataleaks from log file
 	 * @return String content  of file that only contains true positive for
 	 *         reachability
-	 * @author Ian Wolff
+	 * @author Amit Seal Ami, Ian Wolff
 	 */
 	public String removeUnusedIndicesFromSource(String string, Set<Integer> indicesFromLog) {
 		String[] lines = string.split("\n");
@@ -160,6 +118,7 @@ public class LogAnalyzer_Reachability {
 		String[] rawSink = DataLeak.getRawSink(op).split("%d");
 		
 		for (String line : lines) {
+			// removes sinks that do not appear in the log
 			if (line.contains(rawSink[0])) {
 				// isolates the index from the leak string and removes any leftover whitespace
 				String placeholderVal = line.replace(rawSink[0], "").split(rawSink[1])[0].trim();
@@ -167,11 +126,13 @@ public class LogAnalyzer_Reachability {
 					outputLines += line + "\n";
 					addThrowAwayLine = true;
 				}
+			// removes sources that do not appear in the log
 			} else if (line.contains(rawSource[0])) {
 				if (addThrowAwayLine) {
 					outputLines += line + "\n";
 					addThrowAwayLine = false;
 				}
+			// outputs line regularly
 			} else {
 				outputLines += line += "\n";
 			}
@@ -179,16 +140,56 @@ public class LogAnalyzer_Reachability {
 		return outputLines;
 	}
 	
-	private void printArgumentError() {
+	/**
+	 * Reads in arguments from a properties file and raises an exception if any are missing.
+	 * @param args
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	private static void prepareArguments(String[] args) throws FileNotFoundException, IOException {
+		if (args.length != 1) {
+			printArgumentError();
+			return;
+		}
+		//any non option arguments are passed in 
+		Arguments.extractArguments(args[0]);
+		try (InputStream input = new FileInputStream(args[0])) {
+			prop = new Properties();
+			prop.load(input);		
+		} catch (IOException e) {
+			printArgumentError();
+			return;
+		}
+		if (prop.getProperty("logPath") == null) {
+			printArgumentError();
+			return;
+		} else if (prop.getProperty("appSrc") == null) {
+			printArgumentError();
+			return;
+		} else if (prop.getProperty("output") == null) {
+			printArgumentError();
+			return;
+		} else if (prop.getProperty("operatorType") == null) {
+			printArgumentError();
+			return;
+		}
+		//path to log file from Muse for input
+		testString = FileUtility.readSourceFile(prop.getProperty("logPath")).toString();
+		//path to modified file with inserted leaks for input
+		mod_file_path = new File(prop.getProperty("appSrc"));
+		mod_files = mod_file_path.listFiles();
+		//path to mutant folder directory for output
+		mutant_file_path = new File(prop.getProperty("output"));
+		mutated_files = mutant_file_path.listFiles();	
+		op = Arguments.getOperatorEnumType(prop.getProperty("operatorType"));
+	}
+	
+	private static void printArgumentError() {
 		System.out.println("******* ERROR: INCORRECT USAGE *******");
-		System.out.println("Argument List:");
-		System.out.println("1. Runtime Logs File");
-		System.out.println("2. Modified Files Directory");
-		System.out.println("3. Mutants path");
 	}
 
 	public static void main(String[] args) throws IOException {
-		
+		prepareArguments(args);
 		new LogAnalyzer_Reachability().runLogAnalysis(args);
 
 	}
