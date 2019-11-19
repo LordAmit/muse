@@ -5,9 +5,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -41,6 +43,7 @@ public class LogAnalyzer_Reachability {
 	private static File [] mod_files;
 	private static File mutant_file_path;
 	private static File [] mutated_files;
+	private static ArrayList<String> paths = new ArrayList<String>();
 
 	/**
 	 * Iterates through the modified file directory and compares the occurrence of
@@ -101,7 +104,8 @@ public class LogAnalyzer_Reachability {
 	}
 
 	/**Analyzes the source string and based on input, removes false positive sources 
-	 * and sinks for the reachability operator.
+	 * and sinks for the reachability operator as well as variable declarations and
+	 * paths for the complex reachability operators.
 	 * 
 	 * @param string           String content of the source file
 	 * @param indicesFromLog   extracted indices of dataleaks from log file
@@ -112,7 +116,8 @@ public class LogAnalyzer_Reachability {
 	public String removeUnusedIndicesFromSource(String string, Set<Integer> indicesFromLog) {
 		String[] lines = string.split("\n");
 		String outputLines = "";
-		boolean addThrowAwayLine = false;		
+		//boolean addThrowAwayLine = false;	
+		boolean pathFound = false;	
 		// rawsink and rawSource separate the substrings before and after the "%d" placeholder
 		String[] rawSource = DataLeak.getRawSource(op).split("%d");
 		String[] rawSink = DataLeak.getRawSink(op).split("%d");
@@ -121,16 +126,38 @@ public class LogAnalyzer_Reachability {
 			// removes sinks that do not appear in the log
 			if (line.contains(rawSink[0])) {
 				// isolates the index from the leak string and removes any leftover whitespace
-				String placeholderVal = line.replace(rawSink[0], "").split(rawSink[1])[0].trim();
+				String placeholderVal = line.replace(rawSink[0], "").split(Pattern.quote(rawSink[1]))[0].trim();
 				if (indicesFromLog.contains(Integer.parseInt(placeholderVal))) {
 					outputLines += line + "\n";
-					addThrowAwayLine = true;
+					//addThrowAwayLine = true;
 				}
 			// removes sources that do not appear in the log
 			} else if (line.contains(rawSource[0])) {
-				if (addThrowAwayLine) {
+				String placeholderVal = line.replace(rawSource[0], "").split(Pattern.quote(rawSource[1]))[0].trim();
+				if (indicesFromLog.contains(Integer.parseInt(placeholderVal))) {
 					outputLines += line + "\n";
-					addThrowAwayLine = false;
+					//addThrowAwayLine = false;
+				}
+			// removes additional paths for complex reachability operator
+			} else if (op == OperatorType.COMPLEXREACHABILITY) {
+				// checks if a line is equivalent to any of the paths
+				for(String pathLine : paths) {
+					String[] rawPath = pathLine.split("%d");
+					// checks to make sure path has not already been found
+					if (pathFound == false && line.trim().startsWith(rawPath[0]) && line.contains(rawPath[1])) {
+						pathFound = true;
+						String placeholderVal = line.trim().split(Pattern.quote(rawPath[0]))[1].split(Pattern.quote(rawPath[1]))[0];
+						// includes line only if index appears in the log file
+						if (indicesFromLog.contains(Integer.parseInt(placeholderVal))) {
+							outputLines += line + "\n";
+						}
+					}
+				}
+				if (pathFound) {
+					pathFound = false;
+				// if no leak is found, output regularly
+				} else {
+					outputLines += line + "\n";
 				}
 			// outputs line regularly
 			} else {
@@ -182,6 +209,14 @@ public class LogAnalyzer_Reachability {
 		mutant_file_path = new File(prop.getProperty("output"));
 		mutated_files = mutant_file_path.listFiles();	
 		op = Arguments.getOperatorEnumType(prop.getProperty("operatorType"));
+		if (op == OperatorType.COMPLEXREACHABILITY) {
+			for(String path : DataLeak.getPaths()) {
+				String[] pathLines = path.split("\\n");
+				for(String pathLine : pathLines) {
+					paths.add(pathLine);
+				}
+			}
+		}
 	}
 	
 	private static void printArgumentError() {
