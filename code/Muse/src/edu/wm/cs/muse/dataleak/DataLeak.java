@@ -19,6 +19,7 @@ import edu.wm.cs.muse.dataleak.support.OperatorType;
  *         Sample data leak formats: Declaration: String dataLeak{{ IDENTIFIER
  *         }}; Source: dataLeak{{ IDENTIFIER }} =
  *         java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+ *         
  *         Sink: android.util.Log.d("leak-{{ IDENTIFIER }}", dataLeak{{
  *         IDENTIFIER }}); Hop: dataLeak{{ IDENTIFIER }} = dataLeak{{ IDENTIFIER
  *         }};
@@ -42,6 +43,7 @@ public class DataLeak {
 	private static HashMap<OperatorType, String> variableDeclarations = new HashMap<OperatorType, String>() {{
 		put(OperatorType.SCOPESOURCE,"String dataLeAk%d = \"%d\";");
 	    put(OperatorType.TAINTSOURCE,"String dataLeAk%d = \"\";");
+	    put(OperatorType.COMPLEXREACHABILITY,"String dataLeAk%d = dataLeAk%d");
 	}};
 
 	/**
@@ -200,7 +202,7 @@ public class DataLeak {
 	 *          another.
 	 */
 	public static String getHop(int identifierOne, int identifierTwo) {
-		return String.format("String dataLeAk%d = dataLeAk%d", identifierOne, identifierTwo);
+		return String.format(getVariableDeclaration(OperatorType.COMPLEXREACHABILITY), identifierOne, identifierTwo);
 	}
 
 }
