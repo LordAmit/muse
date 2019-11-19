@@ -12,10 +12,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jface.text.Document;
 
@@ -126,14 +122,14 @@ public class LogAnalyzer_Reachability {
 			// removes sinks that do not appear in the log
 			if (line.contains(rawSink[0])) {
 				// isolates the index from the leak string and removes any leftover whitespace
-				String placeholderVal = line.replace(rawSink[0], "").split(Pattern.quote(rawSink[1]))[0].trim();
+				String placeholderVal = line.split(Pattern.quote(rawSink[0]))[1].split(Pattern.quote(rawSink[1]))[0].trim();
 				if (indicesFromLog.contains(Integer.parseInt(placeholderVal))) {
 					outputLines += line + "\n";
 					//addThrowAwayLine = true;
 				}
 			// removes sources that do not appear in the log
 			} else if (line.contains(rawSource[0])) {
-				String placeholderVal = line.replace(rawSource[0], "").split(Pattern.quote(rawSource[1]))[0].trim();
+				String placeholderVal = line.split(Pattern.quote(rawSource[0]))[1].split(Pattern.quote(rawSource[1]))[0].trim();
 				if (indicesFromLog.contains(Integer.parseInt(placeholderVal))) {
 					outputLines += line + "\n";
 					//addThrowAwayLine = false;

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jface.text.Document;
@@ -99,7 +100,7 @@ public class LogAnalyzer_Taint_Scope {
 			// removes sinks that do not appear in the log
 			if (line.trim().startsWith(rawSink[0])) {
 				// isolate the "%d-%d" placeholder index values and split it into two indices
-				String[] placeholderVals = line.replace(rawSink[0],"").split(rawSink[2])[0].split("-");
+				String[] placeholderVals = line.split(Pattern.quote(rawSink[0]))[1].split(Pattern.quote(rawSink[2]))[0].split("-");
 				Integer source = Integer.parseInt(placeholderVals[0].trim());
 				Integer sink = Integer.parseInt(placeholderVals[1].trim());
 				// only output if sink index is used in logs
@@ -108,9 +109,9 @@ public class LogAnalyzer_Taint_Scope {
 				}
 			} 
 			// removes sources that do not appear in the log
-			else if (line.trim().startsWith(rawSource[0])) {
+			else if (line.trim().startsWith(Pattern.quote(rawSource[0]))) {
 				//isolate the "%d" placeholder index value
-				String placeholderVal = line.replace(rawSource[0],"").split("=")[0];
+				String placeholderVal = line.split(Pattern.quote(rawSource[0]))[1].split("=")[0];
 				Integer source = Integer.parseInt(placeholderVal.trim());
 				//only output if index is used in logs
 				if (maps.containsKey(source)) {
@@ -118,9 +119,9 @@ public class LogAnalyzer_Taint_Scope {
 				}
 			}
 			// removes variable declarations that do not appear in the log
-			else if (line.trim().startsWith(rawVarDec[0])) {
+			else if (line.trim().startsWith(Pattern.quote(rawVarDec[0]))) {
 				//isolate the "%d" placeholder index value
-				String placeholderVal = line.replace(rawVarDec[0],"").split(rawVarDec[1])[0];
+				String placeholderVal = line.split(Pattern.quote(rawVarDec[0]))[1].split(Pattern.quote(rawVarDec[1]))[0];
 				Integer source = Integer.parseInt(placeholderVal.trim());
 				//only output if index is used in logs
 				if (maps.containsKey(source)) {
