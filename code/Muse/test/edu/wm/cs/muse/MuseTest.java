@@ -171,7 +171,7 @@ public class MuseTest {
 
 			prepare_test_files(OperatorType.SCOPESOURCE, 2);
 			execute_muse(OperatorType.SCOPESOURCE);
-
+			System.out.println(expectedOutput);
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 
 		} catch (IOException e) {

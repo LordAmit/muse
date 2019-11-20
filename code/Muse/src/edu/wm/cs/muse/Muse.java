@@ -244,7 +244,7 @@ public class Muse {
 		case SCOPESOURCE:
 			ScopeSourceSchema scopeSourceSchema = new ScopeSourceSchema();
 			root.accept(scopeSourceSchema);
-			ScopeSourceOperator scopeSourceOperator = new ScopeSourceOperator(rewriter, scopeSourceSchema.getNodeChanges());
+			ScopeSourceOperator scopeSourceOperator = new ScopeSourceOperator(rewriter, scopeSourceSchema.getNodeChanges(),file.getAbsolutePath());
 			rewriter = scopeSourceOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			break;
@@ -252,7 +252,7 @@ public class Muse {
 		case SCOPESINK:
 			ScopeSourceSchema taintSchema_ts = new ScopeSourceSchema();
 			root.accept(taintSchema_ts);
-			ScopeSourceOperator taintOperator_ts = new ScopeSourceOperator(rewriter, taintSchema_ts.getNodeChanges());
+			ScopeSourceOperator taintOperator_ts = new ScopeSourceOperator(rewriter, taintSchema_ts.getNodeChanges(),source);
 			rewriter = taintOperator_ts.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			String taintsink_temp_file_path = "test/temp/temp_file_taintsink.java";
@@ -311,6 +311,8 @@ public class Muse {
 		root.accept(tempSchema);
 		return rewriter;
 	}
+	
+	
 
 	private void printArgumentError() {
 		System.out.println("******* ERROR: INCORRECT USAGE *******");

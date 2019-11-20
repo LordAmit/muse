@@ -65,7 +65,7 @@ public class ScopeSourceOperatorTest {
 		//create a null container with declaration insertion type
 		SourceNodeChangeContainers nullDeclarationNode = new SourceNodeChangeContainers(node, 0, null, INSERTION_TYPE.DECLARATION);
 		nodeChanges.add(nullDeclarationNode);
-		scopeSourceOperator = new ScopeSourceOperator(rewriter, nodeChanges);
+		scopeSourceOperator = new ScopeSourceOperator(rewriter, nodeChanges,"test/input/sample_multilevelclass.txt");
 		String output = scopeSourceOperator.InsertChanges().toString();
 		//check that the returned rewriter is  equal to the original rewriter
 		assertEquals(rewriter.toString(),output);
@@ -84,7 +84,7 @@ public class ScopeSourceOperatorTest {
 		//create a null container with method body insertion type
 		SourceNodeChangeContainers nullMethodBodyNode = new SourceNodeChangeContainers(node, 1, null, INSERTION_TYPE.METHOD_BODY);
 		nodeChanges.add(nullMethodBodyNode);
-		scopeSourceOperator = new ScopeSourceOperator(rewriter, nodeChanges);
+		scopeSourceOperator = new ScopeSourceOperator(rewriter, nodeChanges,"test/input/sample_multilevelclass.txt");
 		String output = scopeSourceOperator.InsertChanges().toString();
 		//check that the returned rewriter is  equal to the original rewriter
 		assertEquals(rewriter.toString(),output);
@@ -101,7 +101,7 @@ public class ScopeSourceOperatorTest {
 	@Test
 	public void insert_declaration_nodeChange() {	
 		nodeChanges.add(createNodeChanges("int methodA(){", INSERTION_TYPE.DECLARATION));	
-		scopeSourceOperator = new ScopeSourceOperator(rewriter, nodeChanges);
+		scopeSourceOperator = new ScopeSourceOperator(rewriter, nodeChanges,"test/input/sample_multilevelclass.txt");
 		String output = scopeSourceOperator.InsertChanges().toString();
 		//accesses the first output line where an insertion should occur
 		String outputAtInsertion = output.split("\\n")[4];
@@ -122,7 +122,7 @@ public class ScopeSourceOperatorTest {
 	@Test
 	public void insert_methodBody_nodeChange() {
 		nodeChanges.add(createNodeChanges("return 1;", INSERTION_TYPE.METHOD_BODY));	
-		scopeSourceOperator = new ScopeSourceOperator(rewriter, nodeChanges);
+		scopeSourceOperator = new ScopeSourceOperator(rewriter, nodeChanges,"test/input/sample_multilevelclass.txt");
 		String output = scopeSourceOperator.InsertChanges().toString();
 		//accesses the first output line where an insertion should occur
 		String outputAtInsertion = output.split("\\n")[5];
@@ -146,7 +146,7 @@ public class ScopeSourceOperatorTest {
 	@Test
 	public void insert_this_methodBody_nodeChange() {
 		nodeChanges.add(createNodeChanges("this(x = 1);",INSERTION_TYPE.METHOD_BODY));		
-		scopeSourceOperator = new ScopeSourceOperator(rewriter, nodeChanges);
+		scopeSourceOperator = new ScopeSourceOperator(rewriter, nodeChanges,"test/input/sample_multilevelclass.txt");
 		//rewriter should not be changed
 		String output = scopeSourceOperator.InsertChanges().toString();
 		assertEquals(rewriter.toString(),output);
@@ -163,7 +163,7 @@ public class ScopeSourceOperatorTest {
 	@Test
 	public void insert_super_methodBody_nodeChange() {
 		nodeChanges.add(createNodeChanges("super.test();",INSERTION_TYPE.METHOD_BODY));
-		scopeSourceOperator = new ScopeSourceOperator(rewriter, nodeChanges);
+		scopeSourceOperator = new ScopeSourceOperator(rewriter, nodeChanges,"test/input/sample_multilevelclass.txt");
 		//rewriter should not be changed
 		String output = scopeSourceOperator.InsertChanges().toString();
 		assertEquals(rewriter.toString(),output);
