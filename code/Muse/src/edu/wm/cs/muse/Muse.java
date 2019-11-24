@@ -56,56 +56,26 @@ public class Muse {
 	// not detected in java ast as static
 
 	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
-		
-		/*
-		Boolean customLeak = false;
-		String leakPath = "src/edu/wm/cs/muse/dataleak/default_leak_strings.txt";
-		Options options = new Options();
-		//adding an option flag that can be used on command line
-		options.addOption("d", "dataleak", true, "Run Muse with a custom data leak file");
+        
+        if (args.length == 1) {
+			if (Arguments.extractArguments(args[0]) < 0) {
+                printArgumentError();
+                return;
+            }
+            Arguments.extractArguments(args[0]);
+        }
+        else if (args.length == 2 && args[1].endsWith(".properties")) {
+            if (Arguments.extractArguments(args[1]) < 0) {
+                printArgumentError();
+                return;
+            }
+            Arguments.extractArguments(args[1]);
+        }
 
-		CommandLineParser parser = new DefaultParser();
-
-		//parse the command line input
-		try {
-			cmd = parser.parse(options, args);
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-			return;
-		}
-
-		///////Add control flow based on the option flag parsed here
-			
-		//sets the leakPath to the file specified
-		if (cmd.hasOption("d")) {
-			System.out.println("DataLeak set");
-			customLeak = true;
-			leakPath = cmd.getOptionValue("d");
-		}	
-		
-		///////
-		
-		// Usage Error, check length of remaining arguments
-		if (cmd.getArgs().length != 5) {
-			printArgumentError();
-			return;
-		}
-		
-		*/
-		
-		if (args.length != 1) {
-			printArgumentError();
-			return;
-		}
-		
-		// get the path to the config.properties, it will always be the only argument
-		if (Arguments.extractArguments(args[0]) < 0) {
-			printArgumentError();
-			return;
-		}
-
-		//any non option arguments are passed in 
-		Arguments.extractArguments(args[0]);
+        else {
+            printArgumentError();
+            return;
+        }
 
 		FileUtility.setupMutantsDirectory();
 
@@ -114,11 +84,6 @@ public class Muse {
 		Collection<File> files = FileUtils.listFiles(new File(Arguments.getRootPath()), TrueFileFilter.INSTANCE,
 				TrueFileFilter.INSTANCE);
 		
-		/*
-		if (customLeak) {
-			Arguments.setLeaks(getOperatorType(Arguments.getOperator()), leakPath);	
-		}
-		*/
 		
 		for (File file : files) {
 			try {
@@ -335,7 +300,7 @@ public class Muse {
 		return rewriter;
 	}
 
-	private void printArgumentError() {
+	private static void printArgumentError() {
 		System.out.println("******* ERROR: INCORRECT USAGE *******");
 		System.out.println("Values need to be defined in config.properties in order to run Muse:");
 		System.out.println("lib4ast: -----------");
@@ -350,6 +315,29 @@ public class Muse {
 	}
 
 	public static void main(String[] args) throws MalformedTreeException, BadLocationException {
-		new Muse().runMuse(args);
+        
+        // user at most should give 2 arguments
+        if (args.length > 2) {
+            printArgumentError();
+            return;
+        }
+
+        // defaults scenario, if the user does not give a keyword and only gives config file, run Muse normally
+        if (args.length == 1 && args[0].endsWith(".properties")) {
+            new Muse().runMuse(args);
+        }
+        
+        //if the user does give a keyword, check the keyword and run accordingly
+        else if (args.length == 2) {
+            switch (args[0]) {
+                case "mutate":
+                    new Muse().runMuse(args);
+                    break;
+
+                case "logAnalyze":
+                    // insert code to execute the logAnalyzer
+                    break;
+            }
+        }
 	}
 }
