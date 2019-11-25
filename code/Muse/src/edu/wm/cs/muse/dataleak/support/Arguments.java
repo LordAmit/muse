@@ -99,22 +99,23 @@ public class Arguments {
 	 */
 	private static String[] extractProperties(Properties properties) throws Exception {
 
-		if (properties.getProperty("lib4ast") == null) {
+		if (properties.getProperty("lib4ast") == null || properties.getProperty("lib4ast").length() == 0) {
 			throw new Exception();
 		}
-		if (properties.getProperty("appSrc") == null) {
+		if (properties.getProperty("appSrc") == null || properties.getProperty("appSrc").length() == 0) {
 			throw new Exception();
 		}
-		if (properties.getProperty("appName") == null) {
+		if (properties.getProperty("appName") == null || properties.getProperty("appName").length() == 0) {
 			throw new Exception();
 		}
-		if (properties.getProperty("output") == null) {
+		if (properties.getProperty("output") == null || properties.getProperty("output").length() == 0) {
 			throw new Exception();
 		}
-		if (properties.getProperty("operatorType") == null) {
+		if (properties.getProperty("operatorType") == null || properties.getProperty("operatorType").length() == 0) {
 			throw new Exception();
 		}
-		
+        
+        // TODO redundant, remove
 		binariesFolder = properties.getProperty("lib4ast");
 		rootPath = properties.getProperty("appSrc");
 		appName = properties.getProperty("appName");
@@ -123,17 +124,17 @@ public class Arguments {
 
 		leakMap = new HashMap<String, String>();
 
-		if (properties.getProperty("source") != null) {
+		if (properties.getProperty("source") != null || properties.getProperty("source").length() == 0) {
 			leakMap.put("source", properties.getProperty("source"));
 		} else {
 		}
 
-		if (properties.getProperty("sink") != null) {
+		if (properties.getProperty("sink") != null || properties.getProperty("sink").length() == 0) {
 			leakMap.put("sink", properties.getProperty("sink"));
 		} else {
 		}
 
-		if (properties.getProperty("varDec") != null) {
+		if (properties.getProperty("varDec") != null || properties.getProperty("varDec").length() == 0) {
 			leakMap.put("varDec", properties.getProperty("varDec"));
 		} else {
 		}

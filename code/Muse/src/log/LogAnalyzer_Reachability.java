@@ -183,16 +183,16 @@ public class LogAnalyzer_Reachability {
 			printArgumentError();
 			return;
 		}
-		if (prop.getProperty("logPath") == null) {
+		if (prop.getProperty("logPath") == null || prop.getProperty("logPath").length() == 0) {
 			printArgumentError();
 			return;
-		} else if (prop.getProperty("appSrc") == null) {
+		} else if (prop.getProperty("appSrc") == null || prop.getProperty("appSrc").length() == 0) {
 			printArgumentError();
 			return;
-		} else if (prop.getProperty("output") == null) {
+		} else if (prop.getProperty("output") == null || prop.getProperty("output").length() == 0) {
 			printArgumentError();
 			return;
-		} else if (prop.getProperty("operatorType") == null) {
+		} else if (prop.getProperty("operatorType") == null || prop.getProperty("opertorType").length() == 0) {
 			printArgumentError();
 			return;
 		}
