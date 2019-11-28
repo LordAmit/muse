@@ -121,24 +121,17 @@ public class Arguments {
 		appName = properties.getProperty("appName");
 		mutantsFolder = properties.getProperty("output");
 		operator = properties.getProperty("operatorType");
-
 		leakMap = new HashMap<String, String>();
 
-		if (properties.getProperty("source") != null || properties.getProperty("source").length() == 0) {
+		if (properties.getProperty("source") != null) {
 			leakMap.put("source", properties.getProperty("source"));
-		} else {
 		}
-
-		if (properties.getProperty("sink") != null || properties.getProperty("sink").length() == 0) {
+		if (properties.getProperty("sink") != null) {
 			leakMap.put("sink", properties.getProperty("sink"));
-		} else {
 		}
-
-		if (properties.getProperty("varDec") != null || properties.getProperty("varDec").length() == 0) {
+		if (properties.getProperty("varDec") != null) {
 			leakMap.put("varDec", properties.getProperty("varDec"));
-		} else {
 		}
-		
 		setLeaks(getOperatorEnumType(operator), leakMap);
 		
 		return new String[] {binariesFolder, rootPath, appName, mutantsFolder, operator};
