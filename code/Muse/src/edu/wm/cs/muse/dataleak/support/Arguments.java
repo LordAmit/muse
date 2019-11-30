@@ -63,10 +63,8 @@ public class Arguments {
 			String contentString = FileUtility.readSourceFile(file.getAbsolutePath()).toString();
 			extractArguments(contentString.split(" "));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -114,8 +112,7 @@ public class Arguments {
 		if (properties.getProperty("operatorType") == null || properties.getProperty("operatorType").length() == 0) {
 			throw new Exception();
 		}
-        
-        // TODO redundant, remove
+
 		binariesFolder = properties.getProperty("lib4ast");
 		rootPath = properties.getProperty("appSrc");
 		appName = properties.getProperty("appName");
@@ -124,17 +121,17 @@ public class Arguments {
 
 		leakMap = new HashMap<String, String>();
 
-		if (properties.getProperty("source") != null || properties.getProperty("source").length() == 0) {
+		if (properties.getProperty("source") != null) {
 			leakMap.put("source", properties.getProperty("source"));
 		} else {
 		}
 
-		if (properties.getProperty("sink") != null || properties.getProperty("sink").length() == 0) {
+		if (properties.getProperty("sink") != null) {
 			leakMap.put("sink", properties.getProperty("sink"));
 		} else {
 		}
 
-		if (properties.getProperty("varDec") != null || properties.getProperty("varDec").length() == 0) {
+		if (properties.getProperty("varDec") != null) {
 			leakMap.put("varDec", properties.getProperty("varDec"));
 		} else {
 		}
