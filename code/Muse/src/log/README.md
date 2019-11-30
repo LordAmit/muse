@@ -1,17 +1,18 @@
-# Muse - Custom Leaks
-
-The custom leak feature in Muse allows for the user to define their own leaks for application mutation. Muse will use the custom source, sinks, and/or leak variable declarations when mutating the Android application.
+# Muse - Log Analyzer
+The Log Analyzer extension for the Muse tool helps the user remove certain leaks from an application with ease. If the user wants to adjust the leaks in a mutated application, Muse can remove all leaks specified by the user through a universal log format. This feature can be utilized to recheck static analysis tools with a subset of leaks in a mutated application.
 
 # Usage
-To define custom leaks in Muse execution, use the keyword `mutate` on the command line. 
+To run the Log Analyzer Muse extension, the `logAnalyze` keyword should be specified on the command line. The `config.properties` file path should also define all values that Muse will use during execution. `(arg)` specifies required arguments:
 
 ```
-java -jar Muse-1.0.0.jar mutate (<ConfigFilePath>)
+java -jar Muse-1.0.0.jar logAnalyze (<ConfigFilePath>)
 ```
+
+If running Muse within a IDE like Eclipse, import only the Muse folder within the code subdirectory, or else you might get a java.lang.SecurityException error when running Muse.java
 
 ### Arguments
-The only arguments on the command line is the path to the `config.properties` file where all runtime values will be defined. To utilize the custom leak strings feature of Muse, the `source`, `sink`, and `varDec` values should be define in the properties file.
 
+Provide the following list of required arguments when running Muse: 
 1. ``ConfigFilePath``: This is the path to the config.properties file that Muse uses to read arguments. These arguments defined in the config.properties file include:
 - ``libs4ast``:  Path of the lib4ast folder, from [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus/tree/master/libs4ast);
 - ``appSrc``: Path of the Android app source code folder, which you want to apply mutation on;
@@ -19,17 +20,13 @@ The only arguments on the command line is the path to the `config.properties` fi
 - ``output``: Path of the folder where the mutants will be created;
 - `operatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
 
-These values are required for using custom leak string in Muse
-
-   - ``source``: Value of the custom source to be used in Muse
-   - ``sink``: Value of the custom sink to be used in Muse
-   - ``varDec``: Value of the custom variable declaration to be used in Muse
+To run the Log Analyzer extension, the following values also need to be set:
+  - `logPath`: The path to the log file that Muse will use to remove leaks.
 
 
 ### Example
-
 ```
-java -jar Muse-1.0.0.jar mutate /config.properties
+java -jar Muse-1.0.0.jar logAnalyze /config.properties
 ```
 
 The `config.properties` file is defined as:
@@ -39,14 +36,16 @@ appSrc = //tmp/AppFoo//src//
 appName = AppFoo
 output = //tmp//mutants//
 operatorType = SCOPESINK
-source = sourceString
-sink = sinkString
-varDec = varDecString
+logPath = //tempLog.txt
 ```
 
-This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored. 
-
-This will also mutate the app using the custom leak strings defined by the user in the properties file.
+This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored.
+The `logPath` file should be of the following format:
+  ```
+leak-0: <ApplicationTest.<init>>
+leak-1: ApplicationTest.ApplicationTest
+  ``` 
+  Any leaks listed in the format leak ID number following by the location of the leak in the mutated app will be read by the Log Analyzer and removed. The leaks for removal are defines in logPath file.
 
 # Cite
 If you use Muse for academic purposes, please cite: 
@@ -65,3 +64,4 @@ This repository is for a refactoring and expansion of the original muse tool bui
 - Ian Wolff
 - Jeff Petit-Freres
 - Will Elliot
+

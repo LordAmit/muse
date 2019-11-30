@@ -22,11 +22,11 @@ If running Muse within a IDE like Eclipse, import only the Muse folder within th
 ### Arguments
 Provide the following list of required arguments when running Muse: 
 1. ``ConfigFilePath``: This is the path to the config.properties file that Muse uses to read arguments. These arguments defined in the config.properties file include:
-   - ``libs4ast``:  Path of the lib4ast folder, from [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus/tree/master/libs4ast);
-   - ``appSrc``: Path of the Android app source code folder, which you want to apply mutation on;
-   - ``appName``:  Name of the App;
-   - ``output``: Path of the folder where the mutants will be created;
-   - `operatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
+- ``libs4ast``:  Path of the lib4ast folder, from [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus/tree/master/libs4ast);
+- ``appSrc``: Path of the Android app source code folder, which you want to apply mutation on;
+- ``appName``:  Name of the App;
+- ``output``: Path of the folder where the mutants will be created;
+- `operatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
 
 ### Examples
 ```
@@ -47,10 +47,8 @@ This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated
 # Additional Features
 To access documentation about the additional features that Muse offered use the link provided below:
 
-Custom User Leak Strings - 
-
-LogAnalyzer - 
-
+- Custom Leak Strings
+- Log Analyzer
 
 # Muse Processor Helper Utility
 We have created the Muse processor utility using python, which makes it easier to mutate android projects by generating relevant shell script files. To work with it, you need to replace the file paths, and edit the file called `input_folders`. In the file, you need to provide the list of directories containing Android projects. The provided `input_folders` already contains sample values. 
