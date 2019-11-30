@@ -28,13 +28,6 @@ Provide the following list of required arguments when running Muse:
    - ``output``: Path of the folder where the mutants will be created;
    - `operatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
 
-These arguments are optional and should only be used if custom strings what to be used for execution:
-
-   - ``source``: Value of the custom source to be used in Muse
-   - ``sink``: Value of the custom sink to be used in Muse
-   - ``varDec``: Value of the custom variable declaration to be used in Muse
-
-
 ### Examples
 ```
 java -jar Muse-1.0.0.jar /config.properties
@@ -51,23 +44,12 @@ operatorType = SCOPESINK
 
 This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored. 
 
-Another example is the following, showcasing the custom data leak argument.
+# Additional Features
+To access documentation about the additional features that Muse offered use the link provided below:
 
-```
-java -jar Muse-1.0.0.jar /config.properties
-```
+Custom User Leak Strings - 
 
-The `config.properties` file is defined as:
-```
-lib4ast = MDroidPlus//libs4ast//
-appSrc = //tmp/AppFoo//src//
-appName = AppFoo
-output = //tmp//mutants//
-operatorType = REACHABILITY
-leakFile = //tmp//dataleak.txt
-```
-
-This will execute REACHABILITY in Muse with a custom data leak string defined in tmp/dataleak.txt during execution.
+LogAnalyzer - 
 
 
 # Muse Processor Helper Utility
