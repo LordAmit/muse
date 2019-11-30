@@ -57,25 +57,25 @@ public class Muse {
 
 	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
         
-        if (args.length == 1) {
-			if (Arguments.extractArguments(args[0]) < 0) {
-                printArgumentError();
-                return;
-            }
-            Arguments.extractArguments(args[0]);
-        }
-        else if (args.length == 2 && args[1].endsWith(".properties")) {
-            if (Arguments.extractArguments(args[1]) < 0) {
-                printArgumentError();
-                return;
-            }
-            Arguments.extractArguments(args[1]);
-        }
+			if (args.length == 1) {
+					if (Arguments.extractArguments(args[0]) < 0) {
+							printArgumentError();
+							return;
+					}
+					Arguments.extractArguments(args[0]);
+			}
+			else if (args.length == 2 && args[1].endsWith(".properties")) {
+					if (Arguments.extractArguments(args[1]) < 0) {
+							printArgumentError();
+							return;
+					}
+					Arguments.extractArguments(args[1]);
+			}
 
-        else {
-            printArgumentError();
-            return;
-        }
+			else {
+					printArgumentError();
+					return;
+			}
 
 		FileUtility.setupMutantsDirectory();
 
@@ -336,7 +336,11 @@ public class Muse {
 
                 case "logAnalyze":
                     // insert code to execute the logAnalyzer
-                    break;
+										break;
+										
+								default:
+									new Muse().runMuse(args);
+									break;
             }
         }
 	}
