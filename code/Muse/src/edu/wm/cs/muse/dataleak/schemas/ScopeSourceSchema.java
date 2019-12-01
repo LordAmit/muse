@@ -56,12 +56,12 @@ public class ScopeSourceSchema extends ASTVisitor {
 			return true;
 		}
 		if (Modifier.isPrivate(node.getModifiers())) {
-			//System.out.println("Private method: " + node.getName());
+			System.out.println("Private method: " + node.getName());
 			return true;
 		}
 		Stack<ASTNode> ancestorStack = new Stack<ASTNode>();
 
-		//System.out.println(node.getName());
+		System.out.println(node.getName());
 		parent = node.getParent();
 		
 

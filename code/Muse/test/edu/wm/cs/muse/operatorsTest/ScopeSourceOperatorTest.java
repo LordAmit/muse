@@ -193,7 +193,7 @@ public class ScopeSourceOperatorTest {
 	    node =  ASTNode.copySubtree(testAST, node);
 	    //create a new container with the test input and insertion type
 		SourceNodeChangeContainers newContainer = new SourceNodeChangeContainers(node, 0,Block.STATEMENTS_PROPERTY, insertionType);
-		//System.out.println(node.toString());
+		System.out.println(node.toString());
 		return newContainer;
 	}
 }

@@ -73,7 +73,8 @@ public class Placementchecker {
 	}
   public Boolean check(File temp_file) throws IOException {
 	  //have user set java_home variable
-	System.setProperty("java.home", "C:\\Program Files\\Java\\jdk1.8.0_212");
+	
+	System.setProperty("java.home",System.getenv("JAVA_HOME"));
 	
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     

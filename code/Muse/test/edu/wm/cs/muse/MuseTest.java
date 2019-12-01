@@ -66,6 +66,11 @@ public class MuseTest {
 	// the expected output.
 	File output = new File("test/output/output.txt");
 	
+	/**
+	 * This is done after every test to clean up the output.txt file and make sure that the 
+	 * placementchecker doesn't remove leaks from the previous test cases.
+	 * @throws FileNotFoundException
+	 */
 	@After
 	public void reset() throws FileNotFoundException {
 		File inputFile = new File("test/output/output.txt");
@@ -101,7 +106,6 @@ public class MuseTest {
 		try {
 			prepare_test_files(OperatorType.REACHABILITY, 1);
 			execute_muse(OperatorType.REACHABILITY);
-
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 
 		} catch (IOException e) {
@@ -122,8 +126,6 @@ public class MuseTest {
 
 			prepare_test_files(OperatorType.COMPLEXREACHABILITY, 1);
 			execute_muse(OperatorType.COMPLEXREACHABILITY);
-			
-			
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 
 		} catch (IOException e) {
@@ -143,7 +145,6 @@ public class MuseTest {
 		try {
 			prepare_test_files(OperatorType.TAINTSOURCE, 1);
 			execute_muse(OperatorType.TAINTSOURCE);
-
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 
 		} catch (IOException e) {
@@ -206,7 +207,6 @@ public class MuseTest {
 
 			prepare_test_files(OperatorType.SCOPESOURCE, 2);
 			execute_muse(OperatorType.SCOPESOURCE);
-			//System.out.println(expectedOutput);
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 
 		} catch (IOException e) {
@@ -227,7 +227,6 @@ public class MuseTest {
 		try {
 			prepare_test_files(OperatorType.SCOPESINK, 1);
 			execute_muse(OperatorType.SCOPESINK);
-			
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 			
 		} catch (IOException e) {
@@ -252,15 +251,6 @@ public class MuseTest {
 		processedOutput = output;
 	}
 	
-	private void execute_muse(OperatorType operator, File output) throws BadLocationException, MalformedTreeException, IOException {
-		Arguments.setTestMode(true);
-		rewriter = ASTRewrite.create(root.getAST());
-		sourceDoc = new Document(content);
-		
-		muse.operatorExecution(root, rewriter, sourceDoc.get(), output, operator);
-
-		processedOutput = output;
-	}
 
 
 	private void prepare_test_files(OperatorType operator, int test) throws FileNotFoundException, IOException {

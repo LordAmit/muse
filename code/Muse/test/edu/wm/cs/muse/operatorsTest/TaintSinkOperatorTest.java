@@ -161,7 +161,7 @@ public class TaintSinkOperatorTest {
             newContainer = new SinkNodeChangeContainers(block, 0, 0, null, methodDeclaration, insertionType);
         }
             
-		//System.out.println(block.toString());
+		System.out.println(block.toString());
 		return newContainer;
 	}
 	
