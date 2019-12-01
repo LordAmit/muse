@@ -92,7 +92,7 @@ public class Muse {
 
 		FileUtility.setupMutantsDirectory();
 
-		System.out.println(Arguments.getRootPath());
+		//System.out.println(Arguments.getRootPath());
 
 		Collection<File> files = FileUtils.listFiles(new File(Arguments.getRootPath()), TrueFileFilter.INSTANCE,
 				TrueFileFilter.INSTANCE);
@@ -108,6 +108,7 @@ public class Muse {
 						&& !file.getName().contains("UnitTest.java")
 						&& !file.getName().contains("SMSInstrumentedReceiver.java")) {
 					System.out.println("In file: " + file.getName());
+					Arguments.setFileName(file.getName());
 					// System.out.println("PROCESSING: " + file.getAbsolutePath());
 					String source = FileUtility.readSourceFile(file.getAbsolutePath()).toString();
 
@@ -202,7 +203,7 @@ public class Muse {
 		case TAINTSINK:
 			TaintSourceSchema sourceSchema_s = new TaintSourceSchema();
 			root.accept(sourceSchema_s);
-			TaintSourceOperator sourceOperator_s = new TaintSourceOperator(rewriter, sourceSchema_s.getNodeChanges());
+			TaintSourceOperator sourceOperator_s = new TaintSourceOperator(rewriter, sourceSchema_s.getNodeChanges(),file.getAbsolutePath());
 			rewriter = sourceOperator_s.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			String sink_temp_file_path = "test/temp/temp_file.java";
@@ -218,7 +219,7 @@ public class Muse {
 			
 			TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
 			root.accept(taintSinkSchema);
-			TaintSinkOperator taintSinkOperator = new TaintSinkOperator(rewriter, taintSinkSchema.getNodeChanges());
+			TaintSinkOperator taintSinkOperator = new TaintSinkOperator(rewriter, taintSinkSchema.getNodeChanges(),file.getAbsolutePath());
 			rewriter = taintSinkOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			Files.delete(temp_file.toPath());
@@ -227,7 +228,7 @@ public class Muse {
 		case TAINTSOURCE:
 			TaintSourceSchema taintSourceSchema = new TaintSourceSchema();
 			root.accept(taintSourceSchema);
-			TaintSourceOperator taintSourceOperator = new TaintSourceOperator(rewriter, taintSourceSchema.getNodeChanges());
+			TaintSourceOperator taintSourceOperator = new TaintSourceOperator(rewriter, taintSourceSchema.getNodeChanges(),file.getAbsolutePath());
 			rewriter = taintSourceOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			break;
@@ -252,7 +253,7 @@ public class Muse {
 		case SCOPESINK:
 			ScopeSourceSchema taintSchema_ts = new ScopeSourceSchema();
 			root.accept(taintSchema_ts);
-			ScopeSourceOperator taintOperator_ts = new ScopeSourceOperator(rewriter, taintSchema_ts.getNodeChanges(),source);
+			ScopeSourceOperator taintOperator_ts = new ScopeSourceOperator(rewriter, taintSchema_ts.getNodeChanges(),file.getAbsolutePath());
 			rewriter = taintOperator_ts.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			String taintsink_temp_file_path = "test/temp/temp_file_taintsink.java";
@@ -269,7 +270,7 @@ public class Muse {
 			ScopeSinkSchema scopeSinkSchema = new ScopeSinkSchema();
 			root.accept(scopeSinkSchema);
 			ScopeSinkOperator operator = new ScopeSinkOperator(rewriter, scopeSinkSchema.getFieldNodeChanges(),
-					scopeSinkSchema.getMethodNodeChanges());
+					scopeSinkSchema.getMethodNodeChanges(), file.getAbsolutePath());
 			rewriter = operator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			Files.delete(temp_file.toPath());
@@ -292,7 +293,7 @@ public class Muse {
 		// Applies the edit tree rooted by this edit to the given document.
 		// edits.apply(sourceDoc);
 		Document tempDocument = new Document(source);
-		TextEdit tempEdits = rewriter.rewriteAST(tempDocument, null);
+		TextEdit tempEdits = rewriter.rewriteAST(tempDocument, null );
 
 		tempEdits.apply(tempDocument);
 		FileUtils.writeStringToFile(temp_file, tempDocument.get(), false);

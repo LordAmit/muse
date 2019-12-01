@@ -13,6 +13,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.text.edits.MalformedTreeException;
 
 import edu.wm.cs.muse.Muse;
+import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.JavaSourceFromString;
 
@@ -46,8 +47,10 @@ public class Placementchecker {
 		
 		try {
 			temp_file = new File("temp_file.java");
-			System.out.println("This is the source_file" + source_file_name);
+			//System.out.println("This is the source_file " +source_file_name);
+			
 			this.source_file = FileUtility.readSourceFile(source_file_name/*"C:\\Users\\jeffr\\git\\Muse\\code\\Muse\\test\\input\\placementtest\\src\\timetracker.java"*/).toString();
+			
 			try {
 				muse.tempFileWriter(astRoot, rewriter, source_file, temp_file);
 				return temp_file;
@@ -69,22 +72,25 @@ public class Placementchecker {
 		
 	}
   public Boolean check(File temp_file) throws IOException {
+	  //have user set java_home variable
 	System.setProperty("java.home", "C:\\Program Files\\Java\\jdk1.8.0_212");
 	
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     
     DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
     String source_code= FileUtils.readFileToString(temp_file);
-    JavaFileObject file = new JavaSourceFromString("scope_source_sample_anonymous_multilevelclass",source_code);
+    
+    JavaFileObject file = new JavaSourceFromString("output",source_code);
     Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
     CompilationTask task = compiler.getTask(null, null, diagnostics, null, null, compilationUnits);
     boolean success = task.call();
     for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
    
-    	System.out.println("Code: "+ diagnostic.getCode() + " with message: " + diagnostic.getMessage(null));
+    	//System.out.println("Code: "+ diagnostic.getCode() + " with message: " + diagnostic.getMessage(null));
     	
     	switch (diagnostic.getCode()){
     		case "compiler.err.already.defined":
+    			System.out.println("It's already defined");
     			return false;
     			
     	}

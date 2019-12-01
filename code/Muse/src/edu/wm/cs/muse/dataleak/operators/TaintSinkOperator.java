@@ -1,9 +1,13 @@
 package edu.wm.cs.muse.dataleak.operators;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -11,6 +15,7 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
 import edu.wm.cs.muse.dataleak.DataLeak;
+import edu.wm.cs.muse.dataleak.Placementchecker;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 
@@ -23,14 +28,18 @@ public class TaintSinkOperator {
 	ArrayList<SinkNodeChangeContainers> nodeChanges;
 	ASTRewrite rewriter;
 	HashMap<Integer, Integer> repeatCounts = new HashMap<Integer, Integer>();
+	Placementchecker checker = new Placementchecker();
+	File temp_file;
+	String source_file;
 
 	public TaintSinkOperator(ASTRewrite rewriter) {
 		this.rewriter = rewriter;
 	}
 	
-	public TaintSinkOperator(ASTRewrite rewriter, ArrayList<SinkNodeChangeContainers> nodeChanges) {
+	public TaintSinkOperator(ASTRewrite rewriter, ArrayList<SinkNodeChangeContainers> nodeChanges, String source_file) {
 		this.rewriter = rewriter;
 		this.nodeChanges = nodeChanges;
+		this.source_file = source_file;
 	}
 	
 	/**
@@ -62,6 +71,16 @@ public class TaintSinkOperator {
 		
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
+		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+			temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
+			try {
+				if (!checker.check(temp_file))
+					listRewrite.remove(placeHolder,null);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		String methodName = ((MethodDeclaration) method).getName().toString();
 		String className = "";
 		method = method.getParent();
@@ -82,6 +101,17 @@ public class TaintSinkOperator {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(DataLeak.getSource(OperatorType.TAINTSINK, count), ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
+		
+		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+			temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
+			try {
+				if (!checker.check(temp_file))
+					listRewrite.remove(placeHolder,null);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

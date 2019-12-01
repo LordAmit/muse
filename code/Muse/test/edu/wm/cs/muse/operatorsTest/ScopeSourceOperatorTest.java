@@ -9,11 +9,13 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.junit.Before;
 import org.junit.Test;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 
 import edu.wm.cs.muse.dataleak.operators.ScopeSourceOperator;
 import edu.wm.cs.muse.dataleak.schemas.ScopeSourceSchema;
@@ -68,6 +70,7 @@ public class ScopeSourceOperatorTest {
 		scopeSourceOperator = new ScopeSourceOperator(rewriter, nodeChanges,"test/input/sample_multilevelclass.txt");
 		String output = scopeSourceOperator.InsertChanges().toString();
 		//check that the returned rewriter is  equal to the original rewriter
+		
 		assertEquals(rewriter.toString(),output);
 	}
 
@@ -109,7 +112,7 @@ public class ScopeSourceOperatorTest {
 		//first insertion point should reflect insertion
 		String expectedOutput = "	 [inserted: ;";
 		assertEquals(expectedOutput, outputAtInsertion);
-	}
+	} 
 
 	/**
 	 * Test case: Verifies the behavior of the operator when given a single node change with
@@ -129,6 +132,7 @@ public class ScopeSourceOperatorTest {
 
 		//first insertion point should reflect insertion
 		String expectedOutput = "	 [inserted: ;";
+		
 		assertEquals(expectedOutput, outputAtInsertion);
 	}
 	
@@ -185,11 +189,11 @@ public class ScopeSourceOperatorTest {
 	    tempParser.setKind(ASTParser.K_STATEMENTS);
 	    tempParser.setResolveBindings(true);
 	    tempParser.setBindingsRecovery(true);
-	    Block block = (Block) tempParser.createAST(new NullProgressMonitor());
-	    block = (Block) ASTNode.copySubtree(testAST, block);
+	    ASTNode node =  (ASTNode)tempParser.createAST(new NullProgressMonitor());
+	    node =  ASTNode.copySubtree(testAST, node);
 	    //create a new container with the test input and insertion type
-		SourceNodeChangeContainers newContainer = new SourceNodeChangeContainers(block, 0, Block.STATEMENTS_PROPERTY, insertionType);
-		System.out.println(block.toString());
+		SourceNodeChangeContainers newContainer = new SourceNodeChangeContainers(node, 0,Block.STATEMENTS_PROPERTY, insertionType);
+		//System.out.println(node.toString());
 		return newContainer;
 	}
 }

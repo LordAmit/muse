@@ -75,7 +75,7 @@ public class TaintSinkOperatorTest {
 	@Test
 	public void insert_sink_declaration_nodeChange() {
 		nodeChanges.add(createNodeChanges("int methodA(){", 0, 1));
-		taintSinkOperator = new TaintSinkOperator(rewriter, nodeChanges);
+		taintSinkOperator = new TaintSinkOperator(rewriter, nodeChanges,"test/input/sample_helloWorld.txt");
 		String output = taintSinkOperator.InsertChanges().toString();
 		// accesses the first output line where an insertion should occur
 		String outputAtInsertion = output.split("\\n")[4];
@@ -96,7 +96,7 @@ public class TaintSinkOperatorTest {
 	@Test
 	public void insert_source_declaration_nodeChange() {
 		nodeChanges.add(createNodeChanges("int methodA(){", 1, 1));
-		taintSinkOperator = new TaintSinkOperator(rewriter, nodeChanges);
+		taintSinkOperator = new TaintSinkOperator(rewriter, nodeChanges,"test/input/sample_helloWorld.txt");
 		String output = taintSinkOperator.InsertChanges().toString();
 		// accesses the first output line where an insertion should occur
 		String outputAtInsertion = output.split("\\n")[4];
@@ -117,7 +117,7 @@ public class TaintSinkOperatorTest {
 	@Test
 	public void insert_methodBody_nodeChange() {
 		nodeChanges.add(createNodeChanges("return 1;", 0, 1));	
-		taintSinkOperator = new TaintSinkOperator(rewriter, nodeChanges);
+		taintSinkOperator = new TaintSinkOperator(rewriter, nodeChanges,"test/input/sample_helloWorld.txt");
 		String output = taintSinkOperator.InsertChanges().toString();
 		//accesses the first output line where an insertion should occur
 		String outputAtInsertion = output.split("\\n")[5];
@@ -161,7 +161,7 @@ public class TaintSinkOperatorTest {
             newContainer = new SinkNodeChangeContainers(block, 0, 0, null, methodDeclaration, insertionType);
         }
             
-		System.out.println(block.toString());
+		//System.out.println(block.toString());
 		return newContainer;
 	}
 	

@@ -22,6 +22,7 @@ public class Arguments {
 	private static String Operator;
 	private static String leakPath = "src/edu/wm/cs/muse/dataleak/default_leak_strings.txt";
 	private static Boolean testmode = false;
+	private static String filename;
 
 	/**
 	 * private constructor makes sure that no constructor can ever be used.
@@ -69,6 +70,10 @@ public class Arguments {
 	public static void setRootPath(String rootPath) {
 		Arguments.rootPath = rootPath;
 	}
+	
+	public static void setFileName(String filename) {
+		Arguments.filename = filename;
+	}
 
 	public static void setTestMode(Boolean mode) {
 		testmode = mode;
@@ -101,6 +106,13 @@ public class Arguments {
 	 */
 	public static String getRootPath() {
 		return rootPath;
+	}
+	
+	/**
+	 * @return file name, which is used for the placementchecker
+	 */
+	public static String getFileName() {
+		return filename;
 	}
 
 	/**

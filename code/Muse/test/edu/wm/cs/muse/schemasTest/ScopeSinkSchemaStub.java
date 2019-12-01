@@ -102,7 +102,7 @@ public class ScopeSinkSchemaStub extends ScopeSinkSchema{
 				// the tree, but does NOT get cleared if the parent of the method is in the same
 				// class as the previous method.
 				if (parent != classRetainer) {
-					System.out.println(parent);
+					//System.out.println(parent);
 					subClassCount++;
 
 					if (classRetainer != null) {
