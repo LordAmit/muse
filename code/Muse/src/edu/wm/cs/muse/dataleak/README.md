@@ -2,7 +2,7 @@
 
 The custom leak feature in Muse allows for the user to define their own leaks for application mutation. Muse will use the custom source, sinks, and/or leak variable declarations when mutating the Android application.
 
-# Usage
+## Usage
 To define custom leaks in Muse execution, use the keyword `mutate` on the command line. 
 
 ```
@@ -48,12 +48,12 @@ This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated
 
 This will also mutate the app using the custom leak strings defined by the user in the properties file.
 
-# Cite
+## Cite
 If you use Muse for academic purposes, please cite: 
 
 Bonett, R., Kafle, K., Moran, K., Nadkarni, A., & Poshyvanyk, D. (2018, August). Discovering Flaws in Security-Focused Static Analysis Tools for Android using Systematic Mutation. In 27th USENIX Security Symposium (USENIX Security 18). USENIX Association.
 
-# Future Work
+## Future Work
 Currently Muse is oriented towards the evaluation of static analysis tools for Android data leak detection. We intend to expand Muse by developing additional security operators and mutation schemes for tools with other goals, e.g. SSL verification. 
 
 This repository is for a refactoring and expansion of the original muse tool built by Richie Bonnett.

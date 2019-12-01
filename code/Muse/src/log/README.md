@@ -1,7 +1,7 @@
 # Muse - Log Analyzer
 The Log Analyzer extension for the Muse tool helps the user remove certain leaks from an application with ease. If the user wants to adjust the leaks in a mutated application, Muse can remove all leaks specified by the user through a universal log format. This feature can be utilized to recheck static analysis tools with a subset of leaks in a mutated application.
 
-# Usage
+## Usage
 To run the Log Analyzer Muse extension, the `logAnalyze` keyword should be specified on the command line. The `config.properties` file path should also define all values that Muse will use during execution. `(arg)` specifies required arguments:
 
 ```
@@ -47,12 +47,12 @@ leak-1: ApplicationTest.ApplicationTest
   ``` 
   Any leaks listed in the format leak ID number following by the location of the leak in the mutated app will be read by the Log Analyzer and removed. The leaks for removal are defines in logPath file.
 
-# Cite
+## Cite
 If you use Muse for academic purposes, please cite: 
 
 Bonett, R., Kafle, K., Moran, K., Nadkarni, A., & Poshyvanyk, D. (2018, August). Discovering Flaws in Security-Focused Static Analysis Tools for Android using Systematic Mutation. In 27th USENIX Security Symposium (USENIX Security 18). USENIX Association.
 
-# Future Work
+## Future Work
 Currently Muse is oriented towards the evaluation of static analysis tools for Android data leak detection. We intend to expand Muse by developing additional security operators and mutation schemes for tools with other goals, e.g. SSL verification. 
 
 This repository is for a refactoring and expansion of the original muse tool built by Richie Bonnett.
