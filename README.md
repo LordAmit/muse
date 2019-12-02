@@ -28,7 +28,7 @@ Provide the following list of required arguments when running Muse:
 - ``output``: Path of the folder where the mutants will be created;
 - `operatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
 
-### Examples
+### Example
 ```
 java -jar Muse-1.0.0.jar /config.properties
 ```
