@@ -34,17 +34,17 @@ java -jar Muse-1.0.0.jar mutate /config.properties
 
 The `config.properties` file is defined as:
 ```
-lib4ast = MDroidPlus//libs4ast//
-appSrc = //tmp/AppFoo//src//
+lib4ast = MDroidPlus/libs4ast/
+appSrc = /tmp/AppFoo/src/
 appName = AppFoo
-output = //tmp//mutants//
+output = /tmp/mutants/
 operatorType = SCOPESINK
 source = sourceString
 sink = sinkString
 varDec = varDecString
 ```
 
-This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored. 
+This will create a folder called `AppFoo` under `/tmp/mutants/` where the mutated source files will be stored. 
 
 This will also mutate the app using the custom leak strings defined by the user in the properties file.
 

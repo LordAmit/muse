@@ -42,7 +42,7 @@ output = /tmp/mutants/
 operatorType = SCOPESINK
 ```
 
-This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored. 
+This will create a folder called `AppFoo` under `/tmp/mutants/` where the mutated source files will be stored. 
 
 ## Additional Features
 To access documentation about the additional features that Muse offers please access the Muse wiki to learn more about how to utilize these features.

@@ -31,15 +31,15 @@ java -jar Muse-1.0.0.jar logAnalyze /config.properties
 
 The `config.properties` file is defined as:
 ```
-lib4ast = MDroidPlus//libs4ast//
-appSrc = //tmp/AppFoo//src//
+lib4ast = MDroidPlus/libs4ast/
+appSrc = /tmp/AppFoo/src/
 appName = AppFoo
-output = //tmp//mutants//
+output = /tmp/mutants/
 operatorType = SCOPESINK
-logPath = //tempLog.txt
+logPath = /tempLog.txt
 ```
 
-This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored.
+This will create a folder called `AppFoo` under `/tmp/mutants/` where the mutated source files will be stored.
 The `logPath` file should be of the following format:
   ```
 leak-0: <ApplicationTest.<init>>
