@@ -42,10 +42,10 @@ java -jar Muse-1.0.0.jar /config.properties
 
 The `config.properties` file is defined as:
 ```
-lib4ast = MDroidPlus//libs4ast//
-appSrc = //tmp/AppFoo//src//
+lib4ast = MDroidPlus/libs4ast/
+appSrc = /tmp/AppFoo/src/
 appName = AppFoo
-output = //tmp//mutants//
+output = /tmp/mutants/
 operatorType = SCOPESINK
 ```
 
@@ -59,12 +59,12 @@ java -jar Muse-1.0.0.jar /config.properties
 
 The `config.properties` file is defined as:
 ```
-lib4ast = MDroidPlus//libs4ast//
-appSrc = //tmp/AppFoo//src//
+lib4ast = MDroidPlus/libs4ast/
+appSrc = /tmp/AppFoo/src/
 appName = AppFoo
-output = //tmp//mutants//
+output = /tmp/mutants/
 operatorType = REACHABILITY
-leakFile = //tmp//dataleak.txt
+leakFile = /tmp/dataleak.txt
 ```
 
 This will execute REACHABILITY in Muse with a custom data leak string defined in tmp/dataleak.txt during execution.
