@@ -1,5 +1,6 @@
 package edu.wm.cs.muse.dataleak.schemas;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -47,7 +48,9 @@ public class ScopeSourceSchema extends ASTVisitor {
 	// in order to correctly insert field declarations in the classes and source
 	// strings
 	// in the method bodies using the TaintOperator.
+	
 	public boolean visit(MethodDeclaration node) {
+		
 
 		if (Modifier.isStatic(node.getModifiers())) {
 			return true;
@@ -60,8 +63,10 @@ public class ScopeSourceSchema extends ASTVisitor {
 
 		System.out.println(node.getName());
 		parent = node.getParent();
+		
 
 		while (true) {
+			
 			if (parent.getNodeType() == ASTNode.TYPE_DECLARATION) {
 				TypeDeclaration parentAsType = (TypeDeclaration) parent;
 
@@ -94,6 +99,7 @@ public class ScopeSourceSchema extends ASTVisitor {
 		}
 
 		for (ASTNode ancestorNode : ancestorStack) {
+			
 			if (ancestorStack.size() == 0)
 				return true;
 			if (ancestorNode.getNodeType() == ASTNode.ANONYMOUS_CLASS_DECLARATION) {

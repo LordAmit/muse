@@ -27,10 +27,14 @@ public class Arguments {
 	private static String mutantsFolder;
 	private static String operator;
 	private static Boolean testmode = false;
+<<<<<<< HEAD
 	
 	private static String[] argsList;
 	private static Properties prop;
 	private static HashMap<String, String> leakMap;
+=======
+	private static String filename;
+>>>>>>> refs/remotes/origin/syntaxChecker
 
 	/**
 	 * private constructor makes sure that no constructor can ever be used.
@@ -181,6 +185,10 @@ public class Arguments {
 	public static void setRootPath(String rootPath) {
 		Arguments.rootPath = rootPath;
 	}
+	
+	public static void setFileName(String filename) {
+		Arguments.filename = filename;
+	}
 
 	public static void setTestMode(Boolean mode) {
 		testmode = mode;
@@ -205,6 +213,13 @@ public class Arguments {
 	 */
 	public static String getRootPath() {
 		return rootPath;
+	}
+	
+	/**
+	 * @return file name, which is used for the placementchecker
+	 */
+	public static String getFileName() {
+		return filename;
 	}
 
 	/**

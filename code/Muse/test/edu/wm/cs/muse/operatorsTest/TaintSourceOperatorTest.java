@@ -70,7 +70,7 @@ public class TaintSourceOperatorTest {
 	@Test
 	public void insert_declaration_nodeChange() {	
 		nodeChanges.add(createNodeChanges("int methodA(){", INSERTION_TYPE.DECLARATION));	
-		taintSourceOperator = new TaintSourceOperator(rewriter, nodeChanges);
+		taintSourceOperator = new TaintSourceOperator(rewriter, nodeChanges,"test/input/sample_helloWorld.txt");
 		String output = taintSourceOperator.InsertChanges().toString();
 		//accesses the first output line where an insertion should occur
 		String outputAtInsertion = output.split("\\n")[4];
@@ -91,7 +91,7 @@ public class TaintSourceOperatorTest {
 	@Test
 	public void insert_methodBody_nodeChange() {
 		nodeChanges.add(createNodeChanges("return 1;", INSERTION_TYPE.METHOD_BODY));	
-		taintSourceOperator = new TaintSourceOperator(rewriter, nodeChanges);
+		taintSourceOperator = new TaintSourceOperator(rewriter, nodeChanges,"test/input/sample_helloWorld.txt");
 		String output = taintSourceOperator.InsertChanges().toString();
 		//accesses the first output line where an insertion should occur
 		String outputAtInsertion = output.split("\\n")[5];

@@ -35,20 +35,17 @@ java -jar Muse-1.0.0.jar /config.properties
 
 The `config.properties` file is defined as:
 ```
-lib4ast = MDroidPlus//libs4ast//
-appSrc = //tmp/AppFoo//src//
+lib4ast = MDroidPlus/libs4ast/
+appSrc = /tmp/AppFoo/src/
 appName = AppFoo
-output = //tmp//mutants//
+output = /tmp/mutants/
 operatorType = SCOPESINK
 ```
 
 This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored. 
 
 ## Additional Features
-To access documentation about the additional features that Muse offered use the link provided below:
-
-- Custom Leak Strings
-- Log Analyzer
+To access documentation about the additional features that Muse offers please access the Muse wiki to learn more about how to utilize these features.
 
 ## Muse Processor Helper Utility
 We have created the Muse processor utility using python, which makes it easier to mutate android projects by generating relevant shell script files. To work with it, you need to replace the file paths, and edit the file called `input_folders`. In the file, you need to provide the list of directories containing Android projects. The provided `input_folders` already contains sample values. 
