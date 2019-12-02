@@ -50,12 +50,12 @@ public class LeakRemover {
 					String processed_file = null;
 					String fileContent = FileUtility.readSourceFile(mod_file.getAbsolutePath()).toString();
 					if (op == OperatorType.REACHABILITY || op == OperatorType.COMPLEXREACHABILITY ) {
-						processed_file = removeUnusedLeaksReachability(fileContent, getIndicesFromLog(logPath));
+						processed_file = removeUnusedLeaksFromSet(fileContent, getIndicesFromLog(logPath));
 					} else if (op == OperatorType.TAINTSOURCE 
 							|| op == OperatorType.TAINTSINK 
 							|| op == OperatorType.SCOPESOURCE 
 							|| op == OperatorType.SCOPESINK) {
-						processed_file = removeUnusedLeaksTaintScope(fileContent, getIndexMapsFromLog(logPath));
+						processed_file = removeUnusedLeaksFromMap(fileContent, getIndexMapsFromLog(logPath));
 					}
 					String originalName = mod_file.getName().replaceAll(".txt", ".java");
 					System.out.println(processed_file);
@@ -133,7 +133,7 @@ public class LeakRemover {
 	 *         reachability
 	 * @author Amit Seal Ami, Ian Wolff
 	 */
-	public String removeUnusedLeaksReachability(String string, Set<Integer> indicesFromLog) {
+	public String removeUnusedLeaksFromSet(String string, Set<Integer> indicesFromLog) {
 		String[] mutatedFile = string.split("\n");
 		String outputLines = "";
 		boolean pathFound;	
@@ -198,7 +198,7 @@ public class LeakRemover {
 	 * @throws Exception 
 	 * @author Amit Seal Ami, Ian Wolff
 	 */
-	public static String removeUnusedLeaksTaintScope(String string, Map<Integer, Set<Integer>> maps) throws Exception {
+	public static String removeUnusedLeaksFromMap(String string, Map<Integer, Set<Integer>> maps) throws Exception {
 		if(string.length()<10) {
 			throw new Exception("Give me proper source string; separated by new lines.");
 		}
@@ -255,10 +255,14 @@ public class LeakRemover {
 	 * @throws IOException
 	 */
 	private static void prepareArguments(String[] args) throws FileNotFoundException, IOException {
-		if (args.length != 1) {
+		if (args.length != 2) {
 			printArgumentError();
 			return;
 		}
+		//path to log file from Muse for input
+		System.out.println(args[1]);
+		logPath = FileUtility.readSourceFile(args[1]).toString();
+		System.out.println(logPath);
 		//any non option arguments are passed in 
 		Arguments.extractArguments(args[0]);
 		try (InputStream input = new FileInputStream(args[0])) {
@@ -268,7 +272,7 @@ public class LeakRemover {
 			printArgumentError();
 			return;
 		}
-		if (prop.getProperty("logPath") == null || prop.getProperty("logPath").length() == 0) {
+		if (logPath == null || logPath.length() == 0) {
 			printArgumentError();
 			return;
 		} else if (prop.getProperty("appSrc") == null || prop.getProperty("appSrc").length() == 0) {
@@ -281,8 +285,6 @@ public class LeakRemover {
 			printArgumentError();
 			return;
 		}
-		//path to log file from Muse for input
-		logPath = FileUtility.readSourceFile(prop.getProperty("logPath")).toString();
 		//path to modified file with inserted leaks for input
 		mod_file_path = new File(prop.getProperty("appSrc"));
 		mod_files = mod_file_path.listFiles();
@@ -307,6 +309,5 @@ public class LeakRemover {
 	public static void main(String[] args) throws Exception {
 		prepareArguments(args);
 		new LeakRemover().removeLeaks(args);
-
 	}
 }
