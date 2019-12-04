@@ -3,14 +3,16 @@ Muse (alternatively µSE) is a mutation-based soundness evaluation framework whi
 
 This repository is a refactoring of the original Muse tool written by Richie Bonnett, done as a part of W&M's Software Engineering course, CSCI 435, year 2019.
 
-# Compilation
+## Compilation
 The source code of Muse is available in [Code](https://gitlab.com/WM-CSCI435-F18/android-muse/tree/master/code) section of this repository. It is maintained using the open source Eclipse Java IDE. To compile, simply clone this repo, and then import the project as a Java project in Eclipse.
 
-# Pre compiled Binary
+## Pre compiled Binary
 Alternatively, you can use the Muse.jar file by downloading it from the releases section. 
 
-# Usage
+## Usage
 Muse relies on [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus). You will need the `libs4ast` folder of that project in order to run Muse. 
+
+You will also need to set your JAVA_HOME environment variable.
 
 To run Muse, use the following command, all arguments will be specified in a configuration file you provide. `(arg)` specifies required arguments:
 ```
@@ -22,64 +24,41 @@ If running Muse within a IDE like Eclipse, import only the Muse folder within th
 ### Arguments
 Provide the following list of required arguments when running Muse: 
 1. ``ConfigFilePath``: This is the path to the config.properties file that Muse uses to read arguments. These arguments defined in the config.properties file include:
-   - ``libs4ast``:  Path of the lib4ast folder, from [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus/tree/master/libs4ast);
-   - ``appSrc``: Path of the Android app source code folder, which you want to apply mutation on;
-   - ``appName``:  Name of the App;
-   - ``output``: Path of the folder where the mutants will be created;
-   - `operatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
+- ``libs4ast``:  Path of the lib4ast folder, from [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus/tree/master/libs4ast);
+- ``appSrc``: Path of the Android app source code folder, which you want to apply mutation on;
+- ``appName``:  Name of the App;
+- ``output``: Path of the folder where the mutants will be created;
+- `operatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
 
-These arguments are optional and should only be used if custom strings what to be used for execution:
-
-   - ``source``: Value of the custom source to be used in Muse
-   - ``sink``: Value of the custom sink to be used in Muse
-   - ``varDec``: Value of the custom variable declaration to be used in Muse
-
-
-### Examples
+### Example
 ```
 java -jar Muse-1.0.0.jar /config.properties
 ```
 
 The `config.properties` file is defined as:
 ```
-lib4ast = MDroidPlus//libs4ast//
-appSrc = //tmp/AppFoo//src//
+lib4ast = MDroidPlus/libs4ast/
+appSrc = /tmp/AppFoo/src/
 appName = AppFoo
-output = //tmp//mutants//
+output = /tmp/mutants/
 operatorType = SCOPESINK
 ```
 
-This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored. 
+This will create a folder called `AppFoo` under `/tmp/mutants/` where the mutated source files will be stored. 
 
-Another example is the following, showcasing the custom data leak argument.
+## Additional Features
+To access documentation about the additional features that Muse offers please access the Muse wiki to learn more about how to utilize these features.
 
-```
-java -jar Muse-1.0.0.jar /config.properties
-```
-
-The `config.properties` file is defined as:
-```
-lib4ast = MDroidPlus//libs4ast//
-appSrc = //tmp/AppFoo//src//
-appName = AppFoo
-output = //tmp//mutants//
-operatorType = REACHABILITY
-leakFile = //tmp//dataleak.txt
-```
-
-This will execute REACHABILITY in Muse with a custom data leak string defined in tmp/dataleak.txt during execution.
-
-
-# Muse Processor Helper Utility
+## Muse Processor Helper Utility
 We have created the Muse processor utility using python, which makes it easier to mutate android projects by generating relevant shell script files. To work with it, you need to replace the file paths, and edit the file called `input_folders`. In the file, you need to provide the list of directories containing Android projects. The provided `input_folders` already contains sample values. 
 
 
-# Cite
+## Cite
 If you use Muse for academic purposes, please cite: 
 
 Bonett, R., Kafle, K., Moran, K., Nadkarni, A., & Poshyvanyk, D. (2018, August). Discovering Flaws in Security-Focused Static Analysis Tools for Android using Systematic Mutation. In 27th USENIX Security Symposium (USENIX Security 18). USENIX Association.
 
-# Future Work
+## Future Work
 Currently Muse is oriented towards the evaluation of static analysis tools for Android data leak detection. We intend to expand Muse by developing additional security operators and mutation schemes for tools with other goals, e.g. SSL verification. 
 
 This repository is for a refactoring and expansion of the original muse tool built by Richie Bonnett.

@@ -27,10 +27,10 @@ public class Arguments {
 	private static String mutantsFolder;
 	private static String operator;
 	private static Boolean testmode = false;
-	
 	private static String[] argsList;
 	private static Properties prop;
 	private static HashMap<String, String> leakMap;
+	private static String filename;
 
 	/**
 	 * private constructor makes sure that no constructor can ever be used.
@@ -63,10 +63,8 @@ public class Arguments {
 			String contentString = FileUtility.readSourceFile(file.getAbsolutePath()).toString();
 			extractArguments(contentString.split(" "));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -99,45 +97,38 @@ public class Arguments {
 	 */
 	private static String[] extractProperties(Properties properties) throws Exception {
 
-		if (properties.getProperty("lib4ast") == null) {
+		if (properties.getProperty("lib4ast") == null || properties.getProperty("lib4ast").length() == 0) {
 			throw new Exception();
 		}
-		if (properties.getProperty("appSrc") == null) {
+		if (properties.getProperty("appSrc") == null || properties.getProperty("appSrc").length() == 0) {
 			throw new Exception();
 		}
-		if (properties.getProperty("appName") == null) {
+		if (properties.getProperty("appName") == null || properties.getProperty("appName").length() == 0) {
 			throw new Exception();
 		}
-		if (properties.getProperty("output") == null) {
+		if (properties.getProperty("output") == null || properties.getProperty("output").length() == 0) {
 			throw new Exception();
 		}
-		if (properties.getProperty("operatorType") == null) {
+		if (properties.getProperty("operatorType") == null || properties.getProperty("operatorType").length() == 0) {
 			throw new Exception();
 		}
-		
+
 		binariesFolder = properties.getProperty("lib4ast");
 		rootPath = properties.getProperty("appSrc");
 		appName = properties.getProperty("appName");
 		mutantsFolder = properties.getProperty("output");
 		operator = properties.getProperty("operatorType");
-
 		leakMap = new HashMap<String, String>();
 
 		if (properties.getProperty("source") != null) {
 			leakMap.put("source", properties.getProperty("source"));
-		} else {
 		}
-
 		if (properties.getProperty("sink") != null) {
 			leakMap.put("sink", properties.getProperty("sink"));
-		} else {
 		}
-
 		if (properties.getProperty("varDec") != null) {
 			leakMap.put("varDec", properties.getProperty("varDec"));
-		} else {
 		}
-		
 		setLeaks(getOperatorEnumType(operator), leakMap);
 		
 		return new String[] {binariesFolder, rootPath, appName, mutantsFolder, operator};
@@ -183,6 +174,10 @@ public class Arguments {
 	public static void setRootPath(String rootPath) {
 		Arguments.rootPath = rootPath;
 	}
+	
+	public static void setFileName(String filename) {
+		Arguments.filename = filename;
+	}
 
 	public static void setTestMode(Boolean mode) {
 		testmode = mode;
@@ -207,6 +202,13 @@ public class Arguments {
 	 */
 	public static String getRootPath() {
 		return rootPath;
+	}
+	
+	/**
+	 * @return file name, which is used for the placementchecker
+	 */
+	public static String getFileName() {
+		return filename;
 	}
 
 	/**
