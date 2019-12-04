@@ -52,7 +52,7 @@ public class LogAnalyzer_Reachability {
 	public void runLogAnalysis(String[] args) throws FileNotFoundException, IOException {
 		for (File mod_file : mod_files) {
 			try {
-				if (mod_file.getName().endsWith(".txt")) {
+				if (mod_file.getName().endsWith(".java")) {
 					sourceString = FileUtility.readSourceFile(mod_file.getAbsolutePath()).toString();
 					LogAnalyzer_Reachability log = new LogAnalyzer_Reachability();
 					String new_analyzed_file = log.removeUnusedIndicesFromSource(LogAnalyzer_Reachability.sourceString,
@@ -62,7 +62,7 @@ public class LogAnalyzer_Reachability {
 					//traverse mutants folder to replace the existing modified code
 					//the mutant folder filepath should link straight to the directory 
 					//containing the mutated files being analyzed.
-					String originalName = mod_file.getName().replaceAll(".txt", ".java");
+					String originalName = mod_file.getName();
 					for (File mutated_file : mutated_files) {
 						if (mutated_file.getName().equals(originalName) == true) 
 						{

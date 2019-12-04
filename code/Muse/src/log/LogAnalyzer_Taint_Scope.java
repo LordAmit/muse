@@ -52,7 +52,7 @@ public class LogAnalyzer_Taint_Scope {
 	public void runLogAnalysis() throws Exception {
 		for (File mod_file : mod_files) {
 			try {
-				if (mod_file.getName().endsWith(".txt")) {
+				if (mod_file.getName().endsWith(".java")) {
 					sourceString = FileUtility.readSourceFile(mod_file.getAbsolutePath()).toString();
 					String new_analyzed_file = analyzeSourceString(sourceString, getLogMaps(testString));
 					System.out.println(new_analyzed_file);
@@ -60,7 +60,7 @@ public class LogAnalyzer_Taint_Scope {
 					//traverse mutants folder to replace the existing modified code
 					//the mutant folder filepath should link straight to the directory 
 					//containing the mutated files being analyzed.
-					String originalName = mod_file.getName().replaceAll(".txt", ".java");
+					String originalName = mod_file.getName();
 					for (File mutated_file : mutated_files) {
 						if (mutated_file.getName().equals(originalName) == true) 
 						{
