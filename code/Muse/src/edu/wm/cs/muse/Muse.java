@@ -56,20 +56,26 @@ public class Muse {
 	// not detected in java ast as static
 
 	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
-		
-		if (args.length != 1) {
-			printArgumentError();
-			return;
-		}
-		
-		// get the path to the config.properties, it will always be the only argument
-		if (Arguments.extractArguments(args[0]) < 0) {
-			printArgumentError();
-			return;
-		}
+        
+			if (args.length == 1) {
+					if (Arguments.extractArguments(args[0]) < 0) {
+							printArgumentError();
+							return;
+					}
+					Arguments.extractArguments(args[0]);
+			}
+			else if (args.length == 2 && args[1].endsWith(".properties")) {
+					if (Arguments.extractArguments(args[1]) < 0) {
+							printArgumentError();
+							return;
+					}
+					Arguments.extractArguments(args[1]);
+			}
 
-		//any non option arguments are passed in 
-		Arguments.extractArguments(args[0]);
+			else {
+					printArgumentError();
+					return;
+			}
 
 		FileUtility.setupMutantsDirectory();
 
@@ -296,7 +302,7 @@ public class Muse {
 	
 	
 
-	private void printArgumentError() {
+	private static void printArgumentError() {
 		System.out.println("******* ERROR: INCORRECT USAGE *******");
 		System.out.println("Values need to be defined in config.properties in order to run Muse:");
 		System.out.println("lib4ast: -----------");
@@ -311,6 +317,33 @@ public class Muse {
 	}
 
 	public static void main(String[] args) throws MalformedTreeException, BadLocationException {
-		new Muse().runMuse(args);
+        
+        // user at most should give 2 arguments
+        if (args.length > 2) {
+            printArgumentError();
+            return;
+        }
+
+        // defaults scenario, if the user does not give a keyword and only gives config file, run Muse normally
+        if (args.length == 1 && args[0].endsWith(".properties")) {
+            new Muse().runMuse(args);
+        }
+        
+        //if the user does give a keyword, check the keyword and run accordingly
+        else if (args.length == 2) {
+            switch (args[0]) {
+                case "mutate":
+                    new Muse().runMuse(args);
+                    break;
+
+                case "logAnalyze":
+                    // insert code to execute the logAnalyzer
+										break;
+										
+								default:
+									new Muse().runMuse(args);
+									break;
+            }
+        }
 	}
 }
