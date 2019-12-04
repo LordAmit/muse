@@ -109,7 +109,7 @@ public class LogAnalyzer_Taint_Scope {
 				}
 			} 
 			// removes sources that do not appear in the log
-			else if (line.trim().startsWith(Pattern.quote(rawSource[0]))) {
+			else if (line.trim().startsWith(rawSource[0])) {
 				//isolate the "%d" placeholder index value
 				String placeholderVal = line.split(Pattern.quote(rawSource[0]))[1].split("=")[0];
 				Integer source = Integer.parseInt(placeholderVal.trim());
@@ -119,7 +119,7 @@ public class LogAnalyzer_Taint_Scope {
 				}
 			}
 			// removes variable declarations that do not appear in the log
-			else if (line.trim().startsWith(Pattern.quote(rawVarDec[0]))) {
+			else if (line.trim().startsWith(rawVarDec[0])) {
 				//isolate the "%d" placeholder index value
 				String placeholderVal = line.split(Pattern.quote(rawVarDec[0]))[1].split(Pattern.quote(rawVarDec[1]))[0];
 				Integer source = Integer.parseInt(placeholderVal.trim());
