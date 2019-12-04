@@ -57,42 +57,6 @@ public class Muse {
 
 	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
 		
-		/*
-		Boolean customLeak = false;
-		String leakPath = "src/edu/wm/cs/muse/dataleak/default_leak_strings.txt";
-		Options options = new Options();
-		//adding an option flag that can be used on command line
-		options.addOption("d", "dataleak", true, "Run Muse with a custom data leak file");
-
-		CommandLineParser parser = new DefaultParser();
-
-		//parse the command line input
-		try {
-			cmd = parser.parse(options, args);
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-			return;
-		}
-
-		///////Add control flow based on the option flag parsed here
-			
-		//sets the leakPath to the file specified
-		if (cmd.hasOption("d")) {
-			System.out.println("DataLeak set");
-			customLeak = true;
-			leakPath = cmd.getOptionValue("d");
-		}	
-		
-		///////
-		
-		// Usage Error, check length of remaining arguments
-		if (cmd.getArgs().length != 5) {
-			printArgumentError();
-			return;
-		}
-		
-		*/
-		
 		if (args.length != 1) {
 			printArgumentError();
 			return;
@@ -109,16 +73,10 @@ public class Muse {
 
 		FileUtility.setupMutantsDirectory();
 
-		System.out.println(Arguments.getRootPath());
+		//System.out.println(Arguments.getRootPath());
 
 		Collection<File> files = FileUtils.listFiles(new File(Arguments.getRootPath()), TrueFileFilter.INSTANCE,
 				TrueFileFilter.INSTANCE);
-		
-		/*
-		if (customLeak) {
-			Arguments.setLeaks(getOperatorType(Arguments.getOperator()), leakPath);	
-		}
-		*/
 		
 		for (File file : files) {
 			try {
@@ -131,6 +89,7 @@ public class Muse {
 						&& !file.getName().contains("UnitTest.java")
 						&& !file.getName().contains("SMSInstrumentedReceiver.java")) {
 					System.out.println("In file: " + file.getName());
+					Arguments.setFileName(file.getName());
 					// System.out.println("PROCESSING: " + file.getAbsolutePath());
 					String source = FileUtility.readSourceFile(file.getAbsolutePath()).toString();
 
@@ -153,7 +112,7 @@ public class Muse {
 	}
 
 	private OperatorType getOperatorType(String inputOperator) {
-		// TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY
+		// TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK, REACHABILITY, and COMPLEXREACHABILITY
 		System.out.println("Input operator: " + inputOperator);
 		switch (inputOperator) {
 		case "TAINTSOURCE":
@@ -225,7 +184,7 @@ public class Muse {
 		case TAINTSINK:
 			TaintSourceSchema sourceSchema_s = new TaintSourceSchema();
 			root.accept(sourceSchema_s);
-			TaintSourceOperator sourceOperator_s = new TaintSourceOperator(rewriter, sourceSchema_s.getNodeChanges());
+			TaintSourceOperator sourceOperator_s = new TaintSourceOperator(rewriter, sourceSchema_s.getNodeChanges(),file.getAbsolutePath());
 			rewriter = sourceOperator_s.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			String sink_temp_file_path = "test/temp/temp_file.java";
@@ -241,7 +200,7 @@ public class Muse {
 			
 			TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
 			root.accept(taintSinkSchema);
-			TaintSinkOperator taintSinkOperator = new TaintSinkOperator(rewriter, taintSinkSchema.getNodeChanges());
+			TaintSinkOperator taintSinkOperator = new TaintSinkOperator(rewriter, taintSinkSchema.getNodeChanges(),file.getAbsolutePath());
 			rewriter = taintSinkOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			Files.delete(temp_file.toPath());
@@ -250,7 +209,7 @@ public class Muse {
 		case TAINTSOURCE:
 			TaintSourceSchema taintSourceSchema = new TaintSourceSchema();
 			root.accept(taintSourceSchema);
-			TaintSourceOperator taintSourceOperator = new TaintSourceOperator(rewriter, taintSourceSchema.getNodeChanges());
+			TaintSourceOperator taintSourceOperator = new TaintSourceOperator(rewriter, taintSourceSchema.getNodeChanges(),file.getAbsolutePath());
 			rewriter = taintSourceOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			break;
@@ -267,7 +226,7 @@ public class Muse {
 		case SCOPESOURCE:
 			ScopeSourceSchema scopeSourceSchema = new ScopeSourceSchema();
 			root.accept(scopeSourceSchema);
-			ScopeSourceOperator scopeSourceOperator = new ScopeSourceOperator(rewriter, scopeSourceSchema.getNodeChanges());
+			ScopeSourceOperator scopeSourceOperator = new ScopeSourceOperator(rewriter, scopeSourceSchema.getNodeChanges(),file.getAbsolutePath());
 			rewriter = scopeSourceOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			break;
@@ -275,7 +234,7 @@ public class Muse {
 		case SCOPESINK:
 			ScopeSourceSchema taintSchema_ts = new ScopeSourceSchema();
 			root.accept(taintSchema_ts);
-			ScopeSourceOperator taintOperator_ts = new ScopeSourceOperator(rewriter, taintSchema_ts.getNodeChanges());
+			ScopeSourceOperator taintOperator_ts = new ScopeSourceOperator(rewriter, taintSchema_ts.getNodeChanges(),file.getAbsolutePath());
 			rewriter = taintOperator_ts.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			String taintsink_temp_file_path = "test/temp/temp_file_taintsink.java";
@@ -292,7 +251,7 @@ public class Muse {
 			ScopeSinkSchema scopeSinkSchema = new ScopeSinkSchema();
 			root.accept(scopeSinkSchema);
 			ScopeSinkOperator operator = new ScopeSinkOperator(rewriter, scopeSinkSchema.getFieldNodeChanges(),
-					scopeSinkSchema.getMethodNodeChanges());
+					scopeSinkSchema.getMethodNodeChanges(), file.getAbsolutePath());
 			rewriter = operator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			Files.delete(temp_file.toPath());
@@ -315,7 +274,7 @@ public class Muse {
 		// Applies the edit tree rooted by this edit to the given document.
 		// edits.apply(sourceDoc);
 		Document tempDocument = new Document(source);
-		TextEdit tempEdits = rewriter.rewriteAST(tempDocument, null);
+		TextEdit tempEdits = rewriter.rewriteAST(tempDocument, null );
 
 		tempEdits.apply(tempDocument);
 		FileUtils.writeStringToFile(temp_file, tempDocument.get(), false);
@@ -334,6 +293,8 @@ public class Muse {
 		root.accept(tempSchema);
 		return rewriter;
 	}
+	
+	
 
 	private void printArgumentError() {
 		System.out.println("******* ERROR: INCORRECT USAGE *******");

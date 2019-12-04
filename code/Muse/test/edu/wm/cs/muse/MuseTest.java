@@ -3,15 +3,22 @@ package edu.wm.cs.muse;
 import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
@@ -21,6 +28,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
+import org.junit.After;
 import org.junit.Test;
 
 import edu.wm.cs.muse.dataleak.support.Arguments;
@@ -57,14 +65,47 @@ public class MuseTest {
 	// Muse output is written to this file in each test, and compared to
 	// the expected output.
 	File output = new File("test/output/output.txt");
+	
+	/**
+	 * This is done after every test to clean up the output.txt file and make sure that the 
+	 * placementchecker doesn't remove leaks from the previous test cases.
+	 * @throws FileNotFoundException
+	 */
+	@After
+	public void reset() throws FileNotFoundException {
+		File inputFile = new File("test/output/output.txt");
+		File tempFile = new File("myTempFile.txt");
 
+		BufferedReader reader = new BufferedReader(new FileReader(tempFile));
+		BufferedWriter writer;
+		try {
+			writer = new BufferedWriter(new FileWriter(inputFile));
+			String lineToRemove = "String dataLeAk0 = \"0\";";
+			String currentLine;
+
+			while((currentLine = reader.readLine()) != null) {
+			    // trim newline when comparing with lineToRemove
+			    String trimmedLine = currentLine.trim();
+			    if(trimmedLine.equals(lineToRemove)) continue;
+			    writer.write(currentLine + System.getProperty("line.separator"));
+			}
+			writer.close(); 
+			reader.close(); 
+			inputFile = tempFile;
+			//boolean successful = tempFile.renameTo(inputFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+	}
 	@Test
 	public void reachability_operation_on_hello_world() throws Exception {
 
 		try {
 			prepare_test_files(OperatorType.REACHABILITY, 1);
 			execute_muse(OperatorType.REACHABILITY);
-
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 
 		} catch (IOException e) {
@@ -85,8 +126,6 @@ public class MuseTest {
 
 			prepare_test_files(OperatorType.COMPLEXREACHABILITY, 1);
 			execute_muse(OperatorType.COMPLEXREACHABILITY);
-			
-			
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 
 		} catch (IOException e) {
@@ -106,7 +145,6 @@ public class MuseTest {
 		try {
 			prepare_test_files(OperatorType.TAINTSOURCE, 1);
 			execute_muse(OperatorType.TAINTSOURCE);
-
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 
 		} catch (IOException e) {
@@ -127,9 +165,8 @@ public class MuseTest {
 		try {
 			prepare_test_files(OperatorType.TAINTSINK, 1);
 			execute_muse(OperatorType.TAINTSINK);
-
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
-			
+			 
 		} catch (IOException e) {
 			e.printStackTrace();
 
@@ -149,7 +186,6 @@ public class MuseTest {
 
 			prepare_test_files(OperatorType.SCOPESOURCE, 1);
 			execute_muse(OperatorType.SCOPESOURCE);
-
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 			
 		} catch (IOException e) {
@@ -171,7 +207,6 @@ public class MuseTest {
 
 			prepare_test_files(OperatorType.SCOPESOURCE, 2);
 			execute_muse(OperatorType.SCOPESOURCE);
-
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 
 		} catch (IOException e) {
@@ -192,7 +227,6 @@ public class MuseTest {
 		try {
 			prepare_test_files(OperatorType.SCOPESINK, 1);
 			execute_muse(OperatorType.SCOPESINK);
-			
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 			
 		} catch (IOException e) {
@@ -211,14 +245,18 @@ public class MuseTest {
 		Arguments.setTestMode(true);
 		rewriter = ASTRewrite.create(root.getAST());
 		sourceDoc = new Document(content);
+		
 		muse.operatorExecution(root, rewriter, sourceDoc.get(), output, operator);
 
 		processedOutput = output;
 	}
+	
+
 
 	private void prepare_test_files(OperatorType operator, int test) throws FileNotFoundException, IOException {
 		Utility.COUNTER_GLOBAL = 0;
-		output = new File("test/output/output.txt");
+		//output = new File("test/output/output.txt");
+	
 
 		switch (operator) {
 		case TAINTSINK:
