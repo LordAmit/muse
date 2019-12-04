@@ -192,7 +192,7 @@ public class LogAnalyzer_Reachability {
 		} else if (prop.getProperty("output") == null || prop.getProperty("output").length() == 0) {
 			printArgumentError();
 			return;
-		} else if (prop.getProperty("operatorType") == null || prop.getProperty("operatorType").length() == 0) {
+		} else if (prop.getProperty("operatorType") == null || prop.getProperty("opertorType").length() == 0) {
 			printArgumentError();
 			return;
 		}

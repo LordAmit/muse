@@ -1,4 +1,4 @@
-package input.placementtest.src;
+package output.test_input.src;
 
 
 public class placementcheckertestinput {

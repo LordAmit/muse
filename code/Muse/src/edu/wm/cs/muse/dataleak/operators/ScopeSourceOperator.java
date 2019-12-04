@@ -18,15 +18,11 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 
-<<<<<<< HEAD
 import edu.wm.cs.muse.dataleak.DataLeak;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
-=======
 import edu.wm.cs.muse.Muse;
-
 import edu.wm.cs.muse.dataleak.Placementchecker;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
->>>>>>> refs/remotes/origin/syntaxChecker
 import edu.wm.cs.muse.dataleak.support.SchemaOperatorUtility;
 import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;
