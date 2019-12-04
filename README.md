@@ -11,6 +11,7 @@ Alternatively, you can use the Muse.jar file by downloading it from the releases
 
 ## Usage
 Muse relies on [MDroidPlus](https://gitlab.com/SEMERU-Code-Public/Android/Mutation/MDroidPlus). You will need the `libs4ast` folder of that project in order to run Muse. 
+
 You will also need to set your JAVA_HOME environment variable.
 
 To run Muse, use the following command, all arguments will be specified in a configuration file you provide. `(arg)` specifies required arguments:
