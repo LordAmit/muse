@@ -46,7 +46,7 @@ public class LeakRemover {
 	public void removeLeaks(String[] args) throws Exception {
 		for (File mod_file : mod_files) {
 			try {
-				if (mod_file.getName().endsWith(".txt")) {
+				if (mod_file.getName().endsWith(".java")) {
 					String processed_file = null;
 					String fileContent = FileUtility.readSourceFile(mod_file.getAbsolutePath()).toString();
 					if (op == OperatorType.REACHABILITY || op == OperatorType.COMPLEXREACHABILITY ) {
@@ -57,7 +57,7 @@ public class LeakRemover {
 							|| op == OperatorType.SCOPESINK) {
 						processed_file = removeUnusedLeaksFromMap(fileContent, getIndexMapsFromLog(logPath));
 					}
-					String originalName = mod_file.getName().replaceAll(".txt", ".java");
+					String originalName = mod_file.getName();
 					System.out.println(processed_file);
 					
 					// traverse mutant folder to replace the existing modified code
@@ -260,9 +260,7 @@ public class LeakRemover {
 			return;
 		}
 		//path to log file from Muse for input
-		System.out.println(args[1]);
 		logPath = FileUtility.readSourceFile(args[1]).toString();
-		System.out.println(logPath);
 		//any non option arguments are passed in 
 		Arguments.extractArguments(args[0]);
 		try (InputStream input = new FileInputStream(args[0])) {
