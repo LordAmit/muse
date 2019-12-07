@@ -31,11 +31,10 @@ public class LogDiff {
 		 * Removes the leaks from the crashlog set from the muselog set.
 		 * Iterates theought the difference set to make a string of the leaks from the difference set separated by \n
 		 * Writes this result string to the specified path.
-		 * @param args
 		 * @throws IOException
 		 * @author Yang Zhang
 		 */
-		public static void runLogAnalysis(String[] args) throws IOException {
+		public static void runLogAnalysis() throws IOException {
 				Set<String> museLogIndeces = logToSet(LogDiff.museLogString);
 				Set<String> museCrashIndeces = logToSet(LogDiff.crashLogString);
 				museLogIndeces.retainAll(museCrashIndeces);
@@ -70,47 +69,37 @@ public class LogDiff {
 		 * @throws FileNotFoundException
 		 * @throws IOException
 		 */
-		private static void prepareArguments(String[] args) throws FileNotFoundException, IOException {
-			
-			if (args.length != 1) {
-				printArgumentError();
-				return;
-			}
-			System.out.println("here");
+		private static void prepareArguments(String config) throws FileNotFoundException, IOException {
 			//any non option arguments are passed in 
-			Arguments.extractArguments(args[0]);
-			try (InputStream input = new FileInputStream(args[0])) {
+			Arguments.extractArguments(config);
+			try (InputStream input = new FileInputStream(config)) {
 				prop = new Properties();
 				prop.load(input);		
 			} catch (IOException e) {
 				printArgumentError();
 				return;
 			}
-			if (prop.getProperty("museLogPath") == null || prop.getProperty("museLogPath").length() == 0) {
+			if (prop.getProperty("insertionLog") == null || prop.getProperty("insertionLog").length() == 0) {
 				printArgumentError();
 				return;
-			} else if (prop.getProperty("crashLogPath") == null || prop.getProperty("crashLogPath").length() == 0) {
-				printArgumentError();
-				return;
-			} else if (prop.getProperty("resultLogPath") == null || prop.getProperty("resultLogPath").length() == 0) {
+			} else if (prop.getProperty("executionLog") == null || prop.getProperty("executionLog").length() == 0) {
 				printArgumentError();
 				return;
 			}
-			
 			//path to log file from Muse for input
-			museLogString = FileUtility.readSourceFile(prop.getProperty("museLogPath")).toString();
-			crashLogString = FileUtility.readSourceFile(prop.getProperty("crashLogPath")).toString();
-			resultLog = new File(prop.getProperty("resultLogPath"));
+			museLogString = FileUtility.readSourceFile(prop.getProperty("insertionLog")).toString();
+			crashLogString = FileUtility.readSourceFile(prop.getProperty("executionLog")).toString();
+			resultLog = new File("src/log/modified_files/ComparisonLog.txt");
 		}
 		
 		private static void printArgumentError() {
 			System.out.println("******* ERROR: INCORRECT USAGE *******");
 		}
 
-		public static void main(String[] args) throws IOException {
-			prepareArguments(args);
-			runLogAnalysis(args);
-
+		public File main(String config) throws IOException {
+			prepareArguments(config);
+			runLogAnalysis();
+			return resultLog;
 		}
 
 }

@@ -24,7 +24,7 @@ import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 public class LeakRemover {
 	//RuntimeLogs.txt
-	static String logPath;
+	static String comparisonPath;
 	private static Properties prop;
 	private static OperatorType op;
 	private static File mod_file_path;
@@ -39,23 +39,24 @@ public class LeakRemover {
 	 * Iterates through the modified file directory and compares the occurrence of
 	 * "dataLeak" in the file and the runtime log to remove false positive data leaks.
 	 * Then alters the files in mutants folder with the respective changes.
-	 * @param args
+	 * @param config
 	 * @author Yang Zhang, Ian Wolff
 	 * @throws Exception 
 	 */
-	public void removeLeaks(String[] args) throws Exception {
+	public void removeLeaks() throws Exception {
 		for (File mod_file : mod_files) {
 			try {
 				if (mod_file.getName().endsWith(".java")) {
 					String processed_file = null;
 					String fileContent = FileUtility.readSourceFile(mod_file.getAbsolutePath()).toString();
+					String logContent = FileUtility.readSourceFile(comparisonPath).toString();
 					if (op == OperatorType.REACHABILITY || op == OperatorType.COMPLEXREACHABILITY ) {
-						processed_file = removeUnusedLeaksFromSet(fileContent, getIndicesFromLog(logPath));
+						processed_file = removeUnusedLeaksFromSet(fileContent, getIndicesFromLog(logContent));
 					} else if (op == OperatorType.TAINTSOURCE 
 							|| op == OperatorType.TAINTSINK 
 							|| op == OperatorType.SCOPESOURCE 
 							|| op == OperatorType.SCOPESINK) {
-						processed_file = removeUnusedLeaksFromMap(fileContent, getIndexMapsFromLog(logPath));
+						processed_file = removeUnusedLeaksFromMap(fileContent, getIndexMapsFromLog(logContent));
 					}
 					String originalName = mod_file.getName();
 					System.out.println(processed_file);
@@ -209,14 +210,13 @@ public class LeakRemover {
 		String[] rawVarDec = DataLeak.getVariableDeclaration(op).split("%d");
 
 		for (String line : lines) {
-			// removes sinks that do not appear in the log
 			if (line.trim().startsWith(rawSink[0])) {
 				// isolate the "%d-%d" placeholder index values and split it into two indices
 				String[] leakInts = line.split(Pattern.quote(rawSink[0]))[1].split(Pattern.quote(rawSink[2]))[0].split("-");
-				Integer source = Integer.parseInt(leakInts[0].trim());
-				Integer sink = Integer.parseInt(leakInts[1].trim());
+				Integer sourceInt = Integer.parseInt(leakInts[0].trim());
+				Integer sinkInt = Integer.parseInt(leakInts[1].trim());
 				// only output if sink index is used in logs
-				if (maps.get(source) != null && maps.get(source).contains(sink)) {
+				if (maps.get(sourceInt) != null && maps.get(sourceInt).contains(sinkInt)) {
 					outputLines += line + "\n";
 				}
 			} 
@@ -224,9 +224,9 @@ public class LeakRemover {
 			else if (line.trim().startsWith(rawSource[0])) {
 				//isolate the "%d" placeholder index value
 				String leakInt = line.split(Pattern.quote(rawSource[0]))[1].split("=")[0];
-				Integer source = Integer.parseInt(leakInt.trim());
+				Integer sourceInt = Integer.parseInt(leakInt.trim());
 				//only output if index is used in logs
-				if (maps.containsKey(source)) {
+				if (maps.containsKey(sourceInt)) {
 					outputLines += line + "\n";
 				}
 			}
@@ -234,9 +234,9 @@ public class LeakRemover {
 			else if (line.trim().startsWith(rawVarDec[0])) {
 				//isolate the "%d" placeholder index value
 				String leakInt = line.split(Pattern.quote(rawVarDec[0]))[1].split(Pattern.quote(rawVarDec[1]))[0];
-				Integer source = Integer.parseInt(leakInt.trim());
+				Integer sourceInt = Integer.parseInt(leakInt.trim());
 				//only output if index is used in logs
-				if (maps.containsKey(source)) {
+				if (maps.containsKey(sourceInt)) {
 					outputLines += line + "\n";
 				}
 			}
@@ -250,17 +250,13 @@ public class LeakRemover {
 	
 	/**
 	 * Reads in arguments from a properties file and raises an exception if any are missing.
-	 * @param args
+	 * @param args 
+	 * @param config
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
 	private static void prepareArguments(String[] args) throws FileNotFoundException, IOException {
-		if (args.length != 2) {
-			printArgumentError();
-			return;
-		}
 		//path to log file from Muse for input
-		logPath = FileUtility.readSourceFile(args[1]).toString();
 		//any non option arguments are passed in 
 		Arguments.extractArguments(args[0]);
 		try (InputStream input = new FileInputStream(args[0])) {
@@ -270,24 +266,20 @@ public class LeakRemover {
 			printArgumentError();
 			return;
 		}
-		if (logPath == null || logPath.length() == 0) {
-			printArgumentError();
-			return;
-		} else if (prop.getProperty("appSrc") == null || prop.getProperty("appSrc").length() == 0) {
-			printArgumentError();
-			return;
-		} else if (prop.getProperty("output") == null || prop.getProperty("output").length() == 0) {
+		if (prop.getProperty("appSrc") == null || prop.getProperty("appSrc").length() == 0) {
 			printArgumentError();
 			return;
 		} else if (prop.getProperty("operatorType") == null || prop.getProperty("operatorType").length() == 0) {
 			printArgumentError();
 			return;
-		}
-		//path to modified file with inserted leaks for input
+		}	
+		// path to comparison log from logDiff
+		comparisonPath = args[1];
+		// path to modified file with inserted leaks for input
 		mod_file_path = new File(prop.getProperty("appSrc"));
 		mod_files = mod_file_path.listFiles();
-		//path to mutant folder directory for output
-		mutant_file_path = new File(prop.getProperty("output"));
+		// path to mutant folder directory for output
+		mutant_file_path = new File(prop.getProperty("appSrc"));
 		mutated_files = mutant_file_path.listFiles();	
 		op = Arguments.getOperatorEnumType(prop.getProperty("operatorType"));
 		if (op == OperatorType.COMPLEXREACHABILITY) {
@@ -298,14 +290,24 @@ public class LeakRemover {
 				}
 			}
 		}
+		// set leak strings
+		if (prop.getProperty("source") != null) {
+			DataLeak.setSource(op, prop.getProperty("source"));
+		}
+		if (prop.getProperty("sink") != null) {
+			DataLeak.setSink(op, prop.getProperty("sink"));
+		}
+		if (prop.getProperty("varDec") != null) {
+			DataLeak.setVariableDeclaration(op, prop.getProperty("varDec"));
+		}
 	}
 	
 	private static void printArgumentError() {
 		System.out.println("******* ERROR: INCORRECT USAGE *******");
 	}
 
-	public static void main(String[] args) throws Exception {
+	public void main(String[] args) throws Exception {
 		prepareArguments(args);
-		new LeakRemover().removeLeaks(args);
+		new LeakRemover().removeLeaks();
 	}
 }
