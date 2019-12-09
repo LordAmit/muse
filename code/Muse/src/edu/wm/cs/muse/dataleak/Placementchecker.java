@@ -91,7 +91,7 @@ public class Placementchecker {
     boolean success = task.call();
     for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
    
-    	System.out.println("Code: "+ diagnostic.getCode() + " with message: " + diagnostic.getMessage(null));
+    	//System.out.println("Code: "+ diagnostic.getCode() + " with message: " + diagnostic.getMessage(null));
     	
     	switch (diagnostic.getCode()){
     		case "compiler.err.already.defined":
@@ -122,7 +122,6 @@ public class Placementchecker {
 		// TaintSinkSchema
 		source = FileUtility.readSourceFile(temp_file.getAbsolutePath()).toString();
 		rewriter = null;
-		root = ASTHelper.getAST(tempDocument.get(), Arguments.getBinariesFolder(), "test/temp/");
 		return rewriter = ASTRewrite.create(root.getAST());
 	}
 }
