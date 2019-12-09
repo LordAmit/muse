@@ -10,12 +10,16 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.TextEdit;
 
 import edu.wm.cs.muse.Muse;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.JavaSourceFromString;
+import edu.wm.cs.muse.mdroid.ASTHelper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,19 +44,19 @@ public class Placementchecker {
 
 	
 	public File getTempFile(CompilationUnit astRoot, ASTRewrite rewriter, String source_file_name) {
-		Muse muse = new Muse();
+		//Muse muse = new Muse();
 		File temp_file;
-		
-		//String source_file;
 		
 		try {
 			temp_file = new File("temp_file.java");
-			//System.out.println("This is the source_file " +source_file_name);
-			
-			this.source_file = FileUtility.readSourceFile(source_file_name/*"C:\\Users\\jeffr\\git\\Muse\\code\\Muse\\test\\input\\placementtest\\src\\timetracker.java"*/).toString();
+
+			//System.out.println("This is something like creatin a file: "+FileUtility.readSourceFile(source_file_name));
+			this.source_file = FileUtility.readSourceFile(source_file_name).toString();
 			
 			try {
-				muse.tempFileWriter(astRoot, rewriter, source_file, temp_file);
+				if (source_file=="") {System.out.println("its null");}
+		
+			    tempFileWriter(astRoot, rewriter, source_file, temp_file);
 				return temp_file;
 			} catch (MalformedTreeException e) {
 				
@@ -80,19 +84,20 @@ public class Placementchecker {
     
     DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
     String source_code= FileUtils.readFileToString(temp_file);
-    
-    JavaFileObject file = new JavaSourceFromString("output",source_code);
+
+    JavaFileObject file = new JavaSourceFromString("sample_helloWorld.txt",source_code);
     Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(file);
     CompilationTask task = compiler.getTask(null, null, diagnostics, null, null, compilationUnits);
     boolean success = task.call();
     for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
    
-    	//System.out.println("Code: "+ diagnostic.getCode() + " with message: " + diagnostic.getMessage(null));
+    	System.out.println("Code: "+ diagnostic.getCode() + " with message: " + diagnostic.getMessage(null));
     	
     	switch (diagnostic.getCode()){
     		case "compiler.err.already.defined":
-    			System.out.println("It's already defined");
-    			return false;
+    			System.out.println("WARNING DATA LEAK IS ALREADY DEFINED");
+    			//return false;
+    		//case 
     			
     	}
     }
@@ -100,6 +105,26 @@ public class Placementchecker {
     return true;
 
  }
+  public ASTRewrite tempFileWriter(CompilationUnit root, ASTRewrite rewriter, String source, File file)
+			throws MalformedTreeException, BadLocationException, IOException {
+		File temp_file = new File("output.txt");
+		
+		// Applies the edit tree rooted by this edit to the given document.
+		// edits.apply(sourceDoc);
+	
+		Document tempDocument = new Document(source);
+
+		TextEdit tempEdits = rewriter.rewriteAST(tempDocument, null);
+		tempEdits.apply(tempDocument);
+		FileUtils.writeStringToFile(temp_file, tempDocument.get(), false);
+		FileUtils.writeStringToFile(file, tempDocument.get(), false);
+
+		// TaintSinkSchema
+		source = FileUtility.readSourceFile(temp_file.getAbsolutePath()).toString();
+		rewriter = null;
+		root = ASTHelper.getAST(tempDocument.get(), Arguments.getBinariesFolder(), "test/temp/");
+		return rewriter = ASTRewrite.create(root.getAST());
+	}
 }
 
 

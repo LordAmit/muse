@@ -73,32 +73,9 @@ public class MuseTest {
 	 */
 	@After
 	public void reset() throws FileNotFoundException {
-		File inputFile = new File("test/output/output.txt");
-		File tempFile = new File("myTempFile.txt");
-
-		BufferedReader reader = new BufferedReader(new FileReader(tempFile));
-		BufferedWriter writer;
-		try {
-			writer = new BufferedWriter(new FileWriter(inputFile));
-			String lineToRemove = "String dataLeAk0 = \"0\";";
-			String currentLine;
-
-			while((currentLine = reader.readLine()) != null) {
-			    // trim newline when comparing with lineToRemove
-			    String trimmedLine = currentLine.trim();
-			    if(trimmedLine.equals(lineToRemove)) continue;
-			    writer.write(currentLine + System.getProperty("line.separator"));
-			}
-			writer.close(); 
-			reader.close(); 
-			inputFile = tempFile;
-			//boolean successful = tempFile.renameTo(inputFile);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		
+		PrintWriter pw = new PrintWriter("output.txt");
+		pw.close();
+	
 	}
 	@Test
 	public void reachability_operation_on_hello_world() throws Exception {
@@ -245,9 +222,7 @@ public class MuseTest {
 		Arguments.setTestMode(true);
 		rewriter = ASTRewrite.create(root.getAST());
 		sourceDoc = new Document(content);
-		
-		muse.operatorExecution(root, rewriter, sourceDoc.get(), output, operator);
-
+		muse.operatorExecution(root, rewriter, sourceDoc.get(),output, operator);
 		processedOutput = output;
 	}
 	
@@ -255,7 +230,7 @@ public class MuseTest {
 
 	private void prepare_test_files(OperatorType operator, int test) throws FileNotFoundException, IOException {
 		Utility.COUNTER_GLOBAL = 0;
-		//output = new File("test/output/output.txt");
+		output = new File("test/output/output.txt");
 	
 
 		switch (operator) {
