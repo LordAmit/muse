@@ -31,6 +31,8 @@ import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.mdroid.ASTHelper;
+import log.LeakRemover;
+import log.LogDiff;
 
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.CommandLine;
@@ -56,34 +58,9 @@ public class Muse {
 	// not detected in java ast as static
 
 	public void runMuse(String[] args) throws MalformedTreeException, BadLocationException {
-        
-			if (args.length == 1) {
-					if (Arguments.extractArguments(args[0]) < 0) {
-							printArgumentError();
-							return;
-					}
-					Arguments.extractArguments(args[0]);
-			}
-			else if (args.length == 2 && args[1].endsWith(".properties")) {
-					if (Arguments.extractArguments(args[1]) < 0) {
-							printArgumentError();
-							return;
-					}
-					Arguments.extractArguments(args[1]);
-			}
-
-			else {
-					printArgumentError();
-					return;
-			}
-
 		FileUtility.setupMutantsDirectory();
-
-		//System.out.println(Arguments.getRootPath());
-
 		Collection<File> files = FileUtils.listFiles(new File(Arguments.getRootPath()), TrueFileFilter.INSTANCE,
 				TrueFileFilter.INSTANCE);
-		
 		for (File file : files) {
 			try {
 				if (file.getName().endsWith(".java")
@@ -98,16 +75,12 @@ public class Muse {
 					Arguments.setFileName(file.getName());
 					// System.out.println("PROCESSING: " + file.getAbsolutePath());
 					String source = FileUtility.readSourceFile(file.getAbsolutePath()).toString();
-
 					// Creates an abstract syntax tree.
 					CompilationUnit root = ASTHelper.getAST(source, Arguments.getBinariesFolder(),
 							Arguments.getRootPath());
-
 					// Creates a new instance for describing manipulations of the given AST.
 					rewriter = ASTRewrite.create(root.getAST());
-
 					operatorExecution(root, rewriter, source, file, getOperatorType(Arguments.getOperator()));
-
 				}
 			} catch (IOException e) {
 				System.err
@@ -316,34 +289,41 @@ public class Muse {
 		System.out.println("Please provide the path to the config.properties file on command line");
 	}
 
-	public static void main(String[] args) throws MalformedTreeException, BadLocationException {
-        
-        // user at most should give 2 arguments
-        if (args.length > 2) {
-            printArgumentError();
-            return;
-        }
-
+	public static void main(String[] args) throws Exception {
         // defaults scenario, if the user does not give a keyword and only gives config file, run Muse normally
-        if (args.length == 1 && args[0].endsWith(".properties")) {
-            new Muse().runMuse(args);
-        }
-        
-        //if the user does give a keyword, check the keyword and run accordingly
-        else if (args.length == 2) {
-            switch (args[0]) {
+		if (args.length == 1) {
+			if (!args[0].endsWith(".properties") || Arguments.extractArguments(args[0]) < 0) {
+					printArgumentError();
+					return;
+			}
+			Arguments.extractArguments(args[0]);
+			new Muse().runMuse(args);
+			
+	    //if the user does give a keyword, check the keyword and run accordingly
+		} else if (args.length == 2) {
+			if (!args[1].endsWith(".properties")) {
+				printArgumentError();
+				return;
+			}
+			Arguments.extractArguments(args[1]);
+	        switch (args[0]) {
                 case "mutate":
                     new Muse().runMuse(args);
                     break;
 
                 case "logAnalyze":
-                    // insert code to execute the logAnalyzer
-										break;
+                	String comparisonPath = new LogDiff().main(args[1]).getAbsolutePath();
+                	String[] removerArgs = {args[1], comparisonPath};
+                	new LeakRemover().main(removerArgs);
+                	break;
 										
-								default:
-									new Muse().runMuse(args);
-									break;
+				default:
+					new Muse().runMuse(args);
+					break;
             }
-        }
+		} else {
+				printArgumentError();
+				return;
+		}
 	}
 }

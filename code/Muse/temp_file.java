@@ -1,4 +1,4 @@
-package com.example.amit.helloworld;
+package com.example.amit.helloworld.test;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,10 +35,4 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 		dataLeAk2 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
 
-        this.intA = 1;
-        this.methodA();
-        this.intB = 2;
-        this.methodB();
-        setContentView(R.layout.activity_main);
-    }
 }
