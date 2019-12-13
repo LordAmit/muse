@@ -34,34 +34,16 @@ java -jar Muse-1.0.0.jar mutate /config.properties
 
 The `config.properties` file is defined as:
 ```
-lib4ast = MDroidPlus/libs4ast/
-appSrc = /tmp/AppFoo/src/
-appName = AppFoo
-output = /tmp/mutants/
-operatorType = SCOPESINK
-source = sourceString
-sink = sinkString
-varDec = varDecString
+lib4ast: MDroidPlus/libs4ast/
+appSrc: /tmp/AppFoo/src/
+appName: AppFoo
+output: /tmp//mutants/
+operatorType: SCOPESINK
+source: sourceString
+sink: sinkString
+varDec: varDecString
 ```
 
-This will create a folder called `AppFoo` under `/tmp/mutants/` where the mutated source files will be stored. 
+This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored. 
 
 This will also mutate the app using the custom leak strings defined by the user in the properties file.
-
-## Cite
-If you use Muse for academic purposes, please cite: 
-
-Bonett, R., Kafle, K., Moran, K., Nadkarni, A., & Poshyvanyk, D. (2018, August). Discovering Flaws in Security-Focused Static Analysis Tools for Android using Systematic Mutation. In 27th USENIX Security Symposium (USENIX Security 18). USENIX Association.
-
-## Future Work
-Currently Muse is oriented towards the evaluation of static analysis tools for Android data leak detection. We intend to expand Muse by developing additional security operators and mutation schemes for tools with other goals, e.g. SSL verification. 
-
-This repository is for a refactoring and expansion of the original muse tool built by Richie Bonnett.
-
-## Current Team Members
-- Amit Seal Ami
-- Scott Murphy
-- Kyle Gorham
-- Ian Wolff
-- Jeff Petit-Freres
-- Will Elliot
