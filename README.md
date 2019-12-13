@@ -37,11 +37,11 @@ java -jar Muse-1.0.0.jar /config.properties
 
 The `config.properties` file is defined as:
 ```
-lib4ast = MDroidPlus/libs4ast/
-appSrc = /tmp/AppFoo/src/
-appName = AppFoo
-output = /tmp/mutants/
-operatorType = SCOPESINK
+lib4ast: MDroidPlus/libs4ast/
+appSrc: /tmp/AppFoo/src/
+appName: AppFoo
+output: /tmp/mutants/
+operatorType: SCOPESINK
 ```
 
 This will create a folder called `AppFoo` under `/tmp/mutants/` where the mutated source files will be stored. 
