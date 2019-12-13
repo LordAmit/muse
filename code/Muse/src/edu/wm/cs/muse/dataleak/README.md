@@ -47,3 +47,26 @@ varDec: varDecString
 This will create a folder called `AppFoo` under `/tmp/mutants` where the mutated source files will be stored. 
 
 This will also mutate the app using the custom leak strings defined by the user in the properties file.
+
+# Muse - PlacementChecker
+The PlacementChecker feature allows muse to not include any leaks that might create a non-compilable application. Since muse analyzes source files that are taken out of context, there may be errors that PlacementChecker will ignore. 
+
+## Usage
+PlacementChecker is called by operators before a leak is placed. It accepts the source file being worked on and creates a temporary file which will be checked for compilability. 
+If this temporary file is deemed compilable, the leak will remain in the source file. If the temporary file is not compilable, the leak will be removed. 
+
+### Example
+
+```
+package com.markuspage.android.atimetracker; 
+import android.Manifest;      // An import like this would be seen as an error from eclipse, 
+                              // however PlacementChecker would ignore it
+public Class Example{
+   String dataleak;
+   
+   public static methodA(){   
+      dataleak = "leak";   // This leak would be caught by the PlacementChecker because a non-static variable 
+      int a = 5;           // is being referenced in a static contet
+   }
+}
+```
