@@ -13,8 +13,8 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
 import edu.wm.cs.muse.dataleak.DataLeak;
-import edu.wm.cs.muse.dataleak.Placementchecker;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
+import edu.wm.cs.muse.dataleak.support.Placementchecker;
 import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;
 import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers.INSERTION_TYPE;

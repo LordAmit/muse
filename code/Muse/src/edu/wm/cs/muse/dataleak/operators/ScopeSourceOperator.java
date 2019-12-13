@@ -1,11 +1,10 @@
 package edu.wm.cs.muse.dataleak.operators;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
@@ -13,17 +12,11 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.Document;
-import org.eclipse.text.edits.MalformedTreeException;
-import org.eclipse.text.edits.TextEdit;
+
 
 import edu.wm.cs.muse.dataleak.DataLeak;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
-import edu.wm.cs.muse.Muse;
-import edu.wm.cs.muse.dataleak.Placementchecker;
-import edu.wm.cs.muse.dataleak.support.FileUtility;
-import edu.wm.cs.muse.dataleak.support.SchemaOperatorUtility;
+import edu.wm.cs.muse.dataleak.support.Placementchecker;
 import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;
 import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers.INSERTION_TYPE;
