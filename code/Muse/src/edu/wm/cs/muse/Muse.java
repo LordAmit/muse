@@ -1,10 +1,12 @@
 package edu.wm.cs.muse;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
+import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -34,12 +36,7 @@ import edu.wm.cs.muse.mdroid.ASTHelper;
 import log.LeakRemover;
 import log.LogDiff;
 
-import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 
 /**
  *
@@ -291,8 +288,23 @@ public class Muse {
 
 	public static void main(String[] args) throws Exception {
         // defaults scenario, if the user does not give a keyword and only gives config file, run Muse normally
+		Scanner keyboard = new Scanner(System.in);
 		if (args.length == 1) {
-			if (!args[0].endsWith(".properties") || Arguments.extractArguments(args[0]) < 0) {
+			if (!args[0].endsWith(".properties")) {
+				printArgumentError();
+				// if no config file given, generate one
+				System.out.println("\nNo properties file specified. Generate new file? (y/n)");
+				Scanner scanner = new Scanner(System.in);
+				char response = scanner.next().charAt(0);
+				if (response == 'y') {
+					File source = new File("src/edu/wm/cs/muse/sample_config.properties");
+					File dest = new File(System.getProperty("user.dir") + File.separatorChar + "sample_config.properties");
+					FileUtils.copyFile(source, dest);
+					System.out.println("Properties file created at " + System.getProperty("user.dir") + ".");
+				}
+				return;
+			}
+			if (Arguments.extractArguments(args[0]) < 0) {
 					printArgumentError();
 					return;
 			}
