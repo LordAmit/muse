@@ -288,7 +288,6 @@ public class Muse {
 
 	public static void main(String[] args) throws Exception {
         // defaults scenario, if the user does not give a keyword and only gives config file, run Muse normally
-		Scanner keyboard = new Scanner(System.in);
 		if (args.length == 1) {
 			if (!args[0].endsWith(".properties")) {
 				printArgumentError();
