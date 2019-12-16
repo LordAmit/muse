@@ -15,7 +15,7 @@ If running Muse within an IDE like Eclipse, import only the Muse folder within t
 Provide the following list of required arguments when running Muse: 
 1. ``ConfigFilePath``: This is the path to the config.properties file that Muse uses to read arguments. These arguments defined in the config.properties file include:
 - ``appSrc``: Path of the mutated Android app source code folder, which you want to remove leaks from;
-- `operatorType`: Type of operator used when creating mutants. Currently supported arguments are: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
+- `operatorType`: Type of operator used when creating mutants. Currently supported arguments are: TAINTSINK, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
 - ``insertionLog``: Path to a log file listing all of the leaks inserted by Muse. This information is output to the console when running "Mutate".
 - ``executionLog``: Path to a log file containing all executed leaks that will should remain in the mutant app.
 

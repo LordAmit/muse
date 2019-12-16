@@ -28,7 +28,7 @@ Provide the following list of required arguments when running Muse:
 - ``appSrc``: Path of the Android app source code folder, which you want to apply mutation on;
 - ``appName``:  Name of the App;
 - ``output``: Path of the folder where the mutants will be created;
-- `operatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
+- `operatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSINK, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
 
 ### Example
 ```

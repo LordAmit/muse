@@ -17,7 +17,7 @@ The only arguments on the command line is the path to the `config.properties` fi
 - ``appSrc``: Path of the Android app source code folder, which you want to apply mutation on;
 - ``appName``:  Name of the App;
 - ``output``: Path of the folder where the mutants will be created;
-- `operatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSOURCE, TAINTSINK, SCOPESOURCE, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
+- `operatorType`: Type of operator to be used while creating mutants. Currently supported arguments are: TAINTSINK, REACHABILITY, SCOPESINK, and COMPLEXREACHABILITY.
 
 These values are required for using custom leak string in Muse
 

@@ -279,7 +279,7 @@ public class Muse {
 		System.out.println("appSrc: -----------");
 		System.out.println("appName: -----------");
 		System.out.println("output: -----------");
-		System.out.println("operatorType: TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK or REACHABILITY");
+		System.out.println("operatorType: TAINTSINK, SCOPESINK, REACHABILITY or COMPLEXREACHABILITY");
 		System.out.println("source: -----------");
 		System.out.println("sink: -----------");
 		System.out.println("varDec: -----------");
