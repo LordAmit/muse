@@ -142,13 +142,13 @@ public class Muse {
 	 * 
 	 * @param root         is the compilation unit based root of the AST
 	 * @param rewriter     ASTRewrite object that holds the changes to the AST
-	 * @param file
-	 * @param source
+	 * @param file			mutant
+	 * @param source		source code string
 	 * @param operatorType is the type of operator being executed: sink, source,
 	 *                     reachability, or taint
-	 * @throws IOException
-	 * @throws BadLocationException
-	 * @throws MalformedTreeException
+	 * @throws IOException IO failed
+	 * @throws BadLocationException local file location cannot be found
+	 * @throws MalformedTreeException creation of ASTRewrite failed
 	 */
 	public void operatorExecution(CompilationUnit root, ASTRewrite rewriter, String source, File file,
 			OperatorType operatorType) throws MalformedTreeException, BadLocationException, IOException {

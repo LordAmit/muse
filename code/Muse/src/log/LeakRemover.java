@@ -20,6 +20,7 @@ import edu.wm.cs.muse.dataleak.DataLeak;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
+import edu.wm.cs.muse.dataleak.support.LogFormatException;
 
 
 public class LeakRemover {
@@ -39,11 +40,10 @@ public class LeakRemover {
 	 * Iterates through the modified file directory and compares the occurrence of
 	 * "dataLeak" in the file and the runtime log to remove false positive data leaks.
 	 * Then alters the files in mutants folder with the respective changes.
-	 * @param config
 	 * @author Yang Zhang, Ian Wolff
-	 * @throws Exception 
+	 * @throws LogFormatException improper log format
 	 */
-	public void removeLeaks() throws Exception {
+	public void removeLeaks() throws LogFormatException {
 		for (File mod_file : mod_files) {
 			try {
 				if (mod_file.getName().endsWith(".java")) {
@@ -80,8 +80,8 @@ public class LeakRemover {
 	/**
 	 * Extracts the indices of all leaks present in a formatted log file.
 	 * 
-	 * @param string       content of a formatted log file with new line characters
-	 * @return leakInts    set of leak indices contained by the log file
+	 * @param	logString	content of a formatted log file with new line characters
+	 * @return	leakInts	set of leak indices contained by the log file
 	 * @author Amit Seal Ami
 	 *
 	 */
@@ -100,7 +100,7 @@ public class LeakRemover {
 	
 	/**
 	 * getLogMaps returns a mapping for each source, along with list of its sinks.
-	 * @param allLogs receives all logs in a single string
+	 * @param logContent receives all logs in a single string
 	 * @return mapping from source to list of sinks
 	 * @author Amit Seal Ami
 	 */
@@ -196,12 +196,12 @@ public class LeakRemover {
 	 * @param string contains the source code in one string, with multiple new line characters.
 	 * @param maps {@link log.LogAnalyzer_Taint_Scope#getLogMaps(String) maps} contains the maps of source and sinks
 	 * @return modified source code
-	 * @throws Exception 
+	 * @throws LogFormatException Improperly formatted log
 	 * @author Amit Seal Ami, Ian Wolff
 	 */
-	public static String removeUnusedLeaksFromMap(String string, Map<Integer, Set<Integer>> maps) throws Exception {
+	public static String removeUnusedLeaksFromMap(String string, Map<Integer, Set<Integer>> maps) throws LogFormatException {
 		if(string.length()<10) {
-			throw new Exception("Give me proper source string; separated by new lines.");
+			throw new LogFormatException();
 		}
 		String[] lines = string.split("\n");
 		String outputLines = "";

@@ -44,7 +44,7 @@ public class TaintSourceOperator {
 	 * Modifies the ASTRewrite to swap between insertions based on the nodeChanges
 	 * and returns it.
 	 * 
-	 * @return
+	 * @return ASTRewrite modified ASTRewrite
 	 */
 	public ASTRewrite InsertChanges() {
 //		Utility.COUNTER_GLOBAL = 0;

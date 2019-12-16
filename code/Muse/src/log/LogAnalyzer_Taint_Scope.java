@@ -19,6 +19,7 @@ import org.eclipse.jface.text.Document;
 import edu.wm.cs.muse.dataleak.DataLeak;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
+import edu.wm.cs.muse.dataleak.support.LogFormatException;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 /**
@@ -47,9 +48,9 @@ public class LogAnalyzer_Taint_Scope {
 	 * Then alters the files in mutants folder with the respective changes.
 	 * 
 	 * @author Yang Zhang, Ian Wolff
-	 * @throws Exception 
+	 * @throws LogFormatException improperly formatted log
 	 */
-	public void runLogAnalysis() throws Exception {
+	public void runLogAnalysis() throws LogFormatException {
 		for (File mod_file : mod_files) {
 			try {
 				if (mod_file.getName().endsWith(".java")) {
@@ -82,13 +83,13 @@ public class LogAnalyzer_Taint_Scope {
 	 * 
 	 * @param string contains the source code in one string, with multiple new line characters.
 	 * @param maps {@link log.LogAnalyzer_Taint_Scope#getLogMaps(String) maps} contains the maps of source and sinks
-	 * @return modified source code
-	 * @throws Exception 
+	 * @return String modified source code
+	 * @throws LogFormatException Improperly formatted Log
 	 * @author Amit Seal Ami, Ian Wolff
 	 */
-	public static String analyzeSourceString(String string, Map<Integer, Set<Integer>> maps) throws Exception {
+	public static String analyzeSourceString(String string, Map<Integer, Set<Integer>> maps) throws LogFormatException {
 		if(string.length()<10) {
-			throw new Exception("Give me proper source string; separated by new lines.");
+			throw new LogFormatException();
 		}
 		String[] lines = string.split("\n");
 		String outputLines = "";

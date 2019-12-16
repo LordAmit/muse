@@ -28,9 +28,10 @@ public class LogAnalyzer {
 	 * Iterates through the modified file directory and compares the occurrence of
 	 * "dataLeak" in the file and the runtime log to remove false positive data leaks.
 	 * Then alters the files in mutants folder with the respective changes.
-	 * @param args
-	 * @throws IOException
+	 * @param args logs to be compared and code to be ammended
+	 * @throws IOException IO for logs and code failed
 	 * @author Yang Zhang
+	 * @throws FileNotFoundException file not found
 	 */
 	public void runLogAnalysis(String[] args) throws FileNotFoundException, IOException {
 		// Incomplete arguments

@@ -31,7 +31,7 @@ public class LogDiff {
 		 * Removes the leaks from the crashlog set from the muselog set.
 		 * Iterates theought the difference set to make a string of the leaks from the difference set separated by \n
 		 * Writes this result string to the specified path.
-		 * @throws IOException
+		 * @throws IOException IO failed
 		 * @author Yang Zhang
 		 */
 		public static void runLogAnalysis() throws IOException {

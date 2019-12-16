@@ -34,10 +34,10 @@ public class Placementchecker {
 	/**
 	 * Creates temp file based on the root and ast rewriter. This is written to 
 	 * temp_file.java
-	 * @param astRoot
-	 * @param rewriter
-	 * @param source_file_name
-	 * @return
+	 * @param astRoot Root of abstract syntax tree
+	 * @param rewriter ASTRewriter
+	 * @param source_file_name name of source file
+	 * @return File temp file
 	 */
 	public File getTempFile(CompilationUnit astRoot, ASTRewrite rewriter, String source_file_name) {
 		File temp_file;
@@ -70,9 +70,9 @@ public class Placementchecker {
 	/**
 	 * This is the method that checks for any compilation errors in source code.
 	 * Ignores errors that don't have to do with leak insertion and compilability
-	 * @param temp_file
-	 * @return
-	 * @throws IOException
+	 * @param temp_file temp file to be checked
+	 * @return Boolean result of check
+	 * @throws IOException tempfile IO failed
 	 */
   public Boolean check(File temp_file) throws IOException {
 	  //sets java_home variable
@@ -118,14 +118,14 @@ public class Placementchecker {
   /**
    * TempFileWriter from Muse.java. Used to quickly create a temp File from rewriter and ast
    * root
-   * @param root
-   * @param rewriter
-   * @param source
-   * @param file
-   * @return
-   * @throws MalformedTreeException
-   * @throws BadLocationException
-   * @throws IOException
+   * @param root CompilationUnit
+   * @param rewriter ASTrewrite
+   * @param source String
+   * @param file mutant
+   * @return ASTRewrite mutator
+   * @throws MalformedTreeException invalid AST
+   * @throws BadLocationException path could not be resolved
+   * @throws IOException IOfailes
    */
   public ASTRewrite tempFileWriter(CompilationUnit root, ASTRewrite rewriter, String source, File file)
 			throws MalformedTreeException, BadLocationException, IOException {

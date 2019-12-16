@@ -48,7 +48,7 @@ public class ScopeSourceOperator {
 	 * Modifies the ASTRewrite to insert a taint declaration and a source string in
 	 * the method, then returns it.
 	 * 
-	 * @return
+	 * @return ASTRewrite modified ASTRewrite
 	 */
 	public ASTRewrite InsertChanges() {
 

@@ -51,7 +51,7 @@ public class ScopeSinkOperator {
 	 * then inserts the appropriate number of sinks into the correct methods
 	 * according to the number of fields.
 	 * 
-	 * @return
+	 * @return ASTRewrite modified ASTRewrite
 	 */
 	public ASTRewrite InsertChanges() {
 

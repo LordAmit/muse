@@ -19,8 +19,8 @@ public class FileUtility {
 	 * 
 	 * @param filePath of the file
 	 * @return StringBuffer that contains the text contents of file
-	 * @throws FileNotFoundException
-	 * @throws IOException
+	 * @throws FileNotFoundException filepath could not be resolved
+	 * @throws IOException IO failed
 	 */
 	public static StringBuffer readSourceFile(String filePath) throws FileNotFoundException, IOException {
 		StringBuffer source = new StringBuffer();

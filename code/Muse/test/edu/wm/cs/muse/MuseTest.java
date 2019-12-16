@@ -69,7 +69,7 @@ public class MuseTest {
 	/**
 	 * This is done after every test to clean up the output.txt file and make sure that the 
 	 * placementchecker doesn't remove leaks from the previous test cases.
-	 * @throws FileNotFoundException
+	 * @throws FileNotFoundException  output.txt was not found
 	 */
 	@After
 	public void reset() throws FileNotFoundException {

@@ -30,7 +30,7 @@ public class ReachabilityOperator {
 	/**
 	 * modifies the ASTRewrite based on the nodeChanges and returns it.
 	 * 
-	 * @return
+	 * @return ASTRewrite modified ASTRewrite
 	 */
 	public ASTRewrite InsertChanges() {
 		for (int i = 0; i < nodeChanges.size(); i++) {

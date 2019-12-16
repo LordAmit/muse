@@ -89,7 +89,7 @@ public class DataLeak {
 	/**
 	 * Sets the path strings for the ComplexReachability operator
 	 * 
-	 * @param pathStrings
+	 * @param pathStrings path strings for the ComplexReachability operator
 	 */
 	public static void setPaths(String[] pathStrings) {
 		paths = pathStrings;
@@ -110,7 +110,7 @@ public class DataLeak {
 	 * 
 	 * @param op               is the operator type
 	 * @param identifier       the identifier for the source
-	 * @returns the appropriate source for the operator type specified.
+	 * @return the appropriate source for the operator type specified.
 	 */
 	public static String getSource(OperatorType op, int identifier) {
 		return String.format(sourceLeaks.get(getOperatorSource(op)), identifier);
@@ -128,7 +128,7 @@ public class DataLeak {
 	 * @param op               is the operator type
 	 * @param sourceIdentifier the identifier for the source
 	 * @param sinkIdentifier   the identifier for the sink
-	 * @returns the appropriate sink for the operator type specified.
+	 * @return the appropriate sink for the operator type specified.
 	 */
 	public static String getSink(OperatorType op, int sourceIdentifier, int sinkIdentifier) {
 		return String.format(sinkLeaks.get(getOperatorSink(op)), sourceIdentifier, sinkIdentifier, sourceIdentifier);
@@ -138,7 +138,7 @@ public class DataLeak {
 	 * Returns the correct variable declaration string based on the operator type specified.
 	 * 
 	 * @param op               is the operator type
-	 * @returns the appropriate variable declaration for the operator type specified.
+	 * @return the appropriate variable declaration for the operator type specified.
 	 */
 	public static String getVariableDeclaration(OperatorType op) {
 		return variableDeclarations.get(getOperatorSource(op));
@@ -148,6 +148,7 @@ public class DataLeak {
 	 * Returns an unformatted source string based on the operator type specified.
 	 * 
 	 * @param op               is the operator type
+	 * @return  String unformatted source string based on the operator type specified
 	 */
 	public static String getRawSource(OperatorType op) {
 		return sourceLeaks.get(getOperatorSource(op));
@@ -157,6 +158,7 @@ public class DataLeak {
 	 * Returns an unformatted sink string based on the operator type specified.
 	 * 
 	 * @param op               is the operator type
+	 * @return String unformatted sink string based on the operator type specified
 	 */
 	public static String getRawSink(OperatorType op) {
 		return sinkLeaks.get(getOperatorSink(op));
@@ -165,14 +167,13 @@ public class DataLeak {
 	/**
 	 * Formats the leak string and returns it. Accepts only OperatorType Reachability and ComplexReachabilityOperator
 	 * 
-	 * @param identifier an instance of the global counter utility used to identify
-	 *                   the leak string
-	 * @param type       OperatorType
-	 * 
-	 * @returns the string version of a data leak as used by the reachability
+	 * @param identifier identifier an instance of the global counter utility used to identify the leak string
+	 * @param op OperatorType
+	 * @throws IllegalArgumentException  Type must be Operator.REACHABILITY or Operator.COMPLEXREACHABILITY
+	 * @return String the string version of a data leak as used by the reachability
 	 *          operator schema.
 	 */
-	public static String getLeak(OperatorType op, int identifier) {
+	public static String getLeak(OperatorType op, int identifier) throws IllegalArgumentException{
 		if (op == OperatorType.REACHABILITY)
 			return String.format(sourceLeaks.get(op), identifier) + "\n"
 			+ String.format(sinkLeaks.get(op), identifier, identifier, identifier);
@@ -196,7 +197,9 @@ public class DataLeak {
 	 * Hopping logic that adds a level of misdirection that certain security
 	 * analysis tools can't follow.
 	 * 
-	 * @returns the "hop" that results in one dataleak string being set equal to
+	 * @param identifierOne id of the first dataleak string
+	 * @param identifierTwo id of the second dataleak string
+	 * @return OperatorType the "hop" that results in one dataleak string being set equal to
 	 *          another.
 	 */
 	public static String getHop(int identifierOne, int identifierTwo) {
