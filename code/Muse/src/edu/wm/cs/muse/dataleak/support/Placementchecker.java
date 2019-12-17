@@ -99,13 +99,17 @@ public class Placementchecker {
 	    for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
 	   
 	    	//System.out.println("Code: "+ diagnostic.getCode() + " with message: " + diagnostic.getMessage(null));
-	    	
 	    	//Has cases for which errors to catch
 	    	switch (diagnostic.getCode()){
 	    		case "compiler.err.already.defined":
 	    			System.out.println("WARNING DATA LEAK IS ALREADY DEFINED");
 	    			//return false;
-	    		//case 
+	    		case "compiler.err.non-static.cant.be.ref":
+	    			return false;
+	    			
+
+	    		case "compiler.err.prob.found.req":
+	    			return false;
 	    			
 	    	}
 	    }
