@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # used to find only the executed logs from crashscope and list only the unique ones.
 import sys
 from typing import List, Set

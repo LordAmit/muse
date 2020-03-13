@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 from shutil import copyfile
 from pathlib import Path
 
@@ -7,8 +7,8 @@ import os
 
 sh_file_paths: List[str] = []
 mutation_folder_paths: List[str] = []
-path_to_muse_jar: str = "/home/amit/workspaces/muse/Muse.jar"
-output_dir = "/home/amit/muse/output/"
+path_to_muse_jar: str = "/Users/amitseal/muse/MuseX.jar"
+output_dir = "/Users/amitseal/muse/output/"
 mutation_types =\
     "SINK,REACHABILITY,TAINTSINK,COMPLEXREACHABILITY".split(
         ",")
@@ -31,7 +31,7 @@ for mutation_type in mutation_types:
 #  > activity_TAINTSINK.log
 
 template_schema_apply = """#!/bin/sh
-java -jar Muse.jar /home/amit/workspaces/muse/libs4ast {} {} {}{} {} > {}_{}.log
+/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/bin/java -jar MuseX.jar /Users/amitseal/muse/libs4ast {} {} {}{} {} > {}_{}.log
 """
 
 
@@ -62,7 +62,7 @@ def content_in_sh_per_schema(project: str, project_name: str, output_dir: str,
                              mutation: str):
 
     template_schema_apply = """#!/bin/sh
-java -jar {} /home/amit/workspaces/muse/libs4ast {} {} {}{} {} > {}_{}.log
+/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/bin/java -jar {} /Users/amitseal/muse/libs4ast {} {} {}{} {} > {}_{}.log
 echo finished executing {}
     """
     return template_schema_apply.format(
