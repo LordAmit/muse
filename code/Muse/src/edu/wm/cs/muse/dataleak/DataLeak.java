@@ -10,39 +10,56 @@ import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 /**
-* @author liz, Ian Wolff
+ * @author liz, Ian Wolff
  *
  *         This class contains all the information pertaining to the data leak
  *         security operator. More specifically, it contains the sink and source
  *         for each sink, source, and reachability operator schema.
  * 
- *         Sample data leak formats: 
- *         Declaration: String dataLeak{{%d}}; 
- *         Source: dataLeak{{%d}} = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
- *         Sink: android.util.Log.d("leak-{{%d}}", dataLeak{{%d}}); 
- *         Hop: dataLeak{{%d}} = dataLeak{{%d}};
+ *         Sample data leak formats: Declaration: String dataLeak{{%d}}; Source:
+ *         dataLeak{{%d}} =
+ *         java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+ *         Sink: android.util.Log.d("leak-{{%d}}", dataLeak{{%d}}); Hop:
+ *         dataLeak{{%d}} = dataLeak{{%d}};
  * 
  */
 public class DataLeak {
 
 	// default source and sink strings
-	private static HashMap<OperatorType, String> sourceLeaks = new HashMap<OperatorType, String>() {{
-	    put(OperatorType.REACHABILITY,"String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
-	    put(OperatorType.COMPLEXREACHABILITY,"String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
-	    put(OperatorType.SCOPESOURCE,"dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
-	    put(OperatorType.TAINTSOURCE,"dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
-	}};
-	private static HashMap<OperatorType, String> sinkLeaks = new HashMap<OperatorType, String>() {{
-	    put(OperatorType.REACHABILITY,"Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);");
-	    put(OperatorType.COMPLEXREACHABILITY,"android.util.Log.d(\"leak-%d\", leAkPath%d);");
-	    put(OperatorType.SCOPESINK,"android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
-	    put(OperatorType.TAINTSINK,"android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
-	}};
-	private static HashMap<OperatorType, String> variableDeclarations = new HashMap<OperatorType, String>() {{
-		put(OperatorType.SCOPESOURCE,"String dataLeAk%d = \"%d\";");
-	    put(OperatorType.TAINTSOURCE,"String dataLeAk%d = \"\";");
-	    put(OperatorType.COMPLEXREACHABILITY,"String dataLeAk%d = dataLeAk%d");
-	}};
+	private static HashMap<OperatorType, String> sourceLeaks = new HashMap<OperatorType, String>() {
+		{
+			put(OperatorType.REACHABILITY,
+					"String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			put(OperatorType.COMPLEXREACHABILITY,
+					"String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			put(OperatorType.SCOPESOURCE,
+					"dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			put(OperatorType.TAINTSOURCE,
+					"dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+		}
+	};
+	private static HashMap<OperatorType, String> sinkLeaks = new HashMap<OperatorType, String>() {
+		{
+			put(OperatorType.REACHABILITY, "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);");
+			put(OperatorType.COMPLEXREACHABILITY, "android.util.Log.d(\"leak-%d\", leAkPath%d);");
+			put(OperatorType.SCOPESINK, "android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
+			put(OperatorType.TAINTSINK, "android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
+		}
+	};
+	private static HashMap<OperatorType, String> variableDeclarations = new HashMap<OperatorType, String>() {
+		{
+			put(OperatorType.SCOPESOURCE, "String dataLeAk%d = \"%d\";");
+			put(OperatorType.TAINTSOURCE, "String dataLeAk%d = \"\";");
+			put(OperatorType.COMPLEXREACHABILITY, "String dataLeAk%d = dataLeAk%d");
+		}
+	};
+
+	private static String taintSinkSourceFinalDecl = "final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+
+	public static String getTaintSinkSourceFinalDecl(int count) {
+		return String.format(taintSinkSourceFinalDecl, count);
+	}
+
 	private static String[] paths = new String[] {
 			"String[] leakArRay%d = new String[] {\"n/a\", dataLeAk%d};\n"
 					+ "String leAkPath%d = leakArRay%d[leakArRay%d.length - 1];",
@@ -52,15 +69,14 @@ public class DataLeak {
 					+ "String leAkPath%d = leakMaP%d.get(\"test\").get(\"test\");",
 			"StringBuffer leakBuFFer%d = new StringBuffer();" + "for (char chAr%d : dataLeAk%d.toCharArray()) {"
 					+ "leakBuFFer%d.append(chAr%d);" + "}" + "String leAkPath%d = leakBuFFer%d.toString();",
-			"String leAkPath%d;" + "try {" + "throw new Exception(dataLeAk%d);"
-					+ "} catch (Exception leakErRor%d) {" + "leAkPath%d = leakErRor%d.getMessage();"
-					+ "}" };
-	
+			"String leAkPath%d;" + "try {" + "throw new Exception(dataLeAk%d);" + "} catch (Exception leakErRor%d) {"
+					+ "leAkPath%d = leakErRor%d.getMessage();" + "}" };
+
 	/**
 	 * Sets the source leak string for based on the operator specified
-	 *  
-	 * @param op               is the operator type
-	 * @param sourceString     is the string to set
+	 * 
+	 * @param op           is the operator type
+	 * @param sourceString is the string to set
 	 */
 	public static void setSource(OperatorType op, String sourceString) {
 		sourceLeaks.replace(getOperatorSource(op), sourceString);
@@ -68,24 +84,24 @@ public class DataLeak {
 
 	/**
 	 * Sets the sink leak string for based on the operator specified
-	 *  
-	 * @param op               is the operator type
-	 * @param sinkString     is the string to set
+	 * 
+	 * @param op         is the operator type
+	 * @param sinkString is the string to set
 	 */
 	public static void setSink(OperatorType op, String sinkString) {
 		sinkLeaks.replace(getOperatorSink(op), sinkString);
 	}
-	
+
 	/**
 	 * Sets the variable declaration leak string for based on the operator specified
-	 *  
-	 * @param op               is the operator type
-	 * @param sinkString     is the string to set
+	 * 
+	 * @param op         is the operator type
+	 * @param sinkString is the string to set
 	 */
 	public static void setVariableDeclaration(OperatorType op, String sinkString) {
 		variableDeclarations.replace(getOperatorSource(op), sinkString);
 	}
-	
+
 	/**
 	 * Sets the path strings for the ComplexReachability operator
 	 * 
@@ -94,7 +110,7 @@ public class DataLeak {
 	public static void setPaths(String[] pathStrings) {
 		paths = pathStrings;
 	}
-	
+
 	/**
 	 * Returns the path strings for the ComplexReachability operator
 	 * 
@@ -103,19 +119,18 @@ public class DataLeak {
 	public static String[] getPaths() {
 		return paths;
 	}
-	
+
 	/**
 	 * Formats the sink string and returns the correct sink string based on the
 	 * operator type specified.
 	 * 
-	 * @param op               is the operator type
-	 * @param identifier       the identifier for the source
+	 * @param op         is the operator type
+	 * @param identifier the identifier for the source
 	 * @return the appropriate source for the operator type specified.
 	 */
 	public static String getSource(OperatorType op, int identifier) {
 		return String.format(sourceLeaks.get(getOperatorSource(op)), identifier);
 	}
-	
 
 	/**
 	 * Formats the sink string and returns the correct sink string based on the
@@ -133,22 +148,23 @@ public class DataLeak {
 	public static String getSink(OperatorType op, int sourceIdentifier, int sinkIdentifier) {
 		return String.format(sinkLeaks.get(getOperatorSink(op)), sourceIdentifier, sinkIdentifier, sourceIdentifier);
 	}
-	
+
 	/**
-	 * Returns the correct variable declaration string based on the operator type specified.
+	 * Returns the correct variable declaration string based on the operator type
+	 * specified.
 	 * 
-	 * @param op               is the operator type
+	 * @param op is the operator type
 	 * @return the appropriate variable declaration for the operator type specified.
 	 */
 	public static String getVariableDeclaration(OperatorType op) {
 		return variableDeclarations.get(getOperatorSource(op));
 	}
-	
+
 	/**
 	 * Returns an unformatted source string based on the operator type specified.
 	 * 
-	 * @param op               is the operator type
-	 * @return  String unformatted source string based on the operator type specified
+	 * @param op is the operator type
+	 * @return String unformatted source string based on the operator type specified
 	 */
 	public static String getRawSource(OperatorType op) {
 		return sourceLeaks.get(getOperatorSource(op));
@@ -157,7 +173,7 @@ public class DataLeak {
 	/**
 	 * Returns an unformatted sink string based on the operator type specified.
 	 * 
-	 * @param op               is the operator type
+	 * @param op is the operator type
 	 * @return String unformatted sink string based on the operator type specified
 	 */
 	public static String getRawSink(OperatorType op) {
@@ -165,18 +181,21 @@ public class DataLeak {
 	}
 
 	/**
-	 * Formats the leak string and returns it. Accepts only OperatorType Reachability and ComplexReachabilityOperator
+	 * Formats the leak string and returns it. Accepts only OperatorType
+	 * Reachability and ComplexReachabilityOperator
 	 * 
-	 * @param identifier identifier an instance of the global counter utility used to identify the leak string
-	 * @param op OperatorType
-	 * @throws IllegalArgumentException  Type must be Operator.REACHABILITY or Operator.COMPLEXREACHABILITY
+	 * @param identifier identifier an instance of the global counter utility used
+	 *                   to identify the leak string
+	 * @param op         OperatorType
+	 * @throws IllegalArgumentException Type must be Operator.REACHABILITY or
+	 *                                  Operator.COMPLEXREACHABILITY
 	 * @return String the string version of a data leak as used by the reachability
-	 *          operator schema.
+	 *         operator schema.
 	 */
-	public static String getLeak(OperatorType op, int identifier) throws IllegalArgumentException{
+	public static String getLeak(OperatorType op, int identifier) throws IllegalArgumentException {
 		if (op == OperatorType.REACHABILITY)
 			return String.format(sourceLeaks.get(op), identifier) + "\n"
-			+ String.format(sinkLeaks.get(op), identifier, identifier, identifier);
+					+ String.format(sinkLeaks.get(op), identifier, identifier, identifier);
 		else if (op == OperatorType.COMPLEXREACHABILITY) {
 
 			String[] paths = getPaths();
@@ -187,8 +206,7 @@ public class DataLeak {
 					identifier, identifier, identifier, identifier, identifier) + "\n" + sink;
 			return leak;
 
-		}
-		else {
+		} else {
 			throw new IllegalArgumentException("Type must be Operator.REACHABILITY or Operator.COMPLEXREACHABILITY ");
 		}
 	}
@@ -199,28 +217,26 @@ public class DataLeak {
 	 * 
 	 * @param identifierOne id of the first dataleak string
 	 * @param identifierTwo id of the second dataleak string
-	 * @return OperatorType the "hop" that results in one dataleak string being set equal to
-	 *          another.
+	 * @return OperatorType the "hop" that results in one dataleak string being set
+	 *         equal to another.
 	 */
 	public static String getHop(int identifierOne, int identifierTwo) {
 		return String.format(getVariableDeclaration(OperatorType.COMPLEXREACHABILITY), identifierOne, identifierTwo);
 	}
-	
+
 	private static OperatorType getOperatorSource(OperatorType op) {
-		if(op == OperatorType.SCOPESINK) {
+		if (op == OperatorType.SCOPESINK) {
 			op = OperatorType.SCOPESOURCE;
-		}
-		else if(op == OperatorType.TAINTSINK) {
+		} else if (op == OperatorType.TAINTSINK) {
 			op = OperatorType.TAINTSOURCE;
 		}
 		return op;
 	}
-	
+
 	private static OperatorType getOperatorSink(OperatorType op) {
-		if(op == OperatorType.SCOPESOURCE) {
+		if (op == OperatorType.SCOPESOURCE) {
 			op = OperatorType.SCOPESINK;
-		}
-		else if(op == OperatorType.TAINTSOURCE) {
+		} else if (op == OperatorType.TAINTSOURCE) {
 			op = OperatorType.TAINTSINK;
 		}
 		return op;
