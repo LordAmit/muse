@@ -91,10 +91,11 @@ public class TaintSinkOperator {
 				if (obj.toString().startsWith("super") || obj.toString().startsWith("this(")) {
 					// will only change placement if the super is at top and there is only one
 					// statement
-					System.out.println("SUper found");
+					System.out.println("Super found");
 
 					if (statement_counter == 0) {
-						placement = 0;
+						//this should make placing the sinks after the super AND variable assignment
+						placement = 1;
 					}
 					placement++;
 				} else if (obj.toString().startsWith("return ")) {

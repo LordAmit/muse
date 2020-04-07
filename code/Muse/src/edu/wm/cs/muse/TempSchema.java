@@ -6,6 +6,7 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 //import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.omg.CORBA.DynAnyPackage.TypeMismatch;
 
+import edu.wm.cs.muse.dataleak.support.InvalidTypeException;
 //import edu.wm.cs.muse.dataleak.schemas.TaintSchema;
 import edu.wm.cs.muse.dataleak.support.SchemaOperatorUtility;
 
@@ -17,7 +18,7 @@ public class TempSchema extends ASTVisitor {
 //		System.out.println(node.toString());
 		try {
 			System.out.println(node.getName() +" " +SchemaOperatorUtility.getMethodDepthInternalClass(node));
-		} catch (TypeMismatch e) {
+		} catch (InvalidTypeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
