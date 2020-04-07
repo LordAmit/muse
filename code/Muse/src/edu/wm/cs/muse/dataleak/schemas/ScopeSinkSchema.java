@@ -89,7 +89,7 @@ public class ScopeSinkSchema extends ASTVisitor {
 //		if (parent.getNodeType() == ASTNode.TYPE_DECLARATION && parent.getParent() == null) {
 		// some class segment was completed before this one. This is a new class chain
 		if (parent == classRetainer) {
-			// check for strings of the declaration "String dataLeAk%d"
+			// check for strings of the declaration, e.g. "String dataLeAk%d"
 
 			if (field.toString().startsWith(vdType)) {
 				fieldHolder.add(field);
