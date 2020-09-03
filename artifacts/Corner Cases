@@ -1,0 +1,7 @@
+Muse Corner Cases
+- Placement of sinks after the final return in a method
+  - Solved by checking to make sure there isn't a return at the end of the block of code, if so then put at start of the block
+- Use of sources outside of the scope
+  - Solved by the placement checker, wont use the sources not inside the scope
+- Placement of mutations inside of private methods
+  - Solved by the placement checker, wont place inside of private methods because that would make it not compile
