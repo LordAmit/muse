@@ -19,7 +19,7 @@ To run Muse, use the following command, all arguments will be specified in a con
 java -jar Muse-1.0.0.jar (<ConfigFilePath>)
 ```
 
-If running Muse within a IDE like Eclipse, import only the Muse folder within the code subdirectory, or else you might get a java.lang.SecurityException error when running Muse.java
+If running Muse within a IDE like Eclipse, import only the Muse folder within the code subdirectory, or else you might get a java.lang.SecurityException error when running Muse.java. If Muse.java will not run, or displays an error , ensure JRE System Library appears alongside JUnit5 and Maven Dependencies as a library, if not add it with Build Path > Add Libraries > JRE System Library > Environments > JavaSE-12 > Apply and Close > Finish.
 
 ### Arguments
 Provide the following list of required arguments when running Muse: 
