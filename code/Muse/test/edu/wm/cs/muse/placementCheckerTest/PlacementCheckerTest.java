@@ -145,21 +145,21 @@ public class PlacementCheckerTest extends Placementchecker {
 	@Test
 	public void test_unreachable_static() throws IOException {
 		PlacementCheckerTest checker = new PlacementCheckerTest();
-		File temp_file = new File("C:\\Users\\jeffr\\git\\Muse\\code\\Muse\\test\\edu\\wm\\cs\\muse\\placementCheckerTest\\sample_unreachable_static.txt");
+		File temp_file = new File("test/input/sample_unreachable_static.txt");
 		assertEquals(false,checker.check(temp_file));
 	}
 	
 	@Test
 	public void test_sample_duplicated_var() throws IOException {
 		PlacementCheckerTest checker = new PlacementCheckerTest();
-		File temp_file = new File("C:\\Users\\jeffr\\git\\Muse\\code\\Muse\\test\\edu\\wm\\cs\\muse\\placementCheckerTest\\sample_duplicated_variable.txt");
+		File temp_file = new File("test/input/sample_duplicated_variable.txt");
 		assertEquals(false,checker.check(temp_file));
 	}
 	
 	@Test
 	public void test_incompatible_return() throws IOException {
 		PlacementCheckerTest checker = new PlacementCheckerTest();
-		File temp_file = new File("C:\\Users\\jeffr\\git\\Muse\\code\\Muse\\test\\edu\\wm\\cs\\muse\\placementCheckerTest\\sample_switch_case_no_return.txt");
+		File temp_file = new File("test/input/sample_switch_case_no_return.txt");
 		assertEquals(false,checker.check(temp_file));
 	}
 	
