@@ -22,7 +22,7 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 import edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers;
 
 /**
- * The TaintSinkOperator class will insert the sink aspect of the taint mutation
+ * The ScopeSinkOperator class will insert the sink aspect of the taint mutation
  * scheme on the modified file through comparisons of the parent classes between
  * the field and methods.
  * 
@@ -47,7 +47,7 @@ public class ScopeSinkOperator {
 	}
 
 	/**
-	 * Modifies compares the parent classes between the two nodeChangeContainers,
+	 * Compares the parent classes between the two nodeChangeContainers,
 	 * then inserts the appropriate number of sinks into the correct methods
 	 * according to the number of fields.
 	 * 
@@ -67,7 +67,7 @@ public class ScopeSinkOperator {
 		return rewriter;
 	}
 
-	// for sink insertion
+	
 	void insertSink(Block node, int index, ArrayList<FieldDeclaration> fieldHolder,
 			ChildListPropertyDescriptor nodeProperty) {
 		ListRewrite listRewrite = null;

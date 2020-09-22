@@ -16,10 +16,10 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 import edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers;;
 
 /**
- * The TaintSinkSchema will traverse the nodes of the rewritten AST for
+ * The ScopeSinkSchema will traverse the nodes of the rewritten AST for
  * declarations, then correctly implement a sink insertion to all the methods in
  * the class. The file must be modified by the TaintSchema process before
- * TaintSink Schema can function correctly.
+ * ScopeSinkSchema can function correctly.
  * 
  * @author Yang Zhang
  */

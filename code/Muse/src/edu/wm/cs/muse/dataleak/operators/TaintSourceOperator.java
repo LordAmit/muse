@@ -20,8 +20,9 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainer
 import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers.INSERTION_TYPE;
 
 /**
- * The SourceOperator class formats and inserts the string data source markers
- * according to the Source Schema
+ * The TaintSourceOperator class has three methods, InsertChanges, insertInMethodBody,
+ * and insertVariable Declaration. InsertChanges allows for the other two methods to
+ * be called depending on the Insertion Type called for in SourceNodeChangeContainers.
  * 
  * @author Yang Zhang
  */

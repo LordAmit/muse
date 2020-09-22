@@ -14,7 +14,7 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainer
 import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers.INSERTION_TYPE;
 
 /**
- * The SourceSchema visits each node the AST tree to find data sources, then
+ * The TaintSourceSchema visits each node in the AST tree to find data sources, then
  * inserts a placeholder string through an SourceOperator.
  * 
  * @author Yang Zhang

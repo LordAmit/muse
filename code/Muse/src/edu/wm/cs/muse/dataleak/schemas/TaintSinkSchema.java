@@ -20,7 +20,7 @@ import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 
 /**
- * The SinkSchema visits each node the AST tree to find data sinks, then calls
+ * The TaintSinkSchema visits each node the AST tree to find data sinks, then calls
  * on SinkOperator to insert a string that indicates the occurrence.
  * 
  * @author Yang Zhang

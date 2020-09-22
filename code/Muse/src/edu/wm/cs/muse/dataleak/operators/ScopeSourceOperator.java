@@ -22,9 +22,9 @@ import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainer
 import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers.INSERTION_TYPE;
 
 /**
- * The TaintOperator class has two methods, insertDeclaration and insertSource,
- * that will create the appropriate object when given a class or method by the
- * TaintSchema.
+ * The SourceScopeOperator class has three methods, InsertChanges, insertInMethodBody,
+ * and insertVariable Declaration. InsertChanges allows for the other two methods to
+ * be called depending on the Insertion Type called for in SourceNodeChangeContainers.
  * 
  * @author Yang Zhang, Amit Seal Ami
  */

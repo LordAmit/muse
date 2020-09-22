@@ -20,8 +20,8 @@ import edu.wm.cs.muse.dataleak.support.Placementchecker;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 
 /**
- * The SinkOperator class formats and inserts the string-based sink markers
- * according to the Sink Schema
+ * The TaintSinkOperator class formats and inserts sinks or sources
+ * depending on SinkNodeChangeContainers' insertion type.
  * 
  * @author Yang Zhang
  */
