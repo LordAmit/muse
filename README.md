@@ -86,5 +86,12 @@ This repository is for a refactoring and expansion of the original muse tool bui
 - John Clapham
   
 ## Past Team Members
+- Scott Murphy
+- Kyle Gorham
+- Ian Wolff
+- Jeff Petit-Freres
+- Will Elliot
+
+
 - Liz Weech
 - Yang Zhang
