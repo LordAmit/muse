@@ -63,6 +63,7 @@ public class TaintSinkOperator {
 				insertSource(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor, nodeChange.count);
 			}
 		}
+		temp_file.delete();
 		return rewriter;
 	}
 
@@ -74,11 +75,13 @@ public class TaintSinkOperator {
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(
 				DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
+		
 		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
 			temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
 			try {
-				if (!checker.check(temp_file))
+				if (!checker.check(temp_file)) {
 					listRewrite.remove(placeHolder, null);
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -111,8 +114,10 @@ public class TaintSinkOperator {
 		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
 			temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
 			try {
-				if (!checker.check(temp_file))
+				if (!checker.check(temp_file)) {
 					listRewrite.remove(placeHolder, null);
+				}
+					
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

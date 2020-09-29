@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
@@ -75,7 +76,6 @@ public class MuseTest {
 	public void reset() throws FileNotFoundException {
 		PrintWriter pw = new PrintWriter("output.txt");
 		pw.close();
-	
 	}
 	@Test
 	public void reachability_operation_on_hello_world() throws Exception {
@@ -224,13 +224,19 @@ public class MuseTest {
 		sourceDoc = new Document(content);
 		muse.operatorExecution(root, rewriter, sourceDoc.get(),output, operator);
 		processedOutput = output;
+		//if temp_file is created by execution of muse, break it down after use
+		File file = new File("test/temp/temp_file.java");
+		file.delete();
+		File folder = new File("test/temp");
+		folder.delete();
 	}
 	
 
 
 	private void prepare_test_files(OperatorType operator, int test) throws FileNotFoundException, IOException {
 		Utility.COUNTER_GLOBAL = 0;
-		output = new File("test/output/output.txt");
+		//Doesn't do anything, since output is already initialized to this value
+		//output = new File("test/output/output.txt");
 	
 
 		switch (operator) {

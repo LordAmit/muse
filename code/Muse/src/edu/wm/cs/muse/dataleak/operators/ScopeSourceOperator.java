@@ -65,8 +65,7 @@ public class ScopeSourceOperator {
 			}
 
 		}
-
-		
+		temp_file.delete();		
 		return rewriter;
 
 	}
@@ -116,7 +115,6 @@ public class ScopeSourceOperator {
 			try {
 				temp_file = checker.getTempFile(astRoot, rewriter, source_file);
 				if (!checker.check(temp_file)) {
-					
 					System.out.println("Removing " + variable);
 					listRewrite.remove(placeHolder,null);
 				}
