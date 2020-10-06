@@ -255,11 +255,11 @@ public class MuseTest {
 		processedOutput = output;
 		//if temp_file is created by execution of muse, break it down after use
 		File file = new File("test/temp/temp_file.java");
-		if (file.exists()) {
-		file.delete();
+		if (!(file == null)) {
+			file.delete();
 		}
 		File folder = new File("test/temp");
-		if (file.exists()) {
+		if (!(file == null)) {
 			folder.delete();
 		}
 	}

@@ -66,7 +66,7 @@ public class TaintSinkOperator {
 				insertSource(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor, nodeChange.count);
 			}
 		}
-		if (temp_file.exists()) {
+		if (!(temp_file ==null)) {
 			temp_file.delete();
 		}
 		return rewriter;

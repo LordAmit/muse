@@ -65,7 +65,7 @@ public class ScopeSourceOperator {
 			}
 
 		}
-		if (temp_file.exists()) {
+		if (!(temp_file ==null)) {
 			temp_file.delete();
 		}		
 		return rewriter;

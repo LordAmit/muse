@@ -61,7 +61,7 @@ public class TaintSourceOperator {
 				insertVariableDeclaration(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
 			}
 		}
-		if (temp_file.exists()) {
+		if (!(temp_file ==null)) {
 			temp_file.delete();
 		}
 		return rewriter;
