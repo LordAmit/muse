@@ -68,15 +68,35 @@ public class MuseTest {
 	File output = new File("test/output/output.txt");
 	
 	/**
-	 * This is done after every test to clean up the output.txt file and make sure that the 
+	 * This is done after every test to reset output.txt to contain a sample, pre-mutation output.
+	 * This then works to clean up the output.txt file and make sure that the 
 	 * placementchecker doesn't remove leaks from the previous test cases.
+	 * 
+	 * 
+	 * 
 	 * @throws FileNotFoundException  output.txt was not found
+	 * @throws IOException data from output_reset was unable to be written into output.txt
 	 */
 	@After
-	public void reset() throws FileNotFoundException {
+	public void reset() throws FileNotFoundException, IOException {
+		FileReader fr = new FileReader("test/output/output_reset.txt");
+		BufferedReader br = new BufferedReader(fr);
+		FileWriter fw = new FileWriter("test/output/output.txt", true);
+		String s;
+
+		while ((s = br.readLine()) != null) { // read a line
+			fw.write(s); // write to output file
+			fw.flush();
+		}
+		br.close();
+		fw.close();
+		
 		PrintWriter pw = new PrintWriter("output.txt");
 		pw.close();
 	}
+	
+
+	
 	@Test
 	public void reachability_operation_on_hello_world() throws Exception {
 
