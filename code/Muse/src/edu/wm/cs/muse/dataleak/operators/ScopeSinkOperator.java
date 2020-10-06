@@ -63,7 +63,7 @@ public class ScopeSinkOperator {
 				}
 			}
 		}
-		if (temp_file.exists()) {
+		if (!(temp_file ==null)) {
 			temp_file.delete();
 		}
 		return rewriter;
