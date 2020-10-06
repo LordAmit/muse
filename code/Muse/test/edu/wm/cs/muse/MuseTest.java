@@ -80,21 +80,27 @@ public class MuseTest {
 	 * 
 	 * 
 	 * @throws FileNotFoundException  output.txt was not found
-	 * @throws IOException data from output_reset was unable to be written into output.txt
 	 */
 	@After
-	public void reset() throws FileNotFoundException, IOException {
+	public void reset() throws FileNotFoundException {
 		FileReader fr = new FileReader("test/output/output_reset.txt");
 		BufferedReader br = new BufferedReader(fr);
-		FileWriter fw = new FileWriter("test/output/output.txt", true);
-		String s;
+		FileWriter fw;
+		try {
+			fw = new FileWriter("test/output/output.txt", true);
+			String s;
 
-		while ((s = br.readLine()) != null) { // read a line
-			fw.write(s); // write to output file
-			fw.flush();
+			while ((s = br.readLine()) != null) { // read a line
+				fw.write(s); // write to output file
+				fw.flush();
+			}
+			br.close();
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		br.close();
-		fw.close();
+		
 		
 		PrintWriter pw = new PrintWriter("output.txt");
 		pw.close();
