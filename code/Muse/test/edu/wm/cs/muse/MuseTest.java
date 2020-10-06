@@ -77,17 +77,16 @@ public class MuseTest {
 	 * This then works to clean up the output.txt file and make sure that the 
 	 * placementchecker doesn't remove leaks from the previous test cases.
 	 * 
-	 * 
-	 * 
-	 * @throws FileNotFoundException  output.txt was not found
+	 * @throws FileNotFoundException  output.txt or output_reset.txt was not found
 	 */
 	@After
 	public void reset() throws FileNotFoundException {
+		
 		FileReader fr = new FileReader("test/output/output_reset.txt");
 		BufferedReader br = new BufferedReader(fr);
-		FileWriter fw;
+		
 		try {
-			fw = new FileWriter("test/output/output.txt", true);
+			FileWriter fw = new FileWriter("test/output/output.txt", true);
 			String s;
 
 			while ((s = br.readLine()) != null) { // read a line
@@ -97,10 +96,9 @@ public class MuseTest {
 			br.close();
 			fw.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.out.println("IOException when refreshing output.txt");
 			e.printStackTrace();
 		}
-		
 		
 		PrintWriter pw = new PrintWriter("output.txt");
 		pw.close();
