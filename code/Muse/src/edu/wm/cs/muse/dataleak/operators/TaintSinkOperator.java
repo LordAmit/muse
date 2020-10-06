@@ -1,5 +1,6 @@
 package edu.wm.cs.muse.dataleak.operators;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
@@ -33,6 +35,7 @@ public class TaintSinkOperator {
 	Placementchecker checker = new Placementchecker();
 	File temp_file;
 	String source_file;
+	private TryCatchHandler handler = new TryCatchHandler();
 
 	public TaintSinkOperator(ASTRewrite rewriter) {
 		this.rewriter = rewriter;
@@ -63,7 +66,9 @@ public class TaintSinkOperator {
 				insertSource(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor, nodeChange.count);
 			}
 		}
-		temp_file.delete();
+		if (temp_file.exists()) {
+			temp_file.delete();
+		}
 		return rewriter;
 	}
 
@@ -74,8 +79,8 @@ public class TaintSinkOperator {
 
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(
 				DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT);
+		//Check if throw statement and call TryCatchHandler
 		listRewrite.insertAt(placeHolder, index, null);
-		
 		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
 			temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
 			try {
@@ -110,7 +115,6 @@ public class TaintSinkOperator {
 		Statement placeHolder = (Statement) rewriter
 				.createStringPlaceholder(DataLeak.getTaintSinkSourceFinalDecl(count), ASTNode.EMPTY_STATEMENT);
 		listRewrite.insertAt(placeHolder, index, null);
-
 		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
 			temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
 			try {

@@ -31,6 +31,9 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
@@ -52,6 +55,8 @@ import  edu.wm.cs.muse.mdroid.ASTHelper;
  * @author Amit Seal Ami, Liz Weech, Yang Zhang, Scott Murphy
  *
  */
+
+@TestMethodOrder(OrderAnnotation.class)
 public class MuseTest {
 
 	File expectedOutput;
@@ -77,7 +82,9 @@ public class MuseTest {
 		PrintWriter pw = new PrintWriter("output.txt");
 		pw.close();
 	}
+	
 	@Test
+	@Order(1)
 	public void reachability_operation_on_hello_world() throws Exception {
 
 		try {
@@ -98,6 +105,7 @@ public class MuseTest {
 	}
 
 	@Test
+	@Order(2)
 	public void complex_reachability_operation_on_multi_class() {
 		try {
 
@@ -118,6 +126,7 @@ public class MuseTest {
 	}
 	
 	@Test
+	@Order(3)
 	public void taint_source_operation_on_hello_world() {
 		try {
 			prepare_test_files(OperatorType.TAINTSOURCE, 1);
@@ -137,6 +146,7 @@ public class MuseTest {
 	}
 
 	@Test
+	@Order(4)
 	public void taint_sink_operation_on_hello_world() {
 
 		try {
@@ -158,6 +168,7 @@ public class MuseTest {
 	}
 
 	@Test
+	@Order(5)
 	public void scope_source_operation_on_hello_world() {
 		try {
 
@@ -179,6 +190,7 @@ public class MuseTest {
 	}
 
 	@Test
+	@Order(6)
 	public void scope_source_operation_on_multi_class() {
 		try {
 
@@ -200,6 +212,7 @@ public class MuseTest {
 	}
 	
 	@Test
+	@Order(7)
 	public void scope_sink_operation_on_multi_class() {
 		try {
 			prepare_test_files(OperatorType.SCOPESINK, 1);
@@ -226,9 +239,13 @@ public class MuseTest {
 		processedOutput = output;
 		//if temp_file is created by execution of muse, break it down after use
 		File file = new File("test/temp/temp_file.java");
+		if (file.exists()) {
 		file.delete();
+		}
 		File folder = new File("test/temp");
-		folder.delete();
+		if (file.exists()) {
+			folder.delete();
+		}
 	}
 	
 
