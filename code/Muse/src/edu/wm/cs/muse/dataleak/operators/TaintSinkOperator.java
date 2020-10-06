@@ -11,6 +11,7 @@ import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
@@ -34,7 +35,7 @@ public class TaintSinkOperator {
 	Placementchecker checker = new Placementchecker();
 	File temp_file;
 	String source_file;
-	private TryCatchHandler handler = new TryCatchHandler();
+	//private TryCatchHandler handler = new TryCatchHandler();
 
 	public TaintSinkOperator(ASTRewrite rewriter) {
 		this.rewriter = rewriter;
