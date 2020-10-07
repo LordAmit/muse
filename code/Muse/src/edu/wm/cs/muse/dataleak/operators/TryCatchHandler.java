@@ -3,6 +3,7 @@ package edu.wm.cs.muse.dataleak.operators;
 
 
 import java.lang.reflect.Method;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,15 @@ import org.eclipse.jdt.core.dom.CatchClause;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.TryStatement;
+
+/**
+ * Handles the checking of whether an api method call leak throws an exception
+ * and appends a try catch block around the method call leak with a catch for 
+ * Exception e.  Handles both sinks and sources.
+ * 
+ * @author Kevin Cortright and Nicholas di Mauro
+ *
+ */
 
 public class TryCatchHandler {
 	
