@@ -108,7 +108,16 @@ public class TryCatchHandler {
 		}
 		return false; 
 		
-	}
+	} 
+	
+	/**
+	 * Appends a try catch block around the dataleak statement. This method is 
+	 * called if the method invoked by the statement throws exceptions.
+	 * 
+	 * @param statement
+	 * @return
+	 * @author Kevin Cortright
+	 */
 	
 	protected TryStatement addTryCatch(Statement statement) {
 		TryStatement tryStatement = statement.getAST().newTryStatement();
