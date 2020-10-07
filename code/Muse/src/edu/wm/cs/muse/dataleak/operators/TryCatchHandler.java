@@ -56,7 +56,13 @@ public class TryCatchHandler {
 	 */
 	protected boolean stringHasThrows(String insertion) throws ClassNotFoundException {
 		String[] stringsInitial = insertion.split("=");
-		String newInsertion = stringsInitial[1];
+		String newInsertion = "";
+		if (stringsInitial.length>1) {
+			newInsertion = stringsInitial[1];
+		}
+		else {
+			newInsertion = stringsInitial[0];
+		}
 		insertion = newInsertion.replaceAll("\\s", "");
 		List<String> methods = new ArrayList<String>();
 		String canon_name = "";
