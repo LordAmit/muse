@@ -1,15 +1,14 @@
 package edu.wm.cs.muse.dataleak.operators;
 
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.CatchClause;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.TryStatement;
 
@@ -55,7 +54,7 @@ public class TryCatchHandler {
 	 * @author Kevin Cortright and Nicholas di Mauro
 	 *
 	 */
-	private boolean rewrite(String insertion) throws ClassNotFoundException {
+	protected boolean stringHasThrows(String insertion) throws ClassNotFoundException {
 		String[] stringsInitial = insertion.split("=");
 		String newInsertion = stringsInitial[1];
 		insertion = newInsertion.replaceAll("\\s", "");
@@ -90,10 +89,18 @@ public class TryCatchHandler {
 		
 	}
 	
-	protected void addTryCatch(Statement statement) {
+	protected TryStatement addTryCatch(Statement statement) {
 		TryStatement tryStatement = statement.getAST().newTryStatement();
 		tryStatement.setBody((Block) statement);
-		
+		CatchClause catchClause = statement.getAST().newCatchClause();
+		tryStatement.catchClauses().add(catchClause);
+		SingleVariableDeclaration svd = statement.getAST().newSingleVariableDeclaration();
+		catchClause.setException(svd);
+		svd.setType(statement.getAST().newSimpleType(statement.getAST().newName("Exception")));
+		svd.setName(statement.getAST().newSimpleName("e"));
+		Block catchBody = statement.getAST().newBlock();
+		catchClause.setBody(catchBody);
+		return tryStatement;
 	}
 
 	
