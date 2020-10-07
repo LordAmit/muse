@@ -80,7 +80,7 @@ public class TaintSinkOperator {
 		repeatCounts.put(count, cur + 1);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(
 				DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT);
-		/*
+		/* 
 		 listRewrite.insertAt(placeHolder, index, null);
 			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
 				temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
