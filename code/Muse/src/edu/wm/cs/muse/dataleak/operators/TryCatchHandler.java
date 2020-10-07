@@ -91,10 +91,13 @@ public class TryCatchHandler {
 				}
 			}
 		}
-		if (canon_name.contains("android.util.Log")) {
+		Class<?> c = null;
+		try {
+			c = Class.forName(canon_name);
+		}
+		catch (ClassNotFoundException e) {
 			return false;
 		}
-		Class<?> c = Class.forName(canon_name);
 		Method[] allMethods = c.getMethods();
 		for (int i=0; i<allMethods.length; i++) {
 			for (int j=0; j<methods.size();j++) {
