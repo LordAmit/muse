@@ -10,7 +10,9 @@ build:
   tags:
     - maven
   script:
-    - echo "Building μse with Maven"
+    - echo "Refreshing PATH"
+    - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+    - echo "Building Muse with Maven"
     - mvn -B compile --file pom.xml
 
 test:
