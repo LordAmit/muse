@@ -64,14 +64,11 @@ public class TryCatchHandler {
 		String[] strings = insertion.split(".");
 		for (int i=0; i<strings.length; i++) {
 			if (strings[i].contains("()")) {
-				methods.add(strings[i]);
+				methods.add(strings[i].substring(0, strings[i].indexOf("(")));
 			}
 			else {
 				canon_name+=strings[i];
 			}
-		}
-		for (int i=0; i<methods.size(); i++) {
-			methods.set(i, methods.get(i).substring(0, methods.get(i).indexOf("(")));
 		}
 		Class<?> c = Class.forName(canon_name);
 		Method[] allMethods = c.getMethods();
