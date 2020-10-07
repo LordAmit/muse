@@ -60,14 +60,19 @@ public class TryCatchHandler {
 		String newInsertion = stringsInitial[1];
 		insertion = newInsertion.replaceAll("\\s", "");
 		List<String> methods = new ArrayList<String>();
-		String canon_name = null;
-		String[] strings = insertion.split(".");
+		String canon_name = "";
+		String[] strings = insertion.split("\\.");
 		for (int i=0; i<strings.length; i++) {
 			if (strings[i].contains("()")) {
 				methods.add(strings[i].substring(0, strings[i].indexOf("(")));
 			}
 			else {
-				canon_name+=strings[i];
+				if(canon_name.length() == 0) {
+					canon_name+=strings[i];
+				}
+				else {
+					canon_name+=("." + strings[i]);
+				}
 			}
 		}
 		Class<?> c = Class.forName(canon_name);
