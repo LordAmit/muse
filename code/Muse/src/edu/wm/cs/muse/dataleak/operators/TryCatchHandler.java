@@ -1,6 +1,7 @@
 package edu.wm.cs.muse.dataleak.operators;
 
 
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class TryCatchHandler {
 		String canon_name = "";
 		String[] strings = insertion.split("\\.");
 		for (int i=0; i<strings.length; i++) {
-			if (strings[i].contains("()")) {
+			if (strings[i].contains("(")) {
 				methods.add(strings[i].substring(0, strings[i].indexOf("(")));
 			}
 			else {
@@ -80,12 +81,16 @@ public class TryCatchHandler {
 				}
 			}
 		}
+		if (canon_name.contains("android.util.Log")) {
+			return false;
+		}
 		Class<?> c = Class.forName(canon_name);
 		Method[] allMethods = c.getMethods();
 		for (int i=0; i<allMethods.length; i++) {
 			for (int j=0; j<methods.size();j++) {
 				if (allMethods[i].toString().contains(methods.get(j))) {
 					if (allMethods[i].getExceptionTypes().length !=0) {
+						System.out.print("Returning true");
 						return true;
 					}
 				}
