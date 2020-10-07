@@ -1,0 +1,21 @@
+image: java:latest
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  tags:
+    - maven
+  script:
+    - echo "Building μse with Maven"
+    - mvn -B compile --file pom.xml
+
+test:
+  stage: test
+  tags:
+    - maven
+  script:
+    - mvn test
