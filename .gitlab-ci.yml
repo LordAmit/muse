@@ -12,9 +12,9 @@ build:
   script:
     - echo "Refreshing PATH"
     - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+    - start https://www.youtube.com/watch?v=YBS8rJvxnKo
     - echo "Building Muse with Maven"
     - mvn -B -e -X compile --file code/Muse/pom.xml
-    - xdg-open https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
 test:
   stage: test
