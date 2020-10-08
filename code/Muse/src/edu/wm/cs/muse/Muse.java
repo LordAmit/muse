@@ -177,11 +177,7 @@ public class Muse {
 			TaintSinkSchema taintSinkSchema = new TaintSinkSchema();
 			root.accept(taintSinkSchema);
 			TaintSinkOperator taintSinkOperator = new TaintSinkOperator(rewriter, taintSinkSchema.getNodeChanges(),file.getAbsolutePath());
-			try { 
-				rewriter = taintSinkOperator.InsertChanges();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
+			rewriter = taintSinkOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			Files.delete(temp_file.toPath());
 			break;

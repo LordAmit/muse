@@ -10,6 +10,7 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
@@ -34,7 +35,7 @@ public class ScopeSourceOperator {
 	File temp_file;
 	String source_file;
 	ArrayList<String> variablelist = new ArrayList<String>();
-
+	private TryCatchHandler handler = new TryCatchHandler();
 	ArrayList<SourceNodeChangeContainers> nodeChanges;
 	ASTRewrite rewriter;
 
@@ -55,11 +56,21 @@ public class ScopeSourceOperator {
 		for (SourceNodeChangeContainers nodeChange : nodeChanges) {
 			// if (nodeChange.insertionType == 0 && nodeChange.node != null ) {
 			if (nodeChange.type == INSERTION_TYPE.METHOD_BODY && nodeChange.node != null) {
-				insertInMethodBody((Block) nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
+				try {
+					insertInMethodBody((Block) nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 			} else {
 				if (nodeChange.node != null) {
-					insertVariableDeclaration(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
+					try {
+						insertVariableDeclaration(nodeChange.node, nodeChange.index, nodeChange.propertyDescriptor);
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 				}
 			}
@@ -73,7 +84,7 @@ public class ScopeSourceOperator {
 	}
 
 	// for inserting source inside methodBody
-	public void insertInMethodBody(Block node, int index, ChildListPropertyDescriptor nodeProperty) {
+	public void insertInMethodBody(Block node, int index, ChildListPropertyDescriptor nodeProperty) throws ClassNotFoundException {
 		int placement = 0;
 		for (Object obj : node.statements()) {
 			if (obj.toString().startsWith("super") || obj.toString().startsWith("this(")) {
@@ -86,16 +97,31 @@ public class ScopeSourceOperator {
 		String source = DataLeak.getSource(OperatorType.SCOPESOURCE, identifier);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
 		// listRewrite.insertAt(placeHolder, index, null);
-		listRewrite.insertAt(placeHolder, placement, null);
-		
-		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
-			temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
-			try {
-				if (!checker.check(temp_file))
-					listRewrite.remove(placeHolder,null);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		if (handler.stringHasThrows(source)) {
+			TryStatement tryPlaceHolder = handler.addTryCatch(placeHolder);
+			listRewrite.insertAt(tryPlaceHolder, placement, null);
+			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+				temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
+				try {
+					if (!checker.check(temp_file))
+						listRewrite.remove(tryPlaceHolder,null);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		else {
+			listRewrite.insertAt(placeHolder, placement, null);
+			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+				temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
+				try {
+					if (!checker.check(temp_file))
+						listRewrite.remove(placeHolder,null);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 			
@@ -103,31 +129,49 @@ public class ScopeSourceOperator {
 	}
 
 	// for declaration.
-	private void insertVariableDeclaration(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) {
+	private void insertVariableDeclaration(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty) throws ClassNotFoundException {
 
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		String variable = String.format(DataLeak.getVariableDeclaration(OperatorType.SCOPESOURCE), Utility.COUNTER_GLOBAL, 
 				Utility.COUNTER_GLOBAL);
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
-		listRewrite.insertAt(placeHolder, index, null);
-		ASTNode aRoot = listRewrite.getParent().getRoot();
-		if (!(aRoot instanceof Block)) {
-			CompilationUnit astRoot = (CompilationUnit)aRoot;
+		if (handler.stringHasThrows(variable)) {
+			TryStatement tryPlaceHolder = handler.addTryCatch(placeHolder);
+			listRewrite.insertAt(tryPlaceHolder, index, null);
+			ASTNode aRoot = listRewrite.getParent().getRoot();
+			if (!(aRoot instanceof Block)) {
+				CompilationUnit astRoot = (CompilationUnit)aRoot;
 			
-			try {
-				temp_file = checker.getTempFile(astRoot, rewriter, source_file);
-				if (!checker.check(temp_file)) {
-					System.out.println("Removing " + variable);
-					listRewrite.remove(placeHolder,null);
+				try {
+					temp_file = checker.getTempFile(astRoot, rewriter, source_file);
+					if (!checker.check(temp_file)) {
+						System.out.println("Removing " + variable);
+						listRewrite.remove(tryPlaceHolder,null);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-			
-			
 		}
-		
+		else {
+			listRewrite.insertAt(placeHolder, index, null);
+			ASTNode aRoot = listRewrite.getParent().getRoot();
+			if (!(aRoot instanceof Block)) {
+				CompilationUnit astRoot = (CompilationUnit)aRoot;
+			
+				try {
+					temp_file = checker.getTempFile(astRoot, rewriter, source_file);
+					if (!checker.check(temp_file)) {
+						System.out.println("Removing " + variable);
+						listRewrite.remove(placeHolder,null);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		
 		Utility.COUNTER_GLOBAL++;
 
