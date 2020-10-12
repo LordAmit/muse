@@ -2,6 +2,9 @@ package edu.wm.cs.muse.dataleak.operators;
 
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.lang.reflect.Method;
 
 import java.util.ArrayList;
@@ -103,7 +106,6 @@ public class TryCatchHandler {
 			for (int j=0; j<methods.size();j++) {
 				if (allMethods[i].toString().contains(methods.get(j))) {
 					if (allMethods[i].getExceptionTypes().length !=0) {
-						System.out.print("Returning true");
 						return true;
 					}
 				}
@@ -123,8 +125,20 @@ public class TryCatchHandler {
 	 */
 	
 	protected TryStatement addTryCatch(Statement statement) {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("test/output/output.txt"));
+			String buffer;
+			while ((buffer = br.readLine()) != null) {
+			        System.out.println(buffer);
+			    }
+		}
+		catch (Exception e) {
+			
+		}
 		TryStatement tryStatement = statement.getAST().newTryStatement();
-		tryStatement.setBody((Block) statement);
+		Block tryBody = statement.getAST().newBlock();
+		tryBody.statements().add(statement);
+		tryStatement.setBody(tryBody);
 		CatchClause catchClause = statement.getAST().newCatchClause();
 		tryStatement.catchClauses().add(catchClause);
 		SingleVariableDeclaration svd = statement.getAST().newSingleVariableDeclaration();
