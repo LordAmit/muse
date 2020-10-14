@@ -125,16 +125,6 @@ public class TryCatchHandler {
 	 */
 	
 	protected TryStatement addTryCatch(Statement statement) {
-		try {
-			BufferedReader br = new BufferedReader(new FileReader("test/output/output.txt"));
-			String buffer;
-			while ((buffer = br.readLine()) != null) {
-			        System.out.println(buffer);
-			    }
-		}
-		catch (Exception e) {
-			
-		}
 		TryStatement tryStatement = statement.getAST().newTryStatement();
 		Block tryBody = statement.getAST().newBlock();
 		tryBody.statements().add(statement);
