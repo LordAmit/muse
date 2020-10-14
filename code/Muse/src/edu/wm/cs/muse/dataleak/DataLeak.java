@@ -35,7 +35,7 @@ public class DataLeak {
 			put(OperatorType.SCOPESOURCE,
 					"dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
 			put(OperatorType.TAINTSOURCE,
-					"dataLeAk%d = javax.crypto.Cipher.getInstance(\"AES\");");
+					"dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
 		}
 	};
 	private static HashMap<OperatorType, String> sinkLeaks = new HashMap<OperatorType, String>() {
