@@ -259,7 +259,7 @@ public class MuseTest {
 		try {
 			DataLeak.setSource(OperatorType.TAINTSOURCE, "dataLeAk%d = javax.crypto.Cipher.getInstance(\"AES\");");
 			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, "javax.crypto.Cipher dataLeAk%d = null; ");
-			 prepare_try_test_files();
+			prepare_try_test_files();
 			execute_muse(OperatorType.TAINTSINK);
 			DataLeak.setSource(OperatorType.TAINTSOURCE, original_operators[0]);
 			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, original_operators[1]);
