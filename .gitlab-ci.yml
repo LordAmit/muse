@@ -12,12 +12,15 @@ build:
   script:
     - echo "Refreshing PATH"
     - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+    - echo "Moving to Muse Directory"
+    - cd code/Muse
     - echo "Building Muse with Maven"
-    - mvn -B -e -X compile --file code/Muse/pom.xml
+    - mvn clean verify
+    - mvn clean compile
 
 test:
   stage: test
   tags:
     - maven
   script:
-    - mvn test
+    - mvn clean test
