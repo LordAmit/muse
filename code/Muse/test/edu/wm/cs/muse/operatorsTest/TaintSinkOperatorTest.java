@@ -71,9 +71,10 @@ public class TaintSinkOperatorTest {
 	 * Method under test: InsertChanges(), insertSink()
 	 * 
 	 * Correct behavior: A single change should be inserted at the first available position
+	 * @throws ClassNotFoundException 
 	 */
 	@Test
-	public void insert_sink_declaration_nodeChange() {
+	public void insert_sink_declaration_nodeChange() throws ClassNotFoundException {
 		nodeChanges.add(createNodeChanges("int methodA(){", 0, 1));
 		taintSinkOperator = new TaintSinkOperator(rewriter, nodeChanges,"test/input/sample_helloWorld.txt");
 		String output = taintSinkOperator.InsertChanges().toString();
@@ -92,9 +93,10 @@ public class TaintSinkOperatorTest {
 	 * Method under test: InsertChanges(), insertSink()
 	 * 
 	 * Correct behavior: A single change should be inserted at the first available position
+     * @throws ClassNotFoundException 
 	 */
 	@Test
-	public void insert_source_declaration_nodeChange() {
+	public void insert_source_declaration_nodeChange() throws ClassNotFoundException {
 		nodeChanges.add(createNodeChanges("int methodA(){", 1, 1));
 		taintSinkOperator = new TaintSinkOperator(rewriter, nodeChanges,"test/input/sample_helloWorld.txt");
 		String output = taintSinkOperator.InsertChanges().toString();
@@ -113,9 +115,10 @@ public class TaintSinkOperatorTest {
 	 * Method under test: InsertChanges(), insertSink()
 	 * 
 	 * Correct behavior: A single change should be inserted at the first available position
+	 * @throws ClassNotFoundException 
 	 */
 	@Test
-	public void insert_methodBody_nodeChange() {
+	public void insert_methodBody_nodeChange() throws ClassNotFoundException {
 		nodeChanges.add(createNodeChanges("return 1;", 0, 1));	
 		taintSinkOperator = new TaintSinkOperator(rewriter, nodeChanges,"test/input/sample_helloWorld.txt");
 		String output = taintSinkOperator.InsertChanges().toString();

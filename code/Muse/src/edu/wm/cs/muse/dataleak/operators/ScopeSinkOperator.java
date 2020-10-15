@@ -10,6 +10,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
@@ -36,6 +37,7 @@ public class ScopeSinkOperator {
 	Placementchecker checker = new Placementchecker();
 	File temp_file;
 	String source_file;
+	private TryCatchHandler handler = new TryCatchHandler();
 
 	public ScopeSinkOperator(ASTRewrite rewriter, ArrayList<TaintNodeChangeContainers> fieldChanges,
 			ArrayList<SinkNodeChangeContainers> methodChanges, String source_file) {
@@ -58,8 +60,13 @@ public class ScopeSinkOperator {
 		for (TaintNodeChangeContainers fieldChanges : fieldChanges) {
 			for (SinkNodeChangeContainers methodChanges : methodChanges) {
 				if (methodChanges.node == fieldChanges.node) {
-					insertSink((Block) methodChanges.method, methodChanges.index, fieldChanges.fieldHolder,
-							methodChanges.propertyDescriptor);
+					try {
+						insertSink((Block) methodChanges.method, methodChanges.index, fieldChanges.fieldHolder,
+								methodChanges.propertyDescriptor);
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -71,7 +78,7 @@ public class ScopeSinkOperator {
 
 	
 	void insertSink(Block node, int index, ArrayList<FieldDeclaration> fieldHolder,
-			ChildListPropertyDescriptor nodeProperty) {
+			ChildListPropertyDescriptor nodeProperty) throws ClassNotFoundException {
 		ListRewrite listRewrite = null;
 		if (node == null)
 			return;
@@ -116,15 +123,31 @@ public class ScopeSinkOperator {
 				}
 				statement_counter++;
 			}
-			listRewrite.insertAt(placeHolder, placement, null);
-			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
-				temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
-				try {
-					if (!checker.check(temp_file))
-						listRewrite.remove(placeHolder,null);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			if (handler.stringHasThrows(sink)) {
+				TryStatement tryPlaceHolder = handler.addTryCatch(placeHolder);
+				listRewrite.insertAt(tryPlaceHolder, placement, null);
+				if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+					temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
+					try {
+						if (!checker.check(temp_file))
+							listRewrite.remove(tryPlaceHolder,null);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			else {
+				listRewrite.insertAt(placeHolder, placement, null);
+				if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+					temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
+					try {
+						if (!checker.check(temp_file))
+							listRewrite.remove(placeHolder,null);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}

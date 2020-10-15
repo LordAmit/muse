@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
@@ -21,6 +22,7 @@ import edu.wm.cs.muse.dataleak.support.node_containers.ReachabilityNodeChangeCon
 public class ReachabilityOperator {
 	ArrayList<ReachabilityNodeChangeContainers> nodeChanges;
 	ASTRewrite rewriter;
+	private TryCatchHandler handler = new TryCatchHandler();
 
 	public ReachabilityOperator(ASTRewrite rewriter, ArrayList<ReachabilityNodeChangeContainers> nodeChanges) {
 		this.rewriter = rewriter;
@@ -41,8 +43,7 @@ public class ReachabilityOperator {
 
 			Statement placeHolder = (Statement) rewriter
 					.createStringPlaceholder(DataLeak.getLeak(OperatorType.REACHABILITY, Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
-
-			Utility.COUNTER_GLOBAL++;
+			
 			
 			/*
 			 * Uses the rewriter to create an AST for the SinkSchema to utilize Then
@@ -50,8 +51,22 @@ public class ReachabilityOperator {
 			 * schema visitor on the visit The rewriter implements the specified changes
 			 * made by the sink operator
 			 */
-			ListRewrite listRewrite = rewriter.getListRewrite(nodeChange.node, nodeChange.propertyDescriptor);
-			listRewrite.insertAt(placeHolder, nodeChange.index, null);
+			try {
+			if (handler.stringHasThrows(DataLeak.getLeak(OperatorType.REACHABILITY, Utility.COUNTER_GLOBAL))) {
+				TryStatement tryPlaceHolder = handler.addTryCatch(placeHolder);
+				ListRewrite listRewrite = rewriter.getListRewrite(nodeChange.node, nodeChange.propertyDescriptor);
+				listRewrite.insertAt(tryPlaceHolder, nodeChange.index, null);
+			}
+			else {
+				ListRewrite listRewrite = rewriter.getListRewrite(nodeChange.node, nodeChange.propertyDescriptor);
+				listRewrite.insertAt(placeHolder, nodeChange.index, null);
+			}
+			}
+			catch (ClassNotFoundException e) {
+				
+			}
+			Utility.COUNTER_GLOBAL++;
+			
 		}
 		return rewriter;
 	}

@@ -1,0 +1,23 @@
+image: java:latest
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  tags:
+    - maven
+  script:
+    - echo "Refreshing PATH"
+    - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+    - echo "Building Muse with Maven"
+    - mvn -B -e -X compile --file code/Muse/pom.xml
+
+test:
+  stage: test
+  tags:
+    - maven
+  script:
+    - mvn test
