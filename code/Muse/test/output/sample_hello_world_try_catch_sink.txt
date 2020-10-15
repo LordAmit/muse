@@ -27,10 +27,10 @@ public class MainActivity extends AppCompatActivity {
 
     int methodB() {
     	try {
-			dataLeAk0 = javax.crypto.Cipher.getInstance("AES");
+			dataLeAk1 = javax.crypto.Cipher.getInstance("AES");
 		} catch (Exception e) {
 		}
-		android.util.Log.d("leak-0-0", dataLeAk0);
+		android.util.Log.d("leak-0-1", dataLeAk0);
         android.util.Log.d("leak-1-1", dataLeAk1);
 		android.util.Log.d("leak-2-1", dataLeAk2);
 		return 0;
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 			dataLeAk2 = javax.crypto.Cipher.getInstance("AES");
 		} catch (Exception e) {
 		}
-		android.util.Log.d("leak-0-0", dataLeAk0);
+		android.util.Log.d("leak-0-2", dataLeAk0);
 		android.util.Log.d("leak-1-2", dataLeAk1);
 		android.util.Log.d("leak-2-2", dataLeAk2);
 

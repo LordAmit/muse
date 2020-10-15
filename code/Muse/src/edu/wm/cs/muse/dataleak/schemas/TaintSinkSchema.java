@@ -64,7 +64,7 @@ public class TaintSinkSchema extends ASTVisitor {
 		}
 		for (Object obj : node.statements()) {
 			if (obj.toString().startsWith("super") || obj.toString().startsWith("this(")
-					|| obj.toString().startsWith(vdName)) {
+					|| obj.toString().startsWith(vdName)|| obj.toString().startsWith("try")) {
 				index++;
 			}
 		}
@@ -97,6 +97,8 @@ public class TaintSinkSchema extends ASTVisitor {
 									method, 0));
 						}
 					}
+					//Will invert the order the sinks are being inserted
+					//index++;
 				}
 				try {
 					inStaticContext = Modifier.isStatic(((TypeDeclaration) n).getModifiers());
@@ -117,6 +119,7 @@ public class TaintSinkSchema extends ASTVisitor {
 				inAnonymousClass = true;
 				break;
 			}
+				
 			n = n.getParent();
 		}
 		while (inAnonymousClass && n != null && !inStaticContext) {
