@@ -2,15 +2,12 @@ package edu.wm.cs.muse.operatorsTest;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
-import org.eclipse.text.edits.TextEdit;
 import org.junit.Before;
 import org.junit.Test;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -18,7 +15,6 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.Block;
 
 import edu.wm.cs.muse.dataleak.operators.TaintSourceOperator;
-import edu.wm.cs.muse.dataleak.schemas.TaintSourceSchema;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;
@@ -36,12 +32,8 @@ public class TaintSourceOperatorTest {
 	private ASTRewrite rewriter;
 	private String source;
 	private CompilationUnit root;
-	private MethodDeclaration node;
 	private ArrayList<SourceNodeChangeContainers> nodeChanges;
 	private TaintSourceOperator taintSourceOperator;
-	private TaintSourceSchema taintSourceSchema;
-	private SourceNodeChangeContainers container;
-	
 	/**
 	 * Default source file is sample_helloWorld.txt.
 	 */

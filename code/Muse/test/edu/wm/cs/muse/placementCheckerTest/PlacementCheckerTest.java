@@ -1,13 +1,8 @@
 package edu.wm.cs.muse.placementCheckerTest;
 import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -22,22 +17,13 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
-import org.junit.Before;
 import org.junit.Test;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.TypeDeclarationStatement;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
-
 import edu.wm.cs.muse.Muse;
-import edu.wm.cs.muse.dataleak.operators.ScopeSourceOperator;
-import edu.wm.cs.muse.dataleak.schemas.ScopeSourceSchema;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.JavaSourceFromString;
@@ -45,8 +31,6 @@ import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.dataleak.support.Placementchecker;
 import edu.wm.cs.muse.dataleak.support.SystemEnvironmentException;
 import edu.wm.cs.muse.dataleak.support.Utility;
-import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers;
-import edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers.INSERTION_TYPE;
 import edu.wm.cs.muse.mdroid.ASTHelper;
 
 public class PlacementCheckerTest extends Placementchecker {
