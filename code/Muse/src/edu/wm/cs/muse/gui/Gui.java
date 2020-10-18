@@ -124,6 +124,7 @@ public class Gui extends Application {
         });
     	
     	//presents an error (currently works off a button)
+    	//TODO: Implement to be called when a real error is detected
     	//goToErrorScene(oldConfigBtn);
     	
     	
@@ -295,7 +296,9 @@ public class Gui extends Application {
 					};
 						
 					
-		oldConfigBtn.setOnAction(errorEvent);
+		//currently sets alert on button press of passed button
+		//TODO: Change to activate on detected errors (filepaths etc.)
+		button.setOnAction(errorEvent);
     }
 	 	 
 	 
