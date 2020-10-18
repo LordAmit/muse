@@ -1,5 +1,6 @@
 package edu.wm.cs.muse.gui;
 
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -8,6 +9,8 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -19,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 
 
 // Development notes: Transitions will probably be done with stages. Each frame/activity
@@ -38,6 +42,7 @@ public class Gui extends Application {
 	Text titleText;
 	Stage window;
 	
+	
 
     public static void main(String[] args) {
         launch(args);
@@ -50,7 +55,7 @@ public class Gui extends Application {
     @Override
     public void start(Stage primaryStage) {
     	window = primaryStage;
-        window.setTitle("μSE"); // window name
+        window.setTitle("Î¼SE"); // window name
         
         goToTitleScene();
 
@@ -117,6 +122,11 @@ public class Gui extends Application {
                 fileChooser.showOpenDialog(window);
             }
         });
+    	
+    	//presents an error (currently works off a button)
+    	//goToErrorScene(oldConfigBtn);
+    	
+    	
     	oldConfigBtn.setLayoutX(600 * .1);
     	oldConfigBtn.setLayoutY(600 * .8);
     	
@@ -245,7 +255,7 @@ public class Gui extends Application {
     
     /*
      * Changes the scene to the one with a progress bar.
-     * Gives information as μSE runs.
+     * Gives information as Î¼SE runs.
      */
     private void goToProgressScene() {
 //    	HBox progressSceneLayout = new HBox();
@@ -268,8 +278,24 @@ public class Gui extends Application {
      * this scene gives information about why muse crashed.
      * Might give suggestions about what could have gone wrong.
      */
-    private void goToErrorScene() {
+    private void goToErrorScene(Button button) {
+    	Alert a = new Alert(AlertType.NONE);
     	
+    	EventHandler<ActionEvent> errorEvent = new 
+                EventHandler<ActionEvent>() { 
+					   public void handle(ActionEvent e){ 
+					       // set alert type 
+					       a.setAlertType(AlertType.ERROR); 
+					       // set content text 
+					       a.setContentText("error Dialog");        
+					       //a.setButtonType(ButtonType.OK);
+					       // show the dialog 
+					       a.show(); 
+					   } 
+					};
+						
+					
+		oldConfigBtn.setOnAction(errorEvent);
     }
 	 	 
 	 
