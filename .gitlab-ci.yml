@@ -17,4 +17,6 @@ build:
 test:
   stage: test
   script:
+    - echo "Testing Muse"
+    - cd code/Muse
     - mvn clean test
