@@ -7,8 +7,6 @@ stages:
 
 build:
   stage: build
-  tags:
-    - maven
   script:
     - echo "Refreshing PATH"
     - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
@@ -20,7 +18,5 @@ build:
 
 test:
   stage: test
-  tags:
-    - maven
   script:
     - mvn clean test
