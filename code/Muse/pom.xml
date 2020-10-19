@@ -163,7 +163,7 @@
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-runner</artifactId>
-			<version>${junit.platform.version}</version>
+			<version>5.5.2</version> <!-- MUST MATCH JUPITER VERSION -->
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
