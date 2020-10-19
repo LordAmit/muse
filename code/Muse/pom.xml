@@ -16,6 +16,7 @@
 	</repositories>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test/edu/wm/cs/muse</testSourceDirectory>
 		<resources>
 			<resource>
 				<directory>src</directory>
