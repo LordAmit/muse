@@ -34,6 +34,7 @@ public class TestClass {
 		String dataLeAk2 = "2";
 		int methodConeA(){
             dataLeAk3 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+            dataLeAk2 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
 			android.util.Log.d("leak-2-2", dataLeAk2);
 			android.util.Log.d("leak-4-2", dataLeAk4);
 			android.util.Log.d("leak-7-2", dataLeAk7);
@@ -44,11 +45,11 @@ public class TestClass {
 			android.util.Log.d("leak-5-2", dataLeAk5);
 			android.util.Log.d("leak-8-2", dataLeAk8);
 			android.util.Log.d("leak-11-2", dataLeAk11);
-			dataLeAk2 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
 			return 1;
         }
         int methodCOneB(){
             dataLeAk5 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+            dataLeAk4 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
 			android.util.Log.d("leak-2-3", dataLeAk2);
 			android.util.Log.d("leak-4-3", dataLeAk4);
 			android.util.Log.d("leak-7-3", dataLeAk7);
@@ -59,7 +60,6 @@ public class TestClass {
 			android.util.Log.d("leak-5-3", dataLeAk5);
 			android.util.Log.d("leak-8-3", dataLeAk8);
 			android.util.Log.d("leak-11-3", dataLeAk11);
-			dataLeAk4 = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
 			return 2;
         }
         class ChildClassLevelTwo{
