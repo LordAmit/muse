@@ -154,17 +154,20 @@
 		    <artifactId>commons-cli</artifactId>
 		    <version>1.4</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.5.2</version>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.7.0</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-runner -->
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-runner</artifactId>
-			<version>5.5.2</version> <!-- MUST MATCH JUPITER VERSION -->
+			<version>1.7.0</version>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 </project>
