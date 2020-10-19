@@ -285,11 +285,23 @@ public class Gui extends Application {
             	GenerateConfig.generateConfig(app_src_textfield.getText(), operatorSelections.getValue(), app_name_textfield.getText(), destination_folder_textfield.getText(), log_checkbox.isSelected(), insertion_log_path_textfield.getText(), execution_log_path_textfield.getText(), custom_data_leak_checkbox.isSelected(), source_string_textfield.getText(), sink_string_textfield.getText(), vardec_string_textfield.getText());
             }
         });
+        
+        Button returnTitleButton = new Button("back");
+        returnTitleButton.setOnAction(new EventHandler<ActionEvent>() {
+   		 
+            @Override
+            public void handle(ActionEvent anevent) {
+            	goToTitleScene();
+            	System.out.println("'Back' selected. Returning to title.");
+            	
+            	}
+        });
 
         FlowPane fp = new FlowPane(Orientation.HORIZONTAL, 10, 10);
         fp.setAlignment(Pos.CENTER_RIGHT);
         fp.getChildren().addAll(
-           new Button("< Back"),
+           //new Button("< Back"),
+           returnTitleButton,
            new Button("Next >"),
            finish,
            new Button("Cancel"),
