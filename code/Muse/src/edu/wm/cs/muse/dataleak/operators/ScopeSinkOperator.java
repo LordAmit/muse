@@ -101,15 +101,20 @@ public class ScopeSinkOperator {
 			
 			String sink = String.format(DataLeak.getSink(OperatorType.SCOPESINK, Integer.parseInt(placeholderValue), index));
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
-			
 			int placement = 1;
 			int statement_counter = 0;
 			
+			String vd = DataLeak.getVariableDeclaration(OperatorType.SCOPESINK);
+			// the type and the name of the variable declaration (e.g. "String dataLeAk")
+			String vdType = vd.split("%d")[0];
+			// the name of the variable declaration (e.g. "dataLeAk")
+			String vdName = vdType.split(" ")[1];
+			
 			for (Object obj : node.statements()) {
-				
-				if (obj.toString().startsWith("super") || obj.toString().startsWith("this(")) {
-					// will only change placement if the super is at top and there is only one
-					// statement
+				 
+				if (obj.toString().startsWith("super") || obj.toString().startsWith("this(") || obj.toString().startsWith(vdName) || obj.toString().startsWith("try")) {
+					//will only change placement if the super is at top or there is a dataleak
+					//source present in that line
 					//System.out.println("SUper found");
 
 					if (statement_counter == 0) {

@@ -27,6 +27,7 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import edu.wm.cs.muse.dataleak.DataLeak;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
@@ -242,6 +243,34 @@ public class MuseTest {
 
 		}
 	}
+	
+	@Test
+	@Order(8)
+	public void try_catch_taint_sink_operation_on_hello_world() {
+		String[] original_operators = new String[] {DataLeak.getRawSource(OperatorType.TAINTSOURCE), DataLeak.getVariableDeclaration(OperatorType.TAINTSOURCE)};
+		try {
+			DataLeak.setSource(OperatorType.TAINTSOURCE, "dataLeAk%d = javax.crypto.Cipher.getInstance(\"AES\");");
+			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, "javax.crypto.Cipher dataLeAk%d = null; ");
+			prepare_try_test_files();
+			execute_muse(OperatorType.TAINTSINK);
+			DataLeak.setSource(OperatorType.TAINTSOURCE, original_operators[0]);
+			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, original_operators[1]);
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+			 
+		} catch (IOException e) {
+			e.printStackTrace();
+			DataLeak.setSource(OperatorType.TAINTSOURCE, original_operators[0]);
+			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, original_operators[1]);
+		} catch (MalformedTreeException e) {
+			e.printStackTrace();
+			DataLeak.setSource(OperatorType.TAINTSOURCE, original_operators[0]);
+			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, original_operators[1]);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+			DataLeak.setSource(OperatorType.TAINTSOURCE, original_operators[0]);
+			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, original_operators[1]);
+		}
+	}
 
 	private void execute_muse(OperatorType operator) throws BadLocationException, MalformedTreeException, IOException {
 		Arguments.setTestMode(true);
@@ -260,7 +289,17 @@ public class MuseTest {
 		}
 	}
 	
-
+	private void prepare_try_test_files() throws FileNotFoundException, IOException {
+		Utility.COUNTER_GLOBAL = 0;
+		//Doesn't do anything, since output is already initialized to this value
+		//output = new File("test/output/output.txt");
+	
+		content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
+		expectedOutput = new File("test/output/sample_hello_world_try_catch_sink.txt");
+		
+		muse = new Muse();
+		root = ASTHelper.getTestingAST(content, Arguments.getRootPath());
+	}
 
 	private void prepare_test_files(OperatorType operator, int test) throws FileNotFoundException, IOException {
 		Utility.COUNTER_GLOBAL = 0;
