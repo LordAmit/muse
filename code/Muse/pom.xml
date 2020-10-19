@@ -139,7 +139,7 @@
 		    <version>1.4</version>
 		</dependency>
 		<dependency>
-			<groupId>JUnit</groupId>
+			<groupId>junit</groupId>
 			<artifactId>JUnit</artifactId>
 			<version>4.11</version>
 			<scope>test</scope>
