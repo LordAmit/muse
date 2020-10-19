@@ -12,6 +12,7 @@ build:
     - cd code/Muse
     - echo "Building Muse with Maven"
     - mvn clean verify
+    - mvn clean compile
 
 test:
   stage: test
