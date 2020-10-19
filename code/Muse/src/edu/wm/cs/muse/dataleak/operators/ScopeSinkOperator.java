@@ -112,7 +112,7 @@ public class ScopeSinkOperator {
 			
 			for (Object obj : node.statements()) {
 				
-				if (obj.toString().startsWith("super") || obj.toString().startsWith("this(") || obj.toString().startsWith(vdName)) {
+				if (obj.toString().startsWith("super") || obj.toString().startsWith("this(") || obj.toString().startsWith(vdName) || obj.toString().startsWith("try")) {
 					//will only change placement if the super is at top or there is a dataleak
 					//source present in that line
 					//System.out.println("SUper found");
