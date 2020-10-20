@@ -70,6 +70,12 @@ public class TryCatchHandler {
 	 */
 	protected boolean stringHasThrows(String insertion) throws ClassNotFoundException {
 		String[] stringsInitial = insertion.split("=");
+		for(int i = 0; i < stringsInitial.length; i++ ) {
+			String[] new_split = stringsInitial[i].split("new");
+			if (new_split.length > 1) {
+				stringsInitial[i] = new_split[1];
+			}
+		}
 		String newInsertion = "";
 		if (stringsInitial.length>1) {
 			newInsertion = stringsInitial[1];
@@ -125,16 +131,6 @@ public class TryCatchHandler {
 	 */
 	
 	protected TryStatement addTryCatch(Statement statement) {
-		try {
-			BufferedReader br = new BufferedReader(new FileReader("test/output/output.txt"));
-			String buffer;
-			while ((buffer = br.readLine()) != null) {
-			        System.out.println(buffer);
-			    }
-		}
-		catch (Exception e) {
-			
-		}
 		TryStatement tryStatement = statement.getAST().newTryStatement();
 		Block tryBody = statement.getAST().newBlock();
 		tryBody.statements().add(statement);

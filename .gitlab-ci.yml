@@ -11,7 +11,7 @@ build:
     - echo "Moving to Muse Directory"
     - cd code/Muse
     - echo "Building Muse with Maven"
-    - mvn clean verify
+    - mvn clean validate
     - mvn clean compile
 
 test:
