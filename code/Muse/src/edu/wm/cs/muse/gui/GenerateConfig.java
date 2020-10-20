@@ -5,12 +5,11 @@ import java.io.FileWriter;
 
 public class GenerateConfig {
 	
-	public static void generateConfig(String app_src, String operator, String app_name, String destination_folder, boolean log_analyze, String insertion_log, String execution_log, boolean custom_data_leak, String source, String sink, String varDec)
+	public static void generateConfig(String config_name, String lib4ast, String app_src, String operator, boolean mutate , String app_name, String destination_folder, boolean log_analyze, String insertion_log, String execution_log, boolean custom_data_leak, String source, String sink, String varDec)
 	{
 		// Creates a config file if one doesn't already exist
         try { 
-        	File myObj = new File("config.properties");
-        	System.out.println(myObj.getAbsolutePath());
+        	File myObj = new File(config_name + ".properties");
             if (myObj.createNewFile())
         	{
             	System.out.println("Modifying New File");
@@ -20,12 +19,17 @@ public class GenerateConfig {
         } catch(Exception e)
         {  }
         
-        String config_text = "lib4ast:\n"
+        String config_text = "lib4ast: "+lib4ast+"\n"
         		+ "appSrc: " + app_src + "\n" + 
-        		"operatorType: " + operator + "\n\n" + 
-        		"//REQUIRED FOR MUTATE\n" + 
-        		"appName: " + app_name + "\n" + 
-        		"output: " + destination_folder + "\n";
+        		"operatorType: " + operator + "\n";
+        
+        if (mutate)
+        {
+        	config_text += "\n" + 
+            		"//REQUIRED FOR MUTATE\n" + 
+            		"appName: " + app_name + "\n" + 
+            		"output: " + destination_folder + "\n";
+        }
         
         if (log_analyze)
         {
@@ -45,11 +49,8 @@ public class GenerateConfig {
         }
         		
         
-        
-
-        // Creates a config file if one doesn't already exist
         try {
-        	FileWriter myWriter = new FileWriter("config.properties");
+        	FileWriter myWriter = new FileWriter(config_name + ".properties");
             myWriter.write(config_text);
             myWriter.close();
         } catch (Exception e)

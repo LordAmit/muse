@@ -302,7 +302,7 @@ public class Gui extends Application {
    		 
             @Override
             public void handle(ActionEvent event) {
-            	GenerateConfig.generateConfig(app_src_textfield.getText(), operatorSelections.getValue(), app_name_textfield.getText(), destination_folder_textfield.getText(), log_checkbox.isSelected(), insertion_log_path_textfield.getText(), execution_log_path_textfield.getText(), custom_data_leak_checkbox.isSelected(), source_string_textfield.getText(), sink_string_textfield.getText(), vardec_string_textfield.getText());
+            	GenerateConfig.generateConfig(config_name_textfield.getText(), lib4ast_path_textfield.getText(), app_src_textfield.getText(), operatorSelections.getValue(), mutate_checkbox.isSelected() ,app_name_textfield.getText(), destination_folder_textfield.getText(), log_checkbox.isSelected(), insertion_log_path_textfield.getText(), execution_log_path_textfield.getText(), custom_data_leak_checkbox.isSelected(), source_string_textfield.getText(), sink_string_textfield.getText(), vardec_string_textfield.getText());
             }
         });
         
