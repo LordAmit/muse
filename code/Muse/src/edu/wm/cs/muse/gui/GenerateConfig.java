@@ -19,6 +19,7 @@ public class GenerateConfig {
         } catch(Exception e)
         {  }
         
+        // Forms the config text file as a string to write onto the .properties file later
         String config_text = "lib4ast: "+lib4ast+"\n"
         		+ "appSrc: " + app_src + "\n" + 
         		"operatorType: " + operator + "\n";
@@ -48,7 +49,7 @@ public class GenerateConfig {
             		"varDec: " +varDec;
         }
         		
-        
+        // Writes to the .properties file
         try {
         	FileWriter myWriter = new FileWriter(config_name + ".properties");
             myWriter.write(config_text);
