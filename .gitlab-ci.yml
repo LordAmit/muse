@@ -1,4 +1,4 @@
-image: java:latest
+image: maven:latest
 
 stages:
   - build
@@ -7,11 +7,7 @@ stages:
 
 build:
   stage: build
-  tags:
-    - maven
   script:
-    - echo "Refreshing PATH"
-    - $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
     - echo "Moving to Muse Directory"
     - cd code/Muse
     - echo "Building Muse with Maven"
@@ -20,7 +16,7 @@ build:
 
 test:
   stage: test
-  tags:
-    - maven
   script:
+    - echo "Testing Muse"
+    - cd code/Muse
     - mvn clean test

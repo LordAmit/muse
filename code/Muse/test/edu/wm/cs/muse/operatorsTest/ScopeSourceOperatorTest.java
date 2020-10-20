@@ -9,14 +9,11 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.junit.Before;
 import org.junit.Test;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
-
 import edu.wm.cs.muse.dataleak.operators.ScopeSourceOperator;
 import edu.wm.cs.muse.dataleak.schemas.ScopeSourceSchema;
 import edu.wm.cs.muse.dataleak.support.Arguments;
@@ -33,7 +30,6 @@ public class ScopeSourceOperatorTest {
 	private ArrayList<SourceNodeChangeContainers> nodeChanges;
 	private ScopeSourceOperator scopeSourceOperator;
 	private ScopeSourceSchema scopeSourceSchema;
-	private SourceNodeChangeContainers container;
 	
 	/**
 	 * Default source file is sample_multilevelclass.txt.

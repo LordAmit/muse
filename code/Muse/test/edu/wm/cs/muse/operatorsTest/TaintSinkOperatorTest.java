@@ -35,12 +35,9 @@ public class TaintSinkOperatorTest {
 	private ASTRewrite rewriter;
 	private String source;
 	private CompilationUnit root;
-	private MethodDeclaration method;
-	private Block node;
 	private ArrayList<SinkNodeChangeContainers> nodeChanges;
 	private TaintSinkOperator taintSinkOperator;
 	private TaintSinkSchema taintSinkSchema;
-	private SinkNodeChangeContainers container;
 
 	/**
 	 * 

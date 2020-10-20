@@ -227,10 +227,6 @@ public class MuseComplexReachabilitySchemaTest {
     try {      
       prepare_test_files(ComponentType.INTERFACE);
       execute_muse_complex_reachability();
-      ArrayList<ReachabilityNodeChangeContainers> complexReachabilityChanges = complexReachabilitySchema.getNodeChanges();
-      
-      prepare_test_files(ComponentType.INTERFACE);
-      execute_muse_complex_reachability();
       ArrayList<ReachabilityNodeChangeContainers> reachabilityChanges = complexReachabilitySchema.getNodeChanges();
 
       assertEquals(2, reachabilityChanges.size());
