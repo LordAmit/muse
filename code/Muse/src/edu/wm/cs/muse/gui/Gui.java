@@ -356,9 +356,12 @@ public class Gui extends Application {
         directoryChooser.setInitialDirectory(new File("src"));
         SearchButton.setOnAction(e -> {
        	 File selectedDirectory = directoryChooser.showDialog(stage);
-
-            String directoryName = selectedDirectory.getAbsolutePath();
+       	 	try {
+       	 	String directoryName = selectedDirectory.getAbsolutePath();
             textfield.setText(directoryName);
+       	 	} catch(Exception dup) {
+       	 		System.out.print("No folder selected.");
+       	 	}
            
         });
    }
