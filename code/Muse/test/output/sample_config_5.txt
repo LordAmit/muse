@@ -1,0 +1,16 @@
+lib4ast: C:\Users
+appSrc: C:\Users\Admin\muse\mse\code\Muse\Sample_Application\app\src
+operatorType: SCOPESINK
+
+//REQUIRED FOR MUTATE
+appName: Sample App
+output: C:\Users\Admin\Downloads\test
+
+//REQUIRED FOR LOGANALYZE
+insertionLog: C:\Users\Admin\Downloads\insertion_log
+executionLog: C:\Users\Admin\Downloads\execution_log
+
+//REQUIRED FOR CUSTOM LEAKS
+source: sample_source_string
+sink: sample_sink_string
+varDec: sample_varDec_string

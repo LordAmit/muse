@@ -6,6 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import edu.wm.cs.muse.operatorsTest.*;
 import edu.wm.cs.muse.placementCheckerTest.PlacementCheckerTest;
+import edu.wm.cs.muse.guiTest.*;
 import edu.wm.cs.muse.schemasTest.*;
 
 @RunWith(Suite.class)
@@ -23,7 +24,9 @@ import edu.wm.cs.muse.schemasTest.*;
         ScopeSinkSchemaTest.class,               // *
         ScopeSourceSchemaTest.class,             // *
         TaintSinkSchemaTest.class,               // *
-        TaintSourceSchemaTest.class              // *
+        TaintSourceSchemaTest.class,             // *
+        
+        GuiTest.class // 
         })
 public class RunAllTests {
 
