@@ -245,6 +245,8 @@ public class Gui extends Application {
             public void handle(ActionEvent event) {
         		destination_folder_textfield.setDisable(!mutate_checkbox.isSelected());
         		app_name_textfield.setDisable(!mutate_checkbox.isSelected());
+        		updateBorder(destination_folder_textfield, true);
+        		updateBorder(app_name_textfield, true);
             }
         });
 
@@ -271,6 +273,8 @@ public class Gui extends Application {
             public void handle(ActionEvent event) {
         		insertion_log_path_textfield.setDisable(!log_checkbox.isSelected());
         		execution_log_path_textfield.setDisable(!log_checkbox.isSelected()); 
+        		updateBorder(insertion_log_path_textfield, true);
+        		updateBorder(execution_log_path_textfield, true);
             }
         });
 
@@ -305,6 +309,9 @@ public class Gui extends Application {
             	source_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected());
                 sink_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
                 vardec_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
+                updateBorder(source_string_textfield, true);
+        		updateBorder(sink_string_textfield, true);
+        		updateBorder(vardec_string_textfield, true);
             }
         });
 
