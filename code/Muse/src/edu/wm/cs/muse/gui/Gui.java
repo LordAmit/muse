@@ -316,7 +316,11 @@ public class Gui extends Application {
    		 
             @Override
             public void handle(ActionEvent event) {
-            	GenerateConfig.generateConfig(config_name_textfield.getText(), lib4ast_path_textfield.getText(), app_src_textfield.getText(), operatorSelections.getValue(), mutate_checkbox.isSelected() ,app_name_textfield.getText(), destination_folder_textfield.getText(), log_checkbox.isSelected(), insertion_log_path_textfield.getText(), execution_log_path_textfield.getText(), custom_data_leak_checkbox.isSelected(), source_string_textfield.getText(), sink_string_textfield.getText(), vardec_string_textfield.getText());
+            	
+            	if (validInputs(config_name_textfield, lib4ast_path_textfield, app_src_textfield, operatorSelections, mutate_checkbox ,app_name_textfield, destination_folder_textfield, log_checkbox, insertion_log_path_textfield, execution_log_path_textfield, custom_data_leak_checkbox, source_string_textfield, sink_string_textfield, vardec_string_textfield))
+            	{
+            		GenerateConfig.generateConfig(config_name_textfield.getText(), lib4ast_path_textfield.getText(), app_src_textfield.getText(), operatorSelections.getValue(), mutate_checkbox.isSelected() ,app_name_textfield.getText(), destination_folder_textfield.getText(), log_checkbox.isSelected(), insertion_log_path_textfield.getText(), execution_log_path_textfield.getText(), custom_data_leak_checkbox.isSelected(), source_string_textfield.getText(), sink_string_textfield.getText(), vardec_string_textfield.getText());
+            	}
             }
         });
         
@@ -408,5 +412,159 @@ public class Gui extends Application {
 		button.setOnAction(errorEvent);
     }
 	 	 
+    /**
+     * Checks all input fields and returns true if no required fields are empty and marks the fields that are not
+     * @param config_name_textfield
+     * @param lib4ast_path_textfield
+     * @param app_src_textfield
+     * @param operatorSelections
+     * @param mutate_checkbox
+     * @param app_name_textfield
+     * @param destination_folder_textfield
+     * @param log_checkbox
+     * @param insertion_log_path_textfield
+     * @param execution_log_path_textfield
+     * @param custom_data_leak_checkbox
+     * @param source_string_textfield
+     * @param sink_string_textfield
+     * @param vardec_string_textfield
+     * @return true if all required fields contain text
+     */
+    private boolean validInputs(TextField config_name_textfield, TextField lib4ast_path_textfield, TextField app_src_textfield, ComboBox<String> operatorSelections, CheckBox mutate_checkbox , TextField app_name_textfield, TextField destination_folder_textfield, CheckBox log_checkbox, TextField insertion_log_path_textfield, TextField execution_log_path_textfield, CheckBox custom_data_leak_checkbox, TextField source_string_textfield, TextField sink_string_textfield, TextField vardec_string_textfield)
+    {
+    	boolean valid = true;
+    	
+    	
+    	
+    	
+    	
+    	if (config_name_textfield.getText().equals("")) {
+    		updateBorder(config_name_textfield, false);
+    		valid = false;
+    	}
+    	else
+    		updateBorder(config_name_textfield, true);
+    	
+    	if (lib4ast_path_textfield.getText().equals("")) {
+        	updateBorder(lib4ast_path_textfield, false);
+        	valid = false;
+    	}
+    	else
+        	updateBorder(lib4ast_path_textfield, true);
+
+    	if (app_src_textfield.getText().equals("")) {
+    		updateBorder(app_src_textfield, false);
+    		valid = false;
+    	}
+    	else
+    		updateBorder(app_src_textfield, true);
+    	
+    	if (operatorSelections.getValue() == null) {
+    		updateBorder(operatorSelections, false);
+    		valid = false;
+    	}
+    	else
+    		updateBorder(operatorSelections, true);
+
+    	
+    	if (mutate_checkbox.isSelected())
+    	{        	
+    		if (app_name_textfield.getText().equals("")) {
+        		updateBorder(app_name_textfield, false);
+        		valid = false;
+    		}
+    		else
+        		updateBorder(app_name_textfield, true);
+        	
+        	if (destination_folder_textfield.getText().equals("")) {
+        		updateBorder(destination_folder_textfield, false);
+        		valid = false;	
+        	}
+        	else
+        		updateBorder(destination_folder_textfield, true);
+
+    	}
+    	else
+    	{
+    		updateBorder(app_name_textfield, true);
+    		updateBorder(destination_folder_textfield, true);
+    	}
+    	
+    	if (log_checkbox.isSelected())
+    	{
+    		
+        	
+    		if (insertion_log_path_textfield.getText().equals("")) {
+    			updateBorder(insertion_log_path_textfield, false);
+        		valid = false;
+    		}
+    		else
+    			updateBorder(insertion_log_path_textfield, true);
+
+        	if (execution_log_path_textfield.getText().equals("")) {
+            	updateBorder(execution_log_path_textfield, false);
+        		valid = false;   	
+        	}
+        	else
+            	updateBorder(execution_log_path_textfield, true);
+
+    	}
+    	else
+    	{
+			updateBorder(insertion_log_path_textfield, true);
+        	updateBorder(execution_log_path_textfield, true);
+    	}
+    	
+    	if (custom_data_leak_checkbox.isSelected())
+    	{
+        	
+    		if (source_string_textfield.getText().equals("")) {
+        		updateBorder(source_string_textfield, false);
+        		valid = false;
+    		}
+    		else
+        		updateBorder(source_string_textfield, true);
+        	
+        	if (sink_string_textfield.getText().equals("")) {
+            	updateBorder(sink_string_textfield, false);
+        		valid = false;
+        	}
+        	else
+            	updateBorder(sink_string_textfield, true);
+
+        	if (vardec_string_textfield.getText().equals("")) {
+            	updateBorder(vardec_string_textfield, false);
+        		valid = false;
+        	}
+        	else
+            	updateBorder(vardec_string_textfield, true);
+
+    	}
+    	else
+    	{
+    		updateBorder(source_string_textfield, true);
+        	updateBorder(sink_string_textfield, true);
+        	updateBorder(vardec_string_textfield, true);
+        	
+    	}
+    	
+    	return valid;
+    }
+    
+    private void updateBorder(TextField tf, boolean valid)
+    {
+    	if (valid)
+    		tf.setStyle("-fx-border-color: red ; -fx-border-width: 0px ;");
+    	else
+    		tf.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+    }
+    
+    private void updateBorder(ComboBox<String> cb, boolean valid)
+    {
+    	if (valid)
+    		cb.setStyle("-fx-border-color: red ; -fx-border-width: 0px ;");
+    	else
+    		cb.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+    }
 	 
 }
