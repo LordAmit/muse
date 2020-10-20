@@ -2,18 +2,11 @@ package edu.wm.cs.muse.dataleak.schemas;
 
 import java.util.ArrayList;
 
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import edu.wm.cs.muse.dataleak.DataLeak;
-import edu.wm.cs.muse.dataleak.support.OperatorType;
-import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.IVHNodeChangeContainers;
 
 /**
@@ -50,7 +43,7 @@ public class IVHSchema extends ASTVisitor{
 	public boolean visit(TypeDeclaration node) {
 		//Checks for class and interface and returns if interface,
 		//as we only care about classes
-		if (node.isInterface()) {
+		if (node.isInterface()||node.getMethods().length == 0) {
 			return false;
 		}
 		//Check if this class has a superclass, and if not, return,
@@ -59,15 +52,23 @@ public class IVHSchema extends ASTVisitor{
 			previousClasses.add(node);
 			return false;
 		}
-		//Need at least one method in the subclass
-		if (node.getMethods().length == 0) {
+		//Need at least one method in the subclass to be non-static
+		boolean hasNonStatic = false;
+		for (int i=0; i<node.getMethods().length;i++) {
+			if (!node.getMethods()[i].modifiers().contains(Modifier.STATIC)) {
+				hasNonStatic = true;
+				break;
+			}
+		}
+		if (!hasNonStatic) {
 			return false;
 		}
-		
 		Type superclass = node.getSuperclassType();
 		TypeDeclaration parentClass = null;
 		for (TypeDeclaration parent: previousClasses) {
-			if (parent.getName().toString() == superclass.toString()) {
+			System.out.println(parent.getName().toString());
+			System.out.println(superclass.toString());
+			if (parent.getName().toString().equals(superclass.toString())) {
 				parentClass = parent;
 			}
 		}
