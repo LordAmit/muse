@@ -26,7 +26,7 @@ import edu.wm.cs.muse.schemasTest.*;
         TaintSinkSchemaTest.class,               // *
         TaintSourceSchemaTest.class,             // *
         
-        GuiTest.class // 
+        GuiTest.class // Gui Test
         })
 public class RunAllTests {
 
