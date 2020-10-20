@@ -58,7 +58,7 @@ public class Gui extends Application {
     @Override
     public void start(Stage primaryStage) {
     	window = primaryStage;
-        window.setTitle("Î¼SE"); // window name
+        window.setTitle("μSE"); // window name
         
         goToTitleScene();
 
@@ -94,10 +94,10 @@ public class Gui extends Application {
      * 2. Creating a new configuration file in a new window (makeConfigBtn)
      */
     private void createButtons() {
-    	makeConfigBtn = new Button();
-    	oldConfigBtn = new Button();
-    	makeConfigBtn.setText("Create a new configuration");
-    	oldConfigBtn.setText("Use an existing configuration");
+    	makeConfigBtn = new Button("Create a new configuration");
+    	oldConfigBtn = new Button("Use an existing configuration");
+//    	makeConfigBtn.setText("Create a new configuration");
+//    	oldConfigBtn.setText("Use an existing configuration");
     	
     	// Attach an event handler to the button for running muse with an existing config file
     	makeConfigBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -153,15 +153,15 @@ public class Gui extends Application {
     private void goToConfigCreation() {
     	GridPane configLayout = new GridPane();
         FlowPane leftbanner = new FlowPane();
-        leftbanner.setPrefWidth(50); //200?
-        String bgStyle = "-fx-background-color: lightgreen;"
-           + "-fx-background-radius: 0%;"
-           + "-fx-background-inset: 5px;";
-           leftbanner.setStyle(bgStyle);
-
-           configLayout.add(leftbanner, 0, 0, 1, 1);
+//        leftbanner.setPrefWidth(30); //200?
+//        String bgStyle = "-fx-background-color: lightgreen;"
+//           + "-fx-background-radius: 0%;"
+//           + "-fx-background-inset: 5px;";
+//           leftbanner.setStyle(bgStyle);
+//
+//           configLayout.add(leftbanner, 0, 0, 1, 1);
            configLayout.add(createGridPane(), 1, 0, 1, 1);
-           Scene scene = new Scene(configLayout, 750, 575);
+           Scene scene = new Scene(configLayout, 750, 655);
            window.setScene(scene);
     }
     
@@ -170,63 +170,83 @@ public class Gui extends Application {
      * @return The created layout, which is then added to the scene.
      */
     private GridPane createGridPane() {
-//    	Button back, next, finish, cancel, help = new Button();
-    	Button cancel = new Button("Cancel");
-    	cancel.setOnAction(new EventHandler<ActionEvent>() {
-   		 
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("cancelled operation");
-            }
-        });
     	
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10));
         grid.setHgap(10);
         grid.setVgap(10);
 
-        Text txt = new Text("Required Inputs");
+        Text txt = new Text("Generate a Configuration File");
         txt.setFont(Font.font("Dialog", FontWeight.BOLD, 12));
 
         grid.add(txt, 0, 0, 1, 1);
         grid.add(new Separator(), 0, 1, 3, 1);
-
-        TextField app_name_textfield = new TextField();
-        grid.add(new Label("App Name:"), 0, 2, 1, 1);
-        grid.add(app_name_textfield, 1, 2, 1, 1);
-
-        TextField app_src_textfield = new TextField();
-        grid.add(new Label("App src Location:"), 0, 3, 1, 1);
-        grid.add(app_src_textfield, 1, 3, 1, 1);
+        
+        TextField config_name_textfield = new TextField();
+        grid.add(new Label("Configuration Name:"), 0, 2, 1, 1);
+        grid.add(config_name_textfield, 1, 2, 1, 1);
+        
+        
+        TextField lib4ast_path_textfield = new TextField();
+        grid.add(new Label("lib4ast Path:"), 0, 3, 1, 1);
+        grid.add(lib4ast_path_textfield, 1, 3, 1, 1);
         grid.add(new Button("Browse..."), 2, 3, 1, 1);
-
-        TextField destination_folder_textfield = new TextField();
-        grid.add(new Label("Destination Folder:"), 0, 4, 1, 1);
-        grid.add(destination_folder_textfield, 1, 4, 1, 1);
-        grid.add(new Button("Browse..."), 2, 4, 1, 1);
-
-
-        grid.add(new Label("Operator:"), 0, 5, 1, 1);
+        
+        grid.add(new Label("Operator:"), 0, 4, 1, 1);
         ComboBox<String> operatorSelections = new ComboBox<>();
         operatorSelections.setPrefWidth(400);
         
         operatorSelections.getItems().addAll("SCOPESOURCE", "SCOPESINK", "TAINTSOURCE",
         									 "TAINTSINK", "COMPLEXREACHABILITY", "REACHABILITY");
+        grid.add(operatorSelections, 1, 4, 1, 1);
         
-        grid.add(operatorSelections, 1, 5, 1, 1);
         
+        CheckBox mutate_checkbox = new CheckBox("Mutate");
+        grid.add(mutate_checkbox, 0, 7, 3, 1);
         grid.add(new Separator(), 0, 6, 3, 1);
+        
+
+
+
+        TextField app_src_textfield = new TextField();
+        grid.add(new Label("App src Location:"), 0, 5, 1, 1);
+        grid.add(app_src_textfield, 1, 5, 1, 1);
+        grid.add(new Button("Browse..."), 2, 5, 1, 1);
+
+        TextField destination_folder_textfield = new TextField();
+        grid.add(new Label("Destination Folder:"), 0, 8, 1, 1);
+        grid.add(destination_folder_textfield, 1, 8, 1, 1);
+        grid.add(new Button("Browse..."), 2, 8, 1, 1);
+        
+        TextField app_name_textfield = new TextField();
+        grid.add(new Label("App Name:"), 0, 9, 1, 1);
+        grid.add(app_name_textfield, 1, 9, 1, 1);
+        
+		destination_folder_textfield.setDisable(!mutate_checkbox.isSelected());
+        app_name_textfield.setDisable(!mutate_checkbox.isSelected());
+        
+        mutate_checkbox.setOnAction(new EventHandler<ActionEvent>() {
+    		 
+            @Override
+            public void handle(ActionEvent event) {
+        		destination_folder_textfield.setDisable(!mutate_checkbox.isSelected());
+        		app_name_textfield.setDisable(!mutate_checkbox.isSelected());
+            }
+        });
+
+        
+        grid.add(new Separator(), 0, 10, 3, 1);
 
         CheckBox log_checkbox = new CheckBox("Log Analyze");
-        grid.add(log_checkbox, 0, 7, 3, 1);
+        grid.add(log_checkbox, 0, 11, 3, 1);
 
         TextField insertion_log_path_textfield = new TextField();
-        grid.add(new Label("\tInsertion Log Path:"), 0, 9, 1, 1);
-        grid.add(insertion_log_path_textfield, 1, 9, 1, 1);
+        grid.add(new Label("\tInsertion Log Path:"), 0, 12, 1, 1);
+        grid.add(insertion_log_path_textfield, 1, 12, 1, 1);
         
         TextField execution_log_path_textfield = new TextField();
-        grid.add(new Label("\tExecution Log Path:"), 0, 10, 1, 1);
-        grid.add(execution_log_path_textfield, 1, 10, 1, 1);
+        grid.add(new Label("\tExecution Log Path:"), 0, 13, 1, 1);
+        grid.add(execution_log_path_textfield, 1, 13, 1, 1);
         
         insertion_log_path_textfield.setDisable(!log_checkbox.isSelected());
 		execution_log_path_textfield.setDisable(!log_checkbox.isSelected()); 
@@ -240,25 +260,25 @@ public class Gui extends Application {
             }
         });
 
-        grid.add(new Separator(), 0, 11, 3, 1);
+        grid.add(new Separator(), 0, 14, 3, 1);
 
         CheckBox custom_data_leak_checkbox = new CheckBox("Use Custom Data Leak");
-        grid.add(custom_data_leak_checkbox, 0, 12, 3, 1);
+        grid.add(custom_data_leak_checkbox, 0, 15, 3, 1);
 
         TextField source_string_textfield = new TextField();
-        grid.add(new Label("\tSource String:"), 0, 13, 1, 1);
-        grid.add(source_string_textfield, 1, 13, 1, 1);
+        grid.add(new Label("\tSource String:"), 0, 16, 1, 1);
+        grid.add(source_string_textfield, 1, 16, 1, 1);
         
         TextField sink_string_textfield = new TextField();
-        grid.add(new Label("\tSink String:"), 0, 14, 1, 1);
-        grid.add(sink_string_textfield, 1, 14, 1, 1);
+        grid.add(new Label("\tSink String:"), 0, 17, 1, 1);
+        grid.add(sink_string_textfield, 1, 17, 1, 1);
         
         TextField vardec_string_textfield = new TextField();
-        grid.add(new Label("\tvarDec String:"), 0, 15, 1, 1);
-        grid.add(vardec_string_textfield, 1, 15, 1, 1);
+        grid.add(new Label("\tvarDec String:"), 0, 18, 1, 1);
+        grid.add(vardec_string_textfield, 1, 18, 1, 1);
 
         grid.add(new Label("Once created, configurations can be reused\n"
-           + "(see Help for details)"),1, 16, 1, 1);
+           + "(see Help for details)"),1, 19, 1, 1);
         
         source_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected());
         sink_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
@@ -275,7 +295,7 @@ public class Gui extends Application {
         });
 
 
-        grid.add(new Separator(), 0, 17, 3, 1);
+        grid.add(new Separator(), 0, 20, 3, 1);
         
         Button finish = new Button("Finish");
         finish.setOnAction(new EventHandler<ActionEvent>() {
@@ -286,7 +306,7 @@ public class Gui extends Application {
             }
         });
         
-        Button returnTitleButton = new Button("back");
+        Button returnTitleButton = new Button("Back");
         returnTitleButton.setOnAction(new EventHandler<ActionEvent>() {
    		 
             @Override
@@ -300,13 +320,11 @@ public class Gui extends Application {
         FlowPane fp = new FlowPane(Orientation.HORIZONTAL, 10, 10);
         fp.setAlignment(Pos.CENTER_RIGHT);
         fp.getChildren().addAll(
-           //new Button("< Back"),
            returnTitleButton,
-           new Button("Next >"),
            finish,
-           new Button("Cancel"),
-           new Button("Help"));
-        grid.add(fp, 0, 18, 3, 1);
+           new Button("Run Muse"), 	// new Muse().runMuse(args);
+           new Button("Help"));		// explanations of what each config parameter is, what operators do, etc?
+        grid.add(fp, 0, 21, 3, 1);
 
         return grid;
      }
