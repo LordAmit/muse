@@ -1,0 +1,8 @@
+lib4ast: C:\Users
+appSrc: C:\Users\Admin\muse\mse\code\Muse\Sample_Application\app\src
+operatorType: SCOPESINK
+
+//REQUIRED FOR CUSTOM LEAKS
+source: sample_source_string
+sink: sample_sink_string
+varDec: sample_varDec_string

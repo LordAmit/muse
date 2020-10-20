@@ -1,0 +1,3 @@
+lib4ast: C:\Users
+appSrc: C:\Users\Admin\muse\mse\code\Muse\Sample_Application\app\src
+operatorType: SCOPESINK

@@ -1,0 +1,7 @@
+lib4ast: C:\Users
+appSrc: C:\Users\Admin\muse\mse\code\Muse\Sample_Application\app\src
+operatorType: SCOPESINK
+
+//REQUIRED FOR MUTATE
+appName: Sample App
+output: C:\Users\Admin\Downloads\test
