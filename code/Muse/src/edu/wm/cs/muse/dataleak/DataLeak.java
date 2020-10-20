@@ -36,6 +36,8 @@ public class DataLeak {
 					"dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
 			put(OperatorType.TAINTSOURCE,
 					"dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			put(OperatorType.IVH,
+					"public String dataLeak = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
 		}
 	};
 	private static HashMap<OperatorType, String> sinkLeaks = new HashMap<OperatorType, String>() {
@@ -44,6 +46,7 @@ public class DataLeak {
 			put(OperatorType.COMPLEXREACHABILITY, "android.util.Log.d(\"leak-%d\", leAkPath%d);");
 			put(OperatorType.SCOPESINK, "android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
 			put(OperatorType.TAINTSINK, "android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
+			put(OperatorType.IVH, "android.util.Log.d(\"Leaking: \" + dataLeak + dataLeakGetter()");
 		}
 	};
 	private static HashMap<OperatorType, String> variableDeclarations = new HashMap<OperatorType, String>() {
@@ -51,6 +54,7 @@ public class DataLeak {
 			put(OperatorType.SCOPESOURCE, "String dataLeAk%d = \"%d\";");
 			put(OperatorType.TAINTSOURCE, "String dataLeAk%d = \"\";");
 			put(OperatorType.COMPLEXREACHABILITY, "String dataLeAk%d = dataLeAk%d");
+			put(OperatorType.IVH, "public String dataLeak = \"\";");
 		}
 	};
 
