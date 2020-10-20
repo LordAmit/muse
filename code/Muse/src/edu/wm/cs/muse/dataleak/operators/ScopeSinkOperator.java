@@ -100,7 +100,13 @@ public class ScopeSinkOperator {
 					SchemaOperatorUtility.getClassNameOfMethod(node), methodNode.getName()));
 			
 			String sink = String.format(DataLeak.getSink(OperatorType.SCOPESINK, Integer.parseInt(placeholderValue), index));
-			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
+			ASTNode placeHolder;
+			if (handler.stringHasThrows(sink)) {
+				placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT));
+			}
+			else {
+				placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
+			}
 			int placement = 1;
 			int statement_counter = 0;
 			
@@ -128,31 +134,15 @@ public class ScopeSinkOperator {
 				}
 				statement_counter++;
 			}
-			if (handler.stringHasThrows(sink)) {
-				TryStatement tryPlaceHolder = handler.addTryCatch(placeHolder);
-				listRewrite.insertAt(tryPlaceHolder, placement, null);
-				if (!(listRewrite.getParent().getRoot() instanceof Block)) {
-					temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
-					try {
-						if (!checker.check(temp_file))
-							listRewrite.remove(tryPlaceHolder,null);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			else {
-				listRewrite.insertAt(placeHolder, placement, null);
-				if (!(listRewrite.getParent().getRoot() instanceof Block)) {
-					temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
-					try {
-						if (!checker.check(temp_file))
-							listRewrite.remove(placeHolder,null);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+			listRewrite.insertAt(placeHolder, placement, null);
+			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+				temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
+				try {
+					if (!checker.check(temp_file))
+						listRewrite.remove(placeHolder,null);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}

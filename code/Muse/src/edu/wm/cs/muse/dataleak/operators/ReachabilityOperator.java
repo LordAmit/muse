@@ -41,8 +41,6 @@ public class ReachabilityOperator {
 
 			System.out.println(String.format(nodeChange.changedSource, Utility.COUNTER_GLOBAL));
 
-			Statement placeHolder = (Statement) rewriter
-					.createStringPlaceholder(DataLeak.getLeak(OperatorType.REACHABILITY, Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT);
 			
 			
 			/*
@@ -51,20 +49,26 @@ public class ReachabilityOperator {
 			 * schema visitor on the visit The rewriter implements the specified changes
 			 * made by the sink operator
 			 */
+			ASTNode placeHolder;
 			try {
-			if (handler.stringHasThrows(DataLeak.getLeak(OperatorType.REACHABILITY, Utility.COUNTER_GLOBAL))) {
-				TryStatement tryPlaceHolder = handler.addTryCatch(placeHolder);
-				ListRewrite listRewrite = rewriter.getListRewrite(nodeChange.node, nodeChange.propertyDescriptor);
-				listRewrite.insertAt(tryPlaceHolder, nodeChange.index, null);
-			}
-			else {
-				ListRewrite listRewrite = rewriter.getListRewrite(nodeChange.node, nodeChange.propertyDescriptor);
-				listRewrite.insertAt(placeHolder, nodeChange.index, null);
-			}
+				if (handler.stringHasThrows(DataLeak.getLeak(OperatorType.REACHABILITY, Utility.COUNTER_GLOBAL))) {
+					placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
+						DataLeak.getLeak(OperatorType.REACHABILITY, Utility.COUNTER_GLOBAL),
+						ASTNode.EMPTY_STATEMENT));
+				}
+				else{
+					placeHolder = (Statement) rewriter.createStringPlaceholder(
+							DataLeak.getLeak(OperatorType.REACHABILITY, Utility.COUNTER_GLOBAL),
+							ASTNode.EMPTY_STATEMENT);
+				}
 			}
 			catch (ClassNotFoundException e) {
-				
+				placeHolder = (Statement) rewriter.createStringPlaceholder(
+						DataLeak.getLeak(OperatorType.REACHABILITY, Utility.COUNTER_GLOBAL),
+						ASTNode.EMPTY_STATEMENT);
 			}
+			ListRewrite listRewrite = rewriter.getListRewrite(nodeChange.node, nodeChange.propertyDescriptor);
+			listRewrite.insertAt(placeHolder, nodeChange.index, null);
 			Utility.COUNTER_GLOBAL++;
 			
 		}

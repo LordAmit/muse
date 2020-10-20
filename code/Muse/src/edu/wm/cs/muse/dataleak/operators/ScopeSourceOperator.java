@@ -95,37 +95,27 @@ public class ScopeSourceOperator {
 
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		String source = DataLeak.getSource(OperatorType.SCOPESOURCE, identifier);
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
+		//Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
 		// listRewrite.insertAt(placeHolder, index, null);
+		ASTNode placeHolder;
 		if (handler.stringHasThrows(source)) {
-			TryStatement tryPlaceHolder = handler.addTryCatch(placeHolder);
-			listRewrite.insertAt(tryPlaceHolder, placement, null);
-			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
-				temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
-				try {
-					if (!checker.check(temp_file))
-						listRewrite.remove(tryPlaceHolder,null);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT));
 		}
 		else {
-			listRewrite.insertAt(placeHolder, placement, null);
-			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
-				temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
-				try {
-					if (!checker.check(temp_file))
-						listRewrite.remove(placeHolder,null);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
+		}
+		
+		listRewrite.insertAt(placeHolder, placement, null);
+		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+			temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
+			try {
+				if (!checker.check(temp_file))
+					listRewrite.remove(placeHolder,null);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-			
-
 	}
 
 	// for declaration.
@@ -134,42 +124,28 @@ public class ScopeSourceOperator {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		String variable = String.format(DataLeak.getVariableDeclaration(OperatorType.SCOPESOURCE), Utility.COUNTER_GLOBAL, 
 				Utility.COUNTER_GLOBAL);
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
+		ASTNode placeHolder;
 		if (handler.stringHasThrows(variable)) {
-			TryStatement tryPlaceHolder = handler.addTryCatch(placeHolder);
-			listRewrite.insertAt(tryPlaceHolder, index, null);
-			ASTNode aRoot = listRewrite.getParent().getRoot();
-			if (!(aRoot instanceof Block)) {
-				CompilationUnit astRoot = (CompilationUnit)aRoot;
-			
-				try {
-					temp_file = checker.getTempFile(astRoot, rewriter, source_file);
-					if (!checker.check(temp_file)) {
-						System.out.println("Removing " + variable);
-						listRewrite.remove(tryPlaceHolder,null);
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT));
 		}
 		else {
-			listRewrite.insertAt(placeHolder, index, null);
-			ASTNode aRoot = listRewrite.getParent().getRoot();
-			if (!(aRoot instanceof Block)) {
-				CompilationUnit astRoot = (CompilationUnit)aRoot;
-			
-				try {
-					temp_file = checker.getTempFile(astRoot, rewriter, source_file);
-					if (!checker.check(temp_file)) {
-						System.out.println("Removing " + variable);
-						listRewrite.remove(placeHolder,null);
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
+		}
+		
+		listRewrite.insertAt(placeHolder, index, null);
+		ASTNode aRoot = listRewrite.getParent().getRoot();
+		if (!(aRoot instanceof Block)) {
+			CompilationUnit astRoot = (CompilationUnit)aRoot;
+		
+			try {
+				temp_file = checker.getTempFile(astRoot, rewriter, source_file);
+				if (!checker.check(temp_file)) {
+					System.out.println("Removing " + variable);
+					listRewrite.remove(placeHolder,null);
 				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		
