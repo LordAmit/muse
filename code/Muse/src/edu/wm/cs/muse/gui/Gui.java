@@ -11,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -18,6 +19,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -36,7 +39,7 @@ import javafx.stage.Stage;
 
 
 /*
- * This is the class for the main GUI window.
+ * This is the class for the main GUI window.s
  * @author Phil Watkins
  */
 public class Gui extends Application {
@@ -341,13 +344,27 @@ public class Gui extends Application {
             	
             	}
         });
+        
+        
+        Button runMuseButton = new Button("Run Muse");
+        runMuseButton.setOnAction(new EventHandler<ActionEvent>() {
+   		 
+            @Override
+            public void handle(ActionEvent runEvent) {
+            	goToProgressScene(stage);
+            	System.out.println("'Run Muse' selected. Proceeding to Progress Scene.");
+            	
+            	}
+        });
+
 
         FlowPane fp = new FlowPane(Orientation.HORIZONTAL, 10, 10);
         fp.setAlignment(Pos.CENTER_RIGHT);
         fp.getChildren().addAll(
            returnTitleButton,
            finish,
-           new Button("Run Muse"), 	// new Muse().runMuse(args);
+//         new Button("Run Muse"), 	// new Muse().runMuse(args);
+         runMuseButton,
            new Button("Help"));		// explanations of what each config parameter is, what operators do, etc?
         grid.add(fp, 0, 21, 3, 1);
 
@@ -377,12 +394,34 @@ public class Gui extends Application {
     
     /*
      * Changes the scene to the one with a progress bar.
-     * Gives information as Î¼SE runs.
+     * Gives information as Muse runs.
+     * TODO: Implement rest of layout 
+     * TODO: Sync progress bar progress to Muse progress
      */
-    private void goToProgressScene() {
+    private void goToProgressScene(Stage stage) {
 //    	HBox progressSceneLayout = new HBox();
 //    	Scene progressScene = new Scene(progressSceneLayout, width, height);
-    	
+    	HBox hbox = new HBox(20);
+        hbox.setSpacing(5);
+        hbox.setPadding(new Insets(75, 150, 50, 60));
+        
+       
+    	//Creating a progress bar
+        ProgressBar progress = new ProgressBar();
+        progress.setProgress(0.6);
+        progress.setPrefSize(500, 30);
+        
+        ProgressIndicator indicator = new ProgressIndicator(0.6);
+        
+        
+        hbox.getChildren().addAll(progress, indicator);
+        
+        Group root = new Group(hbox);
+        Scene scene = new Scene(root, 700, 400);
+        stage.setTitle("Muse Progress Example");
+        
+        stage.setScene(scene);
+        stage.show();
     }
     
     /*
