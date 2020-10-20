@@ -23,6 +23,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -60,7 +61,7 @@ public class Gui extends Application {
     	window = primaryStage;
         window.setTitle("μSE"); // window name
         
-        goToTitleScene();
+        goToTitleScene(primaryStage);
 
         window.setResizable(false);
         window.show();
@@ -72,7 +73,7 @@ public class Gui extends Application {
      * Has buttons for making a config and using an existing config
      * Also has mSE title
      */
-    private void goToTitleScene() {
+    private void goToTitleScene(Stage stage) {
     	BackgroundFill background_fill = new BackgroundFill(Color.GRAY,  
                 CornerRadii.EMPTY, Insets.EMPTY); 
 		
@@ -80,7 +81,7 @@ public class Gui extends Application {
 		Background background = new Background(background_fill); 
         
 
-        createButtons(); // initializes 2 buttons and gives each a handler for running code on being clicked
+        createButtons(stage); // initializes 2 buttons and gives each a handler for running code on being clicked
         createTitleText();
         root = new Pane();
         root.getChildren().addAll(makeConfigBtn, oldConfigBtn, titleText); // can add individual elements too
@@ -93,7 +94,7 @@ public class Gui extends Application {
      * 1. Running muse with an existing configuration file  (oldConfigBtn)
      * 2. Creating a new configuration file in a new window (makeConfigBtn)
      */
-    private void createButtons() {
+    private void createButtons(Stage stage) {
     	makeConfigBtn = new Button("Create a new configuration");
     	oldConfigBtn = new Button("Use an existing configuration");
 //    	makeConfigBtn.setText("Create a new configuration");
@@ -106,7 +107,7 @@ public class Gui extends Application {
             public void handle(ActionEvent event) {
                 System.out.println("You pressed the button that will bring up the window for"
                 		+ " creating a new configuration file when implemented.");
-                goToConfigCreation();
+                goToConfigCreation(stage);
             }
         });
     	makeConfigBtn.setLayoutX(600 * .6);
@@ -150,7 +151,7 @@ public class Gui extends Application {
     /**
      * Takes the user to the config file creation form window.
      */
-    private void goToConfigCreation() {
+    private void goToConfigCreation(Stage stage) {
     	GridPane configLayout = new GridPane();
         FlowPane leftbanner = new FlowPane();
 //        leftbanner.setPrefWidth(30); //200?
@@ -160,7 +161,7 @@ public class Gui extends Application {
 //           leftbanner.setStyle(bgStyle);
 //
 //           configLayout.add(leftbanner, 0, 0, 1, 1);
-           configLayout.add(createGridPane(), 1, 0, 1, 1);
+           configLayout.add(createGridPane(stage), 1, 0, 1, 1);
            Scene scene = new Scene(configLayout, 750, 655);
            window.setScene(scene);
     }
@@ -169,7 +170,7 @@ public class Gui extends Application {
      * Sets up the GridPane layout for the form
      * @return The created layout, which is then added to the scene.
      */
-    private GridPane createGridPane() {
+    private GridPane createGridPane(Stage stage) {
     	
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10));
@@ -186,11 +187,16 @@ public class Gui extends Application {
         grid.add(new Label("Configuration Name:"), 0, 2, 1, 1);
         grid.add(config_name_textfield, 1, 2, 1, 1);
         
-        
+        //!!new!!
+        //libs4ast directory chooser
         TextField lib4ast_path_textfield = new TextField();
         grid.add(new Label("lib4ast Path:"), 0, 3, 1, 1);
         grid.add(lib4ast_path_textfield, 1, 3, 1, 1);
-        grid.add(new Button("Browse..."), 2, 3, 1, 1);
+        Button libs4astbrowse = new Button("Browse...");
+        grid.add(libs4astbrowse, 2, 3, 1, 1);
+        MuseDirectoryChooser(libs4astbrowse,lib4ast_path_textfield,stage);
+        
+        
         
         grid.add(new Label("Operator:"), 0, 4, 1, 1);
         ComboBox<String> operatorSelections = new ComboBox<>();
@@ -205,22 +211,30 @@ public class Gui extends Application {
         grid.add(mutate_checkbox, 0, 7, 3, 1);
         grid.add(new Separator(), 0, 6, 3, 1);
         
-
-
-
+        //!!new!!
+        //app_source directory chooser
         TextField app_src_textfield = new TextField();
         grid.add(new Label("App src Location:"), 0, 5, 1, 1);
         grid.add(app_src_textfield, 1, 5, 1, 1);
-        grid.add(new Button("Browse..."), 2, 5, 1, 1);
-
+        Button appbrowse = new Button("Browse...");
+        grid.add(appbrowse, 2, 5, 1, 1);
+        MuseDirectoryChooser(appbrowse,app_src_textfield,stage);
+        
+        //!!new!!
+        //destination directory chooser
         TextField destination_folder_textfield = new TextField();
         grid.add(new Label("Destination Folder:"), 0, 8, 1, 1);
         grid.add(destination_folder_textfield, 1, 8, 1, 1);
-        grid.add(new Button("Browse..."), 2, 8, 1, 1);
+        Button destbrowse = new Button("Browse...");
+        grid.add(destbrowse, 2, 8, 1, 1);
+        MuseDirectoryChooser(destbrowse,destination_folder_textfield,stage);
+        
+        
         
         TextField app_name_textfield = new TextField();
         grid.add(new Label("App Name:"), 0, 9, 1, 1);
         grid.add(app_name_textfield, 1, 9, 1, 1);
+
         
 		destination_folder_textfield.setDisable(!mutate_checkbox.isSelected());
         app_name_textfield.setDisable(!mutate_checkbox.isSelected());
@@ -311,7 +325,7 @@ public class Gui extends Application {
    		 
             @Override
             public void handle(ActionEvent anevent) {
-            	goToTitleScene();
+            	goToTitleScene(stage);
             	System.out.println("'Back' selected. Returning to title.");
             	
             	}
@@ -329,6 +343,21 @@ public class Gui extends Application {
         return grid;
      }
     
+    /*
+     * On a button press open dir_choser
+     * sets text-field to the folder
+     */
+    private void MuseDirectoryChooser(Button SearchButton,TextField textfield, Stage stage) {
+   	 DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setInitialDirectory(new File("src"));
+        SearchButton.setOnAction(e -> {
+       	 File selectedDirectory = directoryChooser.showDialog(stage);
+
+            String directoryName = selectedDirectory.getAbsolutePath();
+            textfield.setText(directoryName);
+           
+        });
+   }
     
     /////////////////////////////////////PROGRESS/RUNTIME SCENE CODE////////////////////////////////////////
     
