@@ -1,6 +1,6 @@
 package com.example.amit.helloworld;
 
-public class classA {
+public class ClassA {
 
 	public String dataLeak = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
 
@@ -19,8 +19,7 @@ public class ClassB extends ClassA {
 	public String dataLeak = "";
 
 	public int randomA() {
-		System.out.println("Leaking: " + dataLeak + dataLeakGetter());
-		
+		android.util.Log.d("Leaking: " + dataLeak + dataLeakGetter());
 		return 0;
 	}
 
