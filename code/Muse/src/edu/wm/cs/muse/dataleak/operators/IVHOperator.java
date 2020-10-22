@@ -9,12 +9,13 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.Name;
+import org.eclipse.jdt.core.dom.ReturnStatement;
+import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.TryStatement;
-import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.TypeMethodReference;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
@@ -55,13 +56,15 @@ public class IVHOperator {
 	 */
 	public ASTRewrite InsertChanges() {
 		for (IVHNodeChangeContainers container: nodeChanges) {
+			System.out.println("Inserting in subclass-" + container.node.getName().toString() +
+					" and superclass-" + container.parent.getName().toString());
 			try {
 				InsertSources(container.node, container.nodePropertyDescriptor, false);
 				//If the superclass node has already been set up by another
 				//subclass, do not set it up
 				if (!container.parentUsed) {
 					InsertSources(container.parent, container.parentPropertyDescriptor, true);
-					InsertMethod(container.parent);
+					InsertMethod(container.parent, container.parentPropertyDescriptor);
 				}
 				InsertSinks(container.node);
 			}
@@ -80,18 +83,21 @@ public class IVHOperator {
 	 * into the superclass
 	 * @param node
 	 */
-	public void InsertMethod(TypeDeclaration node) {
+	public void InsertMethod(TypeDeclaration node, ChildListPropertyDescriptor descriptor) {
+		ListRewrite methodListRewrite = rewriter.getListRewrite(node, descriptor);
 		MethodDeclaration method = node.getAST().newMethodDeclaration();
 		method.setName(node.getAST().newSimpleName("dataLeakGetter"));
 		Block block = node.getAST().newBlock();
-		block.statements().add("return dataLeak;");
+		ReturnStatement statement = node.getAST().newReturnStatement();
+		Name returnName = node.getAST().newName("dataLeak");
+		statement.setExpression(returnName);
+		block.statements().add(statement);
 		method.setBody(block);
-
-		Type type;
-		//TODO give the type String to the method as a return type
-		//and give it public
-		//method.setReturnType(type);
-		node.bodyDeclarations().add(method);
+		method.modifiers().add(node.getAST().newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD));
+		Name name = method.getAST().newName("String");
+		SimpleType type = method.getAST().newSimpleType(name);
+		method.setReturnType2(type);
+		methodListRewrite.insertAfter(method, node.getMethods()[node.getMethods().length-1], null);
 		
 	}
 	
@@ -151,12 +157,12 @@ public class IVHOperator {
 		ListRewrite listRewrite = null;
 		MethodDeclaration[] method = node.getMethods();
 		for (int i=0; i<method.length; i++) {
-			try {
-				listRewrite = rewriter.getListRewrite(method[i], Block.STATEMENTS_PROPERTY);
+			//if method is static, skip insert
+			if (method[i].modifiers().toString().contentEquals("[static]")) {
+				continue;
 			}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
+			Block body = method[i].getBody();
+			listRewrite = rewriter.getListRewrite(body, Block.STATEMENTS_PROPERTY);
 			String sink = DataLeak.getSink(OperatorType.IVH, 0, 0);
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
 			if (handler.stringHasThrows(sink)) {
@@ -188,8 +194,6 @@ public class IVHOperator {
 					}
 				}
 			}
-			System.out.print("Leak in: " + method[i].getName().toString());
-			
 		}
 	}
 	

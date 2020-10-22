@@ -43,19 +43,19 @@ public class IVHSchema extends ASTVisitor{
 	public boolean visit(TypeDeclaration node) {
 		//Checks for class and interface and returns if interface,
 		//as we only care about classes
-		if (node.isInterface()||node.getMethods().length == 0) {
+		if (node.isInterface()) {
 			return false;
 		}
 		//Check if this class has a superclass, and if not, return,
 		//we will use the subclass to work with the superclass
-		if (node.getSuperclassType()==null) {
+		if (node.getSuperclassType()==null||node.getMethods().length == 0) {
 			previousClasses.add(node);
 			return false;
 		}
 		//Need at least one method in the subclass to be non-static
 		boolean hasNonStatic = false;
 		for (int i=0; i<node.getMethods().length;i++) {
-			if (!node.getMethods()[i].modifiers().contains(Modifier.STATIC)) {
+			if (!node.getMethods()[i].modifiers().toString().equals("[static]")) {
 				hasNonStatic = true;
 				break;
 			}
@@ -66,8 +66,6 @@ public class IVHSchema extends ASTVisitor{
 		Type superclass = node.getSuperclassType();
 		TypeDeclaration parentClass = null;
 		for (TypeDeclaration parent: previousClasses) {
-			System.out.println(parent.getName().toString());
-			System.out.println(superclass.toString());
 			if (parent.getName().toString().equals(superclass.toString())) {
 				parentClass = parent;
 			}

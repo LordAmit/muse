@@ -46,7 +46,7 @@ public class DataLeak {
 			put(OperatorType.COMPLEXREACHABILITY, "android.util.Log.d(\"leak-%d\", leAkPath%d);");
 			put(OperatorType.SCOPESINK, "android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
 			put(OperatorType.TAINTSINK, "android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
-			put(OperatorType.IVH, "android.util.Log.d(\"Leaking: \" + dataLeak + dataLeakGetter()");
+			put(OperatorType.IVH, "android.util.Log.d(\"Leaking: \" + dataLeak + dataLeakGetter());");
 		}
 	};
 	private static HashMap<OperatorType, String> variableDeclarations = new HashMap<OperatorType, String>() {
