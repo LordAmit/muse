@@ -96,7 +96,7 @@ public class MuseTest {
 		PrintWriter pw = new PrintWriter("output.txt");
 		pw.close();
 	}
-	
+	/*
 	@Test
 	@Order(1)
 	public void reachability_operation_on_hello_world() throws Exception {
@@ -272,20 +272,20 @@ public class MuseTest {
 			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, original_operators[1]);
 		}
 	}
-	
+	*/
 	@Test
 	@Order(9)
 	public void ivh_operation_on_hello_world() {
 		try {
-			prepare_test_files(OperatorType.IVH, 1);
-			execute_muse(OperatorType.IVH);
-			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+			//prepare_test_files(OperatorType.IVH, 1);
+			//execute_muse(OperatorType.IVH);
+			//assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 			prepare_test_files(OperatorType.IVH, 2);
 			execute_muse(OperatorType.IVH);
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
-			prepare_test_files(OperatorType.IVH, 3);
-			execute_muse(OperatorType.IVH);
-			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+			//prepare_test_files(OperatorType.IVH, 3);
+			//execute_muse(OperatorType.IVH);
+			//assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -380,12 +380,12 @@ public class MuseTest {
 				expectedOutput = new File("test/output/sample_class_extended_output.txt");
 			}
 			else if (test == 2) {
-				content = FileUtility.readSourceFile("test/input/sample_class_twice_extended.txt").toString();
-				expectedOutput = new File("test/output/sample_class_twice_extended_output.txt");
+				content = FileUtility.readSourceFile("test/input/sample_class_extended_from_B.txt").toString();
+				expectedOutput = new File("test/output/sample_class_extended_from_B_output.txt");
 			}
 			else if (test == 3) {
-				content = FileUtility.readSourceFile("test/input/sample_class_double_extended.txt").toString();
-				expectedOutput = new File("test/output/sample_class_double_extended_output.txt");
+				content = FileUtility.readSourceFile("test/input/sample_class_extended_twice.txt").toString();
+				expectedOutput = new File("test/output/sample_class_extended_twice_output.txt");
 			}
 			break;
 		}

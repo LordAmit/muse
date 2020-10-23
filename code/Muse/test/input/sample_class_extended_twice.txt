@@ -1,0 +1,25 @@
+package com.example.amit.helloworld;
+
+public class ClassA {
+
+	public int randomA() {
+		return 1;
+	}
+
+}
+
+public class ClassB extends ClassA {
+
+	public int randomA() {
+		return 0;
+	}
+
+}
+
+public class ClassC extends ClassA {
+
+	public int randomA() {
+		return 2;
+	}
+
+}
