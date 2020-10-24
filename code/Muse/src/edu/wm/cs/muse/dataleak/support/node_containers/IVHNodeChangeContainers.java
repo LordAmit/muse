@@ -17,15 +17,17 @@ public class IVHNodeChangeContainers {
 	public TypeDeclaration parent;
 	public ChildListPropertyDescriptor parentPropertyDescriptor;
 	public boolean parentUsed;
-	//public int index;
+	public boolean parentIsChild;
 	
 	public IVHNodeChangeContainers (TypeDeclaration node, TypeDeclaration parent, 
-			ChildListPropertyDescriptor nodeDescriptor, ChildListPropertyDescriptor parentDescriptor, boolean parentUsed) {
+			ChildListPropertyDescriptor nodeDescriptor, ChildListPropertyDescriptor parentDescriptor, boolean parentUsed,
+			boolean parentIsChild) {
 		this.node = node;
 		this.parent = parent;
 		nodePropertyDescriptor = nodeDescriptor;
 		parentPropertyDescriptor = parentDescriptor;
 		this.parentUsed = parentUsed;
+		this.parentIsChild = parentIsChild;
 	}
 	
 }

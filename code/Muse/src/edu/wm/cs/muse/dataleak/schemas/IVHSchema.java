@@ -25,11 +25,13 @@ public class IVHSchema extends ASTVisitor{
 	private ArrayList<IVHNodeChangeContainers> nodeChanges;
 	private ArrayList<TypeDeclaration> previousClasses;
 	private ArrayList<TypeDeclaration> usedSuperClasses;
+	private ArrayList<TypeDeclaration> usedSubClasses;
 	
 	public IVHSchema() {
 		nodeChanges = new ArrayList <IVHNodeChangeContainers>();
 		previousClasses = new ArrayList <TypeDeclaration>();
 		usedSuperClasses = new ArrayList <TypeDeclaration>();
+		usedSubClasses = new ArrayList <TypeDeclaration>();
 	}
 	
 	public ArrayList<IVHNodeChangeContainers> getNodeChanges() {
@@ -70,20 +72,27 @@ public class IVHSchema extends ASTVisitor{
 				parentClass = parent;
 			}
 		}
+		TypeDeclaration parentClassPreviousSubClass = null;
+		for (TypeDeclaration parent: usedSubClasses) {
+			if (parentClass.getName().toString().equals(parent.getName().toString())) {
+				parentClassPreviousSubClass = parent;
+			}
+		}
 		if (parentClass == null) {
 			System.out.println("Superclass not found.");
 			return false;
 		}
-		if (usedSuperClasses.contains(parentClass)) {
-			nodeChanges.add(new IVHNodeChangeContainers(node, parentClass,
-					TypeDeclaration.BODY_DECLARATIONS_PROPERTY, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, true));
+		boolean isSub = false;
+		if (!(parentClassPreviousSubClass == null)) {
+			isSub = true;
 		}
-		else {
-			nodeChanges.add(new IVHNodeChangeContainers(node, parentClass,
-					TypeDeclaration.BODY_DECLARATIONS_PROPERTY, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, false));
-		}
+		nodeChanges.add(new IVHNodeChangeContainers(node, parentClass,
+				TypeDeclaration.BODY_DECLARATIONS_PROPERTY, TypeDeclaration.BODY_DECLARATIONS_PROPERTY,
+				usedSuperClasses.contains(parentClass), isSub));
 		
 		usedSuperClasses.add(parentClass);
+		previousClasses.add(node);
+		usedSubClasses.add(node);
 		return true;
 	}
 	

@@ -1,6 +1,8 @@
 package edu.wm.cs.muse.dataleak.operators;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -8,6 +10,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Name;
@@ -59,6 +62,11 @@ public class IVHOperator {
 			System.out.println("Inserting in subclass-" + container.node.getName().toString() +
 					" and superclass-" + container.parent.getName().toString());
 			try {
+				/*
+				if (container.parentIsChild) {
+					RemoveInsensitiveSource(container.parent, container.parentPropertyDescriptor);
+				}
+				*/
 				InsertSources(container.node, container.nodePropertyDescriptor, false);
 				//If the superclass node has already been set up by another
 				//subclass, do not set it up
@@ -78,6 +86,29 @@ public class IVHOperator {
 		return rewriter;
 	}
 	
+	//TODO:Figure out how to get the fields from the TypeDeclaration so we can remove the non-sensitive dataleak
+	
+	private void RemoveInsensitiveSource(TypeDeclaration node, ChildListPropertyDescriptor descriptor) {
+		ListRewrite listRewrite = rewriter.getListRewrite(node, descriptor);
+		FieldDeclaration[] fields = node.getFields();
+		/*
+		try  {
+			BufferedReader br = new BufferedReader(new FileReader(temp_file));
+			String line;
+			while ((line = br.readLine()) != null) {
+			    System.out.println(line);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		*/
+		System.out.println(fields.length);
+		System.out.println(fields[0].fragments().toString());
+		
+		//listRewrite.remove(node, null);
+	}
+	
+
 	/**
 	 * Insert the method declaration and associated return statement
 	 * into the superclass
@@ -110,7 +141,7 @@ public class IVHOperator {
 	 * @throws ClassNotFoundException
 	 */
 	public void InsertSources(TypeDeclaration node, ChildListPropertyDescriptor descriptor, boolean isParent) throws ClassNotFoundException {
-		ListRewrite childListRewrite = rewriter.getListRewrite(node, descriptor);
+		ListRewrite listRewrite = rewriter.getListRewrite(node, descriptor);
 		String source = "";
 		if (isParent) {
 			source = DataLeak.getSource(OperatorType.IVH, 0);
@@ -121,12 +152,12 @@ public class IVHOperator {
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
 		if (handler.stringHasThrows(source)) {
 			TryStatement tryPlaceHolder = handler.addTryCatch(placeHolder);
-			childListRewrite.insertAt(tryPlaceHolder, 0, null);
-			if (!(childListRewrite.getParent().getRoot() instanceof Block)) {
-				temp_file = checker.getTempFile((CompilationUnit)childListRewrite.getParent().getRoot(), rewriter, source_file);
+			listRewrite.insertAt(tryPlaceHolder, 0, null);
+			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+				temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
 				try {
 					if (!checker.check(temp_file))
-						childListRewrite.remove(tryPlaceHolder,null);
+						listRewrite.remove(tryPlaceHolder,null);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -134,12 +165,12 @@ public class IVHOperator {
 			}
 		}
 		else {
-			childListRewrite.insertAt(placeHolder, 0, null);
-			if (!(childListRewrite.getParent().getRoot() instanceof Block)) {
-				temp_file = checker.getTempFile((CompilationUnit)childListRewrite.getParent().getRoot(), rewriter, source_file);
+			listRewrite.insertAt(placeHolder, 0, null);
+			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+				temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
 				try {
 					if (!checker.check(temp_file))
-						childListRewrite.remove(placeHolder,null);
+						listRewrite.remove(placeHolder,null);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
