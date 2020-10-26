@@ -62,6 +62,7 @@ public class IVHOperator {
 			System.out.println("Inserting in subclass-" + container.node.getName().toString() +
 					" and superclass-" + container.parent.getName().toString());
 			try {
+				
 				/*
 				if (container.parentIsChild) {
 					RemoveInsensitiveSource(container.parent, container.parentPropertyDescriptor);
@@ -69,8 +70,9 @@ public class IVHOperator {
 				*/
 				InsertSources(container.node, container.nodePropertyDescriptor, false);
 				//If the superclass node has already been set up by another
-				//subclass, do not set it up
-				if (!container.parentUsed) {
+				//subclass or if the superclass node is the child of another
+				//node, skip inserting in the parent
+				if (!container.parentUsed && !container.parentIsChild) {
 					InsertSources(container.parent, container.parentPropertyDescriptor, true);
 					InsertMethod(container.parent, container.parentPropertyDescriptor);
 				}
@@ -86,11 +88,13 @@ public class IVHOperator {
 		return rewriter;
 	}
 	
+	
 	//TODO:Figure out how to get the fields from the TypeDeclaration so we can remove the non-sensitive dataleak
 	
 	private void RemoveInsensitiveSource(TypeDeclaration node, ChildListPropertyDescriptor descriptor) {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, descriptor);
 		FieldDeclaration[] fields = node.getFields();
+		System.out.println(node.toString());
 		/*
 		try  {
 			BufferedReader br = new BufferedReader(new FileReader(temp_file));
@@ -103,7 +107,6 @@ public class IVHOperator {
 		}
 		*/
 		System.out.println(fields.length);
-		System.out.println(fields[0].fragments().toString());
 		
 		//listRewrite.remove(node, null);
 	}

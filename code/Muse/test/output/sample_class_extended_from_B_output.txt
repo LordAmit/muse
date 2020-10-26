@@ -16,20 +16,18 @@ public class ClassA {
 
 public class ClassB extends ClassA {
 
-	public String dataLeak = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+	public String dataLeak = "";
 
 	public int randomA() {
 		android.util.Log.d("Leaking: " + dataLeak + dataLeakGetter());
 		return 0;
 	}
-	
-	public String dataLeakGetter() {
-		return dataLeak;
-	}
 
 }
 
 public class ClassC extends ClassB {
+
+	public String dataLeak = "";
 
 	public int randomA() {
 		android.util.Log.d("Leaking: " + dataLeak + dataLeakGetter());
