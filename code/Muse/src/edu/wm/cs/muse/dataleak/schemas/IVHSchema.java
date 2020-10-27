@@ -48,12 +48,14 @@ public class IVHSchema extends ASTVisitor{
 		if (node.isInterface()) {
 			return false;
 		}
+		
 		//Check if this class has a superclass, and if not, return,
 		//we will use the subclass to work with the superclass
 		if (node.getSuperclassType()==null||node.getMethods().length == 0) {
 			previousClasses.add(node);
 			return false;
 		}
+		
 		//Need at least one method in the subclass to be non-static
 		boolean hasNonStatic = false;
 		for (int i=0; i<node.getMethods().length;i++) {
@@ -62,9 +64,11 @@ public class IVHSchema extends ASTVisitor{
 				break;
 			}
 		}
+		
 		if (!hasNonStatic) {
 			return false;
 		}
+		//Find the parent of the parent of the current node
 		Type superclass = node.getSuperclassType();
 		TypeDeclaration parentClass = null;
 		for (TypeDeclaration parent: previousClasses) {
@@ -72,16 +76,22 @@ public class IVHSchema extends ASTVisitor{
 				parentClass = parent;
 			}
 		}
+		
+		//Searches for the parent class amongst the previously used child classes
 		TypeDeclaration parentClassPreviousSubClass = null;
 		for (TypeDeclaration parent: usedSubClasses) {
 			if (parentClass.getName().toString().equals(parent.getName().toString())) {
 				parentClassPreviousSubClass = parent;
 			}
 		}
+		
+		//Return if no superclass found
 		if (parentClass == null) {
 			System.out.println("Superclass not found.");
 			return false;
 		}
+		
+		//If there's a child class that is the parent class, create true boolean for ivh operator
 		boolean isSub = false;
 		if (!(parentClassPreviousSubClass == null)) {
 			isSub = true;
@@ -90,6 +100,7 @@ public class IVHSchema extends ASTVisitor{
 				TypeDeclaration.BODY_DECLARATIONS_PROPERTY, TypeDeclaration.BODY_DECLARATIONS_PROPERTY,
 				usedSuperClasses.contains(parentClass), isSub));
 		
+		//add classes to lists for future checks
 		usedSuperClasses.add(parentClass);
 		previousClasses.add(node);
 		usedSubClasses.add(node);

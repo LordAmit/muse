@@ -62,13 +62,9 @@ public class IVHOperator {
 			System.out.println("Inserting in subclass-" + container.node.getName().toString() +
 					" and superclass-" + container.parent.getName().toString());
 			try {
-				
-				/*
-				if (container.parentIsChild) {
-					RemoveInsensitiveSource(container.parent, container.parentPropertyDescriptor);
-				}
-				*/
+				//Insert Sources in child node
 				InsertSources(container.node, container.nodePropertyDescriptor, false);
+				
 				//If the superclass node has already been set up by another
 				//subclass or if the superclass node is the child of another
 				//node, skip inserting in the parent
@@ -76,40 +72,20 @@ public class IVHOperator {
 					InsertSources(container.parent, container.parentPropertyDescriptor, true);
 					InsertMethod(container.parent, container.parentPropertyDescriptor);
 				}
+				//Insert Sink in child node
 				InsertSinks(container.node);
 			}
 			catch (Exception e) {
 				
 			}
 		}
+		//delete temp file
 		if (!(temp_file ==null)) {
 			temp_file.delete();
 		}
 		return rewriter;
 	}
 	
-	
-	//TODO:Figure out how to get the fields from the TypeDeclaration so we can remove the non-sensitive dataleak
-	
-	private void RemoveInsensitiveSource(TypeDeclaration node, ChildListPropertyDescriptor descriptor) {
-		ListRewrite listRewrite = rewriter.getListRewrite(node, descriptor);
-		FieldDeclaration[] fields = node.getFields();
-		System.out.println(node.toString());
-		/*
-		try  {
-			BufferedReader br = new BufferedReader(new FileReader(temp_file));
-			String line;
-			while ((line = br.readLine()) != null) {
-			    System.out.println(line);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		*/
-		System.out.println(fields.length);
-		
-		//listRewrite.remove(node, null);
-	}
 	
 
 	/**
@@ -118,7 +94,9 @@ public class IVHOperator {
 	 * @param node
 	 */
 	public void InsertMethod(TypeDeclaration node, ChildListPropertyDescriptor descriptor) {
+		//Set up ListRewrite for our node
 		ListRewrite methodListRewrite = rewriter.getListRewrite(node, descriptor);
+		//Set up method to be inserted with body, return type, and return statement
 		MethodDeclaration method = node.getAST().newMethodDeclaration();
 		method.setName(node.getAST().newSimpleName("dataLeakGetter"));
 		Block block = node.getAST().newBlock();
@@ -131,6 +109,7 @@ public class IVHOperator {
 		Name name = method.getAST().newName("String");
 		SimpleType type = method.getAST().newSimpleType(name);
 		method.setReturnType2(type);
+		//insert the method after the last method position in the node
 		methodListRewrite.insertAfter(method, node.getMethods()[node.getMethods().length-1], null);
 		
 	}
@@ -146,6 +125,7 @@ public class IVHOperator {
 	public void InsertSources(TypeDeclaration node, ChildListPropertyDescriptor descriptor, boolean isParent) throws ClassNotFoundException {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, descriptor);
 		String source = "";
+		//Chooses the source to be inserted by whether it is a subclass or superclass
 		if (isParent) {
 			source = DataLeak.getSource(OperatorType.IVH, 0);
 		}
@@ -153,6 +133,7 @@ public class IVHOperator {
 			source = DataLeak.getVariableDeclaration(OperatorType.IVH);
 		}
 		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
+		//Check if sink throws exceptions and surround with try catch if so
 		if (handler.stringHasThrows(source)) {
 			TryStatement tryPlaceHolder = handler.addTryCatch(placeHolder);
 			listRewrite.insertAt(tryPlaceHolder, 0, null);
@@ -190,15 +171,18 @@ public class IVHOperator {
 	public void InsertSinks(TypeDeclaration node) throws ClassNotFoundException {
 		ListRewrite listRewrite = null;
 		MethodDeclaration[] method = node.getMethods();
+		//Iterate through the methods, inserting sinks in all methods that aren't static
 		for (int i=0; i<method.length; i++) {
 			//if method is static, skip insert
 			if (method[i].modifiers().toString().contentEquals("[static]")) {
 				continue;
 			}
+			//Set up sink to be inserted
 			Block body = method[i].getBody();
 			listRewrite = rewriter.getListRewrite(body, Block.STATEMENTS_PROPERTY);
 			String sink = DataLeak.getSink(OperatorType.IVH, 0, 0);
 			Statement placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
+			//Check if sink throws exceptions and surround with try catch if so
 			if (handler.stringHasThrows(sink)) {
 				TryStatement tryPlaceHolder = handler.addTryCatch(placeHolder);
 				listRewrite.insertAt(tryPlaceHolder, 0, null);
