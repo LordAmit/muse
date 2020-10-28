@@ -110,6 +110,7 @@ public class TaintSinkOperator {
 				if (body2.toString().contains("dataLe")) {
 					//Change the insertion location to inside the try statement's body
 					listRewrite = rewriter.getListRewrite(body2, Block.STATEMENTS_PROPERTY);
+					index = 1;
 				}
 			}
 			
@@ -136,7 +137,7 @@ public class TaintSinkOperator {
 		*/
 		if (handler.stringHasThrows(DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)))) {
 			TryStatement tryPlaceHolder = handler.addTryCatch(placeHolder);
-			listRewrite.insertAt(tryPlaceHolder, 1, null);
+			listRewrite.insertAt(tryPlaceHolder, index, null);
 			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
 				temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
 				try {
@@ -150,7 +151,7 @@ public class TaintSinkOperator {
 			}
 		}
 		else {
-			listRewrite.insertAt(placeHolder, 1, null);
+			listRewrite.insertAt(placeHolder, index, null);
 			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
 				temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
 				try {
