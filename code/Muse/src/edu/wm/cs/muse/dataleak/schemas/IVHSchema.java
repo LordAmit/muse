@@ -3,7 +3,6 @@ package edu.wm.cs.muse.dataleak.schemas;
 import java.util.ArrayList;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
