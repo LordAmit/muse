@@ -127,21 +127,16 @@ public class TryCatchHandler {
 				}
 			}
 		}
-		//System.out.println("Methods: " + methods.toString());
-		//System.out.println("canon string: " + canon_names.toString());
 		Class<?> c = null;
 		//looks for methods that are in both the insertion string and the canon class
 		//and returns true if the method has an exception.
 		for(int k = 0; k < canon_names.size(); k++) {
 			try {
 				c = Class.forName(canon_names.get(k));
-				System.out.println(c);
 				Method[] allMethods = c.getMethods();
 				for (int i=0; i<allMethods.length; i++) {
 					for (int j=0; j<methods.size();j++) {
 						if (allMethods[i].toString().contains(methods.get(j)+"(")) {
-							//System.out.println("Suspected method: " +  methods.get(j)+"(");
-							//System.out.println(allMethods[i]);
 							if (allMethods[i].getExceptionTypes().length !=0) {
 								return true;
 							}
