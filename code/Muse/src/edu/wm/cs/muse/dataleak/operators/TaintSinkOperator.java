@@ -89,36 +89,59 @@ public class TaintSinkOperator {
 
 	void insertSink(ASTNode node, int index, int count, ChildListPropertyDescriptor nodeProperty, ASTNode method) throws ClassNotFoundException {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
+		int cur = repeatCounts.containsKey(count) ? repeatCounts.get(count) : -1;
+		repeatCounts.put(count, cur + 1);
 		//if the node we are looking at is a block
 		if (node.getNodeType() == ASTNode.BLOCK) {
 			Block body = (Block) node;
 			//iterate through the statements in the block, looking for the
 			//first instance of a TryStatement
 			List<?> statements = body.statements();
-			int here = -1;
+			//Create a string that has the beginning part of the current sink to check if there are already sinks there
+			String leak = DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count));
+			String[] check = leak.split("\\(");
+			//List to hold encountered try Statements without sinks, but with sources
+			List<TryStatement> validTryStatements = new ArrayList<TryStatement>();
+			//Holds first try statement encountered that has a source
+			TryStatement firstStatement = null;
+			//iterate through statements of method
 			for (int i=0; i<statements.size();i++) {
 				if (statements.get(i).toString().contains("try {")) {
-					here = i;
-					break;
+					//set up the body of the try statement
+					TryStatement statement = (TryStatement) statements.get(i);
+					Block body2 = statement.getBody();
+					//if the body contains a source
+					if (body2.toString().contains("dataLe")) {
+						//set up the first statement
+						if (firstStatement == null) {
+							firstStatement = statement;
+						}
+						//add sinkless try statements to the list
+						if (!(body2.toString().contains(check[0]))) {
+							validTryStatements.add(statement);
+						}
+					}
 				}
 			}
-			//If a trystatement is found
-			if (here != -1) {
-				TryStatement statement = (TryStatement) statements.get(here);
-				Block body2 = statement.getBody();
-				//Make sure that the source is in the TryStatement
-				if (body2.toString().contains("dataLe")) {
-					//Change the insertion location to inside the try statement's body
-					listRewrite = rewriter.getListRewrite(body2, Block.STATEMENTS_PROPERTY);
-					index = 1;
-				}
+			//If there are still sinkless try statements, insert in the last one of the list
+			if (validTryStatements.size() >0) {
+				TryStatement currentTry = validTryStatements.get(validTryStatements.size()-1);
+				Block currentBody = currentTry.getBody();
+				listRewrite = rewriter.getListRewrite(currentBody,Block.STATEMENTS_PROPERTY);
+				validTryStatements.remove(validTryStatements.size()-1);
+				index = 1;
 			}
+			//if there are no more sinkless try statements, insert in the first source containing try statement
+			else if (firstStatement !=null) {
+				Block currentBody = firstStatement.getBody();
+				listRewrite = rewriter.getListRewrite(currentBody, Block.STATEMENTS_PROPERTY);
+				index = 1;
+			}
+			
 			
 		}
 		
 		
-		int cur = repeatCounts.containsKey(count) ? repeatCounts.get(count) : -1;
-		repeatCounts.put(count, cur + 1);
 		ASTNode placeHolder;
 		if (handler.stringHasThrows(DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)))) {
 			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
@@ -141,7 +164,6 @@ public class TaintSinkOperator {
 				e.printStackTrace();
 			}
 		}
-		
 		
 		String methodName = ((MethodDeclaration) method).getName().toString();
 		String className = "";
