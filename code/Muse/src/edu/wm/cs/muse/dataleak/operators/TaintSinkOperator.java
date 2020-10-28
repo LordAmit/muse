@@ -119,9 +119,16 @@ public class TaintSinkOperator {
 		
 		int cur = repeatCounts.containsKey(count) ? repeatCounts.get(count) : -1;
 		repeatCounts.put(count, cur + 1);
-		Statement placeHolder = (Statement) rewriter.createStringPlaceholder(
-				DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT);
-		/* 
+		ASTNode placeHolder;
+		if (handler.stringHasThrows(DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)))) {
+			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
+					DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT));
+		}
+		else {
+			 placeHolder = (Statement) rewriter.createStringPlaceholder(
+						DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT);
+		}
+
 		listRewrite.insertAt(placeHolder, index, null);
 		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
 			temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
@@ -134,36 +141,7 @@ public class TaintSinkOperator {
 				e.printStackTrace();
 			}
 		}
-		*/
-		if (handler.stringHasThrows(DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)))) {
-			TryStatement tryPlaceHolder = handler.addTryCatch(placeHolder);
-			listRewrite.insertAt(tryPlaceHolder, index, null);
-			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
-				temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
-				try {
-					if (!checker.check(temp_file)) {
-						listRewrite.remove(tryPlaceHolder, null);
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		else {
-			listRewrite.insertAt(placeHolder, index, null);
-			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
-				temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
-				try {
-					if (!checker.check(temp_file)) {
-						listRewrite.remove(placeHolder, null);
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+		
 		
 		String methodName = ((MethodDeclaration) method).getName().toString();
 		String className = "";
@@ -183,40 +161,29 @@ public class TaintSinkOperator {
 
 	void insertSource(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty, int count) throws ClassNotFoundException {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-//		Statement placeHolder = (Statement) rewriter
-//				.createStringPlaceholder(DataLeak.getSource(OperatorType.TAINTSINK, count), ASTNode.EMPTY_STATEMENT);
-		Statement placeHolder = (Statement) rewriter
-				.createStringPlaceholder(DataLeak.getTaintSinkSourceFinalDecl(count), ASTNode.EMPTY_STATEMENT);
+		ASTNode placeHolder;
 		if (handler.stringHasThrows(DataLeak.getTaintSinkSourceFinalDecl(count))) {
-			TryStatement tryPlaceHolder = handler.addTryCatch(placeHolder);
-			listRewrite.insertAt(tryPlaceHolder, index, null);
-			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
-				temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
-				try {
-					if (!checker.check(temp_file)) {
-						listRewrite.remove(tryPlaceHolder, null);
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
+					DataLeak.getTaintSinkSourceFinalDecl(count), ASTNode.EMPTY_STATEMENT));
 		}
 		else {
-			listRewrite.insertAt(placeHolder, index, null);
-			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
-				temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
-				try {
-					if (!checker.check(temp_file)) {
-						listRewrite.remove(placeHolder, null);
-					}
-					
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			placeHolder = (Statement) rewriter
+					.createStringPlaceholder(DataLeak.getTaintSinkSourceFinalDecl(count), ASTNode.EMPTY_STATEMENT);
+		}
+		listRewrite.insertAt(placeHolder, index, null);
+		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+			temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
+			try {
+				if (!checker.check(temp_file)) {
+					listRewrite.remove(placeHolder, null);
 				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
+
+		
 	}
 
 }
