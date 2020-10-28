@@ -88,11 +88,13 @@ public class TaintSinkOperator {
 	}
 
 	void insertSink(ASTNode node, int index, int count, ChildListPropertyDescriptor nodeProperty, ASTNode method) throws ClassNotFoundException {
-		int value = node.getNodeType();
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-		if (value == node.BLOCK) {
+		//if the node we are looking at is a block
+		if (node.getNodeType() == ASTNode.BLOCK) {
 			Block body = (Block) node;
-			List statements = body.statements();
+			//iterate through the statements in the block, looking for the
+			//first instance of a TryStatement
+			List<?> statements = body.statements();
 			int here = -1;
 			for (int i=0; i<statements.size();i++) {
 				if (statements.get(i).toString().contains("try {")) {
@@ -100,10 +102,15 @@ public class TaintSinkOperator {
 					break;
 				}
 			}
+			//If a trystatement is found
 			if (here != -1) {
 				TryStatement statement = (TryStatement) statements.get(here);
 				Block body2 = statement.getBody();
-				listRewrite = rewriter.getListRewrite(body2, Block.STATEMENTS_PROPERTY);
+				//Make sure that the source is in the TryStatement
+				if (body2.toString().contains("dataLe")) {
+					//Change the insertion location to inside the try statement's body
+					listRewrite = rewriter.getListRewrite(body2, Block.STATEMENTS_PROPERTY);
+				}
 			}
 			
 		}
