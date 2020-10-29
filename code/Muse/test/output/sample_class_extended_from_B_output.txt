@@ -1,0 +1,37 @@
+package com.example.amit.helloworld;
+
+public class ClassA {
+
+	public String dataLeak = java.util.Calendar.getInstance().getTimeZone().getDisplayName();
+
+	public int randomA() {
+		return 1;
+	}
+
+	public String dataLeakGetter() {
+		return dataLeak;
+	}
+
+}
+
+public class ClassB extends ClassA {
+
+	public String dataLeak = "";
+
+	public int randomA() {
+		android.util.Log.d("Leaking: " + dataLeak + dataLeakGetter());
+		return 0;
+	}
+
+}
+
+public class ClassC extends ClassB {
+
+	public String dataLeak = "";
+
+	public int randomA() {
+		android.util.Log.d("Leaking: " + dataLeak + dataLeakGetter());
+		return 2;
+	}
+
+}

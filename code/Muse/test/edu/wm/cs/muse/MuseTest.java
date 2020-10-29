@@ -204,6 +204,7 @@ public class MuseTest {
 	}
 
 	@Test
+	@Order(6)
 	public void scope_source_operation_on_multi_class() {
 		try {
 
@@ -270,6 +271,32 @@ public class MuseTest {
 			DataLeak.setSource(OperatorType.TAINTSOURCE, original_operators[0]);
 			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, original_operators[1]);
 		}
+	}
+	
+	@Test
+	@Order(9)
+	public void ivh_operation_on_hello_world() {
+		try {
+			prepare_test_files(OperatorType.IVH, 1);
+			execute_muse(OperatorType.IVH);
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+			prepare_test_files(OperatorType.IVH, 2);
+			execute_muse(OperatorType.IVH);
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+			prepare_test_files(OperatorType.IVH, 3);
+			execute_muse(OperatorType.IVH);
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+
+		} catch (MalformedTreeException e) {
+			e.printStackTrace();
+
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	private void execute_muse(OperatorType operator) throws BadLocationException, MalformedTreeException, IOException {
@@ -347,6 +374,20 @@ public class MuseTest {
 			expectedOutput = new File("test/output/sample_multilevelclass_taint_sink.txt");
 			break;
 			
+		case IVH:
+			if (test == 1) {
+				content = FileUtility.readSourceFile("test/input/sample_class_extended.txt").toString();
+				expectedOutput = new File("test/output/sample_class_extended_output.txt");
+			}
+			else if (test == 2) {
+				content = FileUtility.readSourceFile("test/input/sample_class_extended_from_B.txt").toString();
+				expectedOutput = new File("test/output/sample_class_extended_from_B_output.txt");
+			}
+			else if (test == 3) {
+				content = FileUtility.readSourceFile("test/input/sample_class_extended_twice.txt").toString();
+				expectedOutput = new File("test/output/sample_class_extended_twice_output.txt");
+			}
+			break;
 		}
 		
 		muse = new Muse();
