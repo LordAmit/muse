@@ -4,48 +4,48 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
-    javax.crypto.Cipher dataLeAk2 = null; 
+    String dataLeAk2 = "AES"; 
 
-	javax.crypto.Cipher dataLeAk1 = null; 
+	String dataLeAk1 = "AES"; 
 
-	javax.crypto.Cipher dataLeAk0 = null;
-	
+	String dataLeAk0 = "AES"; 
+
 	int intA = 0;
 
     int methodA() {
-    	try {
-			dataLeAk0 = javax.crypto.Cipher.getInstance("AES");
+        try {
+			Cipher cipher_leak0 = javax.crypto.Cipher.getInstance(dataLeAk0);
+			android.util.Log.d("leak-0-0", cipher_leak0.getAlgorithm())
+			android.util.Log.d("leak-1-0", cipher_leak1.getAlgorithm())
+			android.util.Log.d("leak-2-0", cipher_leak2.getAlgorithm())
 		} catch (Exception e) {
 		}
-		android.util.Log.d("leak-0-0", dataLeAk0);
-        android.util.Log.d("leak-1-0", dataLeAk1);
-		android.util.Log.d("leak-2-0", dataLeAk2);
 		return 1;
     }
 
     int intB = 0;
 
     int methodB() {
-    	try {
-			dataLeAk1 = javax.crypto.Cipher.getInstance("AES");
+        try {
+			Cipher cipher_leak1 = javax.crypto.Cipher.getInstance(dataLeAk1);
+			android.util.Log.d("leak-0-1", cipher_leak0.getAlgorithm())
+			android.util.Log.d("leak-1-1", cipher_leak1.getAlgorithm())
+			android.util.Log.d("leak-2-1", cipher_leak2.getAlgorithm())
 		} catch (Exception e) {
 		}
-		android.util.Log.d("leak-0-1", dataLeAk0);
-        android.util.Log.d("leak-1-1", dataLeAk1);
-		android.util.Log.d("leak-2-1", dataLeAk2);
 		return 0;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-			dataLeAk2 = javax.crypto.Cipher.getInstance("AES");
+		try {
+			Cipher cipher_leak2 = javax.crypto.Cipher.getInstance(dataLeAk2);
+			android.util.Log.d("leak-0-2", cipher_leak0.getAlgorithm())
+			android.util.Log.d("leak-1-2", cipher_leak1.getAlgorithm())
+			android.util.Log.d("leak-2-2", cipher_leak2.getAlgorithm())
 		} catch (Exception e) {
 		}
-		android.util.Log.d("leak-0-2", dataLeAk0);
-		android.util.Log.d("leak-1-2", dataLeAk1);
-		android.util.Log.d("leak-2-2", dataLeAk2);
 
         this.intA = 1;
         this.methodA();
