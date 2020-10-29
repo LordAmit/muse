@@ -98,26 +98,30 @@ public class TaintSinkOperator {
 			//first instance of a TryStatement
 			List<?> statements = body.statements();
 			//Create a string that has the beginning part of the current sink to check if there are already sinks there
-			String leak = DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count));
-			String[] check = leak.split("\\(");
 			Block chosenBody = null;
 			TryStatement finalTryStatement = null;
+			//iterate through statements in node
 			for (int i=0; i<statements.size(); i++) {
 				if (statements.get(i).toString().contains("try {")) {
 					TryStatement statement = (TryStatement) statements.get(i);
 					Block body2 = statement.getBody();
+					//note the related source to the current sink
 					if (body2.toString().contains("dataLeAk" + count)) {
 						chosenBody = body2;
+						break;
 					}
+					//note the current try statement to find the last one
 					if (body2.toString().contains("dataLe")) {
 						finalTryStatement = statement;
 					}
 				}
 			}
+			//if there is a related source to the current sink in a try statement, write to that try statement's block
 			if (chosenBody != null) {
 				listRewrite = rewriter.getListRewrite(chosenBody, Block.STATEMENTS_PROPERTY);
 				index = 1;
 			}
+			//if there isn't, but there are try statements with other sources, write in the last one encountered's block
 			else if (finalTryStatement != null) {
 				chosenBody = finalTryStatement.getBody();
 				listRewrite = rewriter.getListRewrite(chosenBody, Block.STATEMENTS_PROPERTY);

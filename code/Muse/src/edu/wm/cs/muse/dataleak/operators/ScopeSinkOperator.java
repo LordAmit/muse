@@ -3,6 +3,8 @@ package edu.wm.cs.muse.dataleak.operators;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
@@ -99,7 +101,36 @@ public class ScopeSinkOperator {
 			MethodDeclaration methodNode = (MethodDeclaration) node.getParent();
 			System.out.println(String.format("leak-%s-%s: %s.%s", placeholderValue, index,
 					SchemaOperatorUtility.getClassNameOfMethod(node), methodNode.getName()));
-			
+			List<?> statements = node.statements();
+			//Create a string that has the beginning part of the current sink to check if there are already sinks there
+			Block chosenBody = null;
+			TryStatement finalTryStatement = null;
+			//iterate through statements in body node
+			for (int j=0; j<statements.size(); j++) {
+				if (statements.get(j).toString().contains("try {")) {
+					TryStatement statement = (TryStatement) statements.get(i);
+					Block body2 = statement.getBody();
+					//note the related source to the current sink
+					if (body2.toString().contains("dataLeAk" + Integer.parseInt(placeholderValue))) {
+						chosenBody = body2;
+					}
+					//note the current try statement to find the last one
+					if (body2.toString().contains("dataLe")) {
+						finalTryStatement = statement;
+					}
+				}
+			}
+			//if there is a related source to the current sink in a try statement, write to that try statement's block
+			if (chosenBody != null) {
+				listRewrite = rewriter.getListRewrite(chosenBody, Block.STATEMENTS_PROPERTY);
+				index = 1;
+			}
+			//if there isn't, but there are try statements with other sources, write in the last one encountered's block
+			else if (finalTryStatement != null) {
+				chosenBody = finalTryStatement.getBody();
+				listRewrite = rewriter.getListRewrite(chosenBody, Block.STATEMENTS_PROPERTY);
+				index=1;
+			}
 			String sink = String.format(DataLeak.getSink(OperatorType.SCOPESINK, Integer.parseInt(placeholderValue), index));
 			ASTNode placeHolder;
 			if (handler.stringHasThrows(sink)) {
