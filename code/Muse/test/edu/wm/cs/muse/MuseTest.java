@@ -372,7 +372,7 @@ public class MuseTest {
 		//output = new File("test/output/output.txt");
 	
 		content = FileUtility.readSourceFile("test/input/sample_multilevelclass.txt").toString();
-		expectedOutput = new File("test/output/try_catch_multilevel_class_sink.txt");
+		expectedOutput = new File("test/output/sample_try_catch_multilevel_class_sink.txt");
 		
 		muse = new Muse();
 		root = ASTHelper.getTestingAST(content, Arguments.getRootPath());
