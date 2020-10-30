@@ -106,7 +106,7 @@ public class TaintSinkOperator {
 					TryStatement statement = (TryStatement) statements.get(i);
 					Block body2 = statement.getBody();
 					//note the related source to the current sink
-					if (body2.toString().contains("dataLeAk" + count)) {
+					if (body2.toString().contains("dataLeAk" + count + ")")) {
 						chosenBody = body2;
 						break;
 					}

@@ -108,10 +108,10 @@ public class ScopeSinkOperator {
 			//iterate through statements in body node
 			for (int j=0; j<statements.size(); j++) {
 				if (statements.get(j).toString().contains("try {")) {
-					TryStatement statement = (TryStatement) statements.get(i);
+					TryStatement statement = (TryStatement) statements.get(j);
 					Block body2 = statement.getBody();
 					//note the related source to the current sink
-					if (body2.toString().contains("dataLeAk" + Integer.parseInt(placeholderValue))) {
+					if (body2.toString().contains("dataLeAk" + Integer.parseInt(placeholderValue) + ")")) {
 						chosenBody = body2;
 					}
 					//note the current try statement to find the last one
@@ -120,16 +120,17 @@ public class ScopeSinkOperator {
 					}
 				}
 			}
+			boolean isInTry = false;
 			//if there is a related source to the current sink in a try statement, write to that try statement's block
 			if (chosenBody != null) {
 				listRewrite = rewriter.getListRewrite(chosenBody, Block.STATEMENTS_PROPERTY);
-				index = 1;
+				isInTry = true;
 			}
 			//if there isn't, but there are try statements with other sources, write in the last one encountered's block
 			else if (finalTryStatement != null) {
 				chosenBody = finalTryStatement.getBody();
 				listRewrite = rewriter.getListRewrite(chosenBody, Block.STATEMENTS_PROPERTY);
-				index=1;
+				isInTry = true;
 			}
 			String sink = String.format(DataLeak.getSink(OperatorType.SCOPESINK, Integer.parseInt(placeholderValue), index));
 			ASTNode placeHolder;
@@ -165,6 +166,9 @@ public class ScopeSinkOperator {
 						placement = 0;
 				}
 				statement_counter++;
+			}
+			if (isInTry) {
+				placement = 1;
 			}
 			listRewrite.insertAt(placeHolder, placement, null);
 			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
