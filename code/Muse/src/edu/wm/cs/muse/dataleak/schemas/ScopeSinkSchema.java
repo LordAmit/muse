@@ -110,14 +110,14 @@ public class ScopeSinkSchema extends ASTVisitor {
 
 			if (classRetainer != null) {
 				if (field.toString().contains(vdName)
-						&& field.toString().substring(0, 15).compareTo(vdType.substring(0,15)) == 0) {
+						&& field.toString().substring(0, vdType.length()).equals(vdType)) {
 					previousFieldHolder.add(field);
 				}
 				classRetainer = parent;
 			}
 			else {
 				if (field.toString().contains(vdName)
-						&& field.toString().substring(0, 15).compareTo(vdType.substring(0,15)) == 0) {
+						&& field.toString().substring(0, vdType.length()).equals(vdType)) {
 					previousFieldHolder.add(field);
 				}
 				classRetainer = parent;
