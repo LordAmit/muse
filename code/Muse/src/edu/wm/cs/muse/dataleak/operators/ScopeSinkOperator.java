@@ -111,13 +111,15 @@ public class ScopeSinkOperator {
 					TryStatement statement = (TryStatement) statements.get(j);
 					Block body2 = statement.getBody();
 					//note the related source to the current sink
-					if (body2.toString().contains("dataLeAk" + Integer.parseInt(placeholderValue) + ")")) {
+					String check = DataLeak.getSource(OperatorType.SCOPESOURCE, Integer.parseInt(placeholderValue));
+					String[] edited = check.split("=");
+					check = edited[0];
+					check = check.replaceAll("[^A-Za-z_]", "");
+					if (body2.toString().contains(check + Integer.parseInt(placeholderValue) + "=")) {
 						chosenBody = body2;
+						break;
 					}
-					//note the current try statement to find the last one
-					if (body2.toString().contains("dataLe")) {
-						finalTryStatement = statement;
-					}
+					finalTryStatement = statement;
 				}
 			}
 			boolean isInTry = false;

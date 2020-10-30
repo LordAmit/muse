@@ -106,14 +106,17 @@ public class TaintSinkOperator {
 					TryStatement statement = (TryStatement) statements.get(i);
 					Block body2 = statement.getBody();
 					//note the related source to the current sink
-					if (body2.toString().contains("dataLeAk" + count + ")")) {
+					String check = DataLeak.getSource(OperatorType.TAINTSOURCE, count);
+					String[] edited = check.split("=");
+					check = edited[0];
+					check = check.replaceAll("[^A-Za-z_]", "");
+					if (body2.toString().contains(check + Integer.toString(count) + "=")) {
 						chosenBody = body2;
 						break;
 					}
+				
 					//note the current try statement to find the last one
-					if (body2.toString().contains("dataLe")) {
-						finalTryStatement = statement;
-					}
+					finalTryStatement = statement;
 				}
 			}
 			//if there is a related source to the current sink in a try statement, write to that try statement's block
