@@ -60,14 +60,12 @@ public class ScopeSinkSchema extends ASTVisitor {
 		}
 		parent = method.getParent();
 		int throwaway = 0;
-
 		if (parent.getNodeType() == ASTNode.TYPE_DECLARATION) {
 
 			nodeChanges.add(new SinkNodeChangeContainers(parent, Utility.COUNTER_GLOBAL_TSINK++, throwaway,
 					Block.STATEMENTS_PROPERTY, method.getBody(), 0));
 			// get parent's fields with findField
 			parent = parent.getParent();
-
 		}
 
 		return true;
@@ -83,22 +81,18 @@ public class ScopeSinkSchema extends ASTVisitor {
 		String vdType = vd.split("%d")[0];
 		// the name of the variable declaration (e.g. "dataLeAk")
 		String vdName = vdType.split(" ")[1];
-
 // The getParent loop was found unnecessary, getParent will always find a TYPE_DECLARATION
 		parent = field.getParent();
-
 //		if (parent.getNodeType() == ASTNode.TYPE_DECLARATION && parent.getParent() == null) {
 		// some class segment was completed before this one. This is a new class chain
 		if (parent == classRetainer) {
 			// check for strings of the declaration, e.g. "String dataLeAk%d"
-
 			if (field.toString().startsWith(vdType)) {
 				fieldHolder.add(field);
 				previousFieldHolder.add(field);
 			}
 
 			ArrayList<FieldDeclaration> fieldDecl = new ArrayList<FieldDeclaration>(fieldHolder);
-
 			taintNodeChanges.add(new TaintNodeChangeContainers(parent, fieldDecl, index, Block.STATEMENTS_PROPERTY, 0));
 			// keep track of outer classes
 			fieldHolder.clear();
@@ -115,24 +109,21 @@ public class ScopeSinkSchema extends ASTVisitor {
 		if (parent != classRetainer) {
 
 			if (classRetainer != null) {
-				
 				if (field.toString().contains(vdName)
-						&& field.toString().substring(0, 15).compareTo(vdType) == 0) {
+						&& field.toString().substring(0, 15).compareTo(vdType.substring(0,15)) == 0) {
 					previousFieldHolder.add(field);
 				}
 				classRetainer = parent;
 			}
 			else {
-				
 				if (field.toString().contains(vdName)
-						&& field.toString().substring(0, 15).compareTo(vdType) == 0) {
+						&& field.toString().substring(0, 15).compareTo(vdType.substring(0,15)) == 0) {
 					previousFieldHolder.add(field);
 				}
 				classRetainer = parent;
 			}
 
 			ArrayList<FieldDeclaration> fieldDecl = new ArrayList<FieldDeclaration>(fieldHolder);
-
 			taintNodeChanges
 					.add(new TaintNodeChangeContainers(classRetainer, fieldDecl, index, Block.STATEMENTS_PROPERTY, 0));
 			classRetainer = parent;

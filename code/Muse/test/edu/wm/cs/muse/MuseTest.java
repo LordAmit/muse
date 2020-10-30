@@ -273,9 +273,16 @@ public class MuseTest {
 													DataLeak.getRawSink(OperatorType.TAINTSINK)};
 		
 		try {
+			/*
 			DataLeak.setSource(OperatorType.TAINTSOURCE, "Cipher cipher_leak%d = javax.crypto.Cipher.getInstance(dataLeAk%<d);");
 			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, "String dataLeAk%d = \"AES\"; ");
 			DataLeak.setSink(OperatorType.TAINTSINK, "android.util.Log.d(\"leak-%d-%d\", cipher_leak%d.getAlgorithm())");
+			*/
+			
+			DataLeak.setSource(OperatorType.TAINTSOURCE, "cipher_leak%d = javax.crypto.Cipher.getInstance(\"AES\");");
+			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, "javax.crypto.Cipher cipher_leak%d = null; ");
+			DataLeak.setSink(OperatorType.TAINTSINK, "android.util.Log.d(\"leak-%d-%d\", cipher_leak%d.getAlgorithm())");
+			
 			prepare_try_test_files();
 			execute_muse(OperatorType.TAINTSINK);
 			DataLeak.setSource(OperatorType.TAINTSOURCE, original_operators[0]);
@@ -309,9 +316,11 @@ public class MuseTest {
 		
 		try {
 			scope_multi_reset();
-			DataLeak.setSource(OperatorType.SCOPESOURCE, "Cipher cipher_leak%d = javax.crypto.Cipher.getInstance(dataLeAk%<d);");
-			DataLeak.setVariableDeclaration(OperatorType.SCOPESOURCE, "String dataLeAk%d = \"AES\"; ");
+			
+			DataLeak.setSource(OperatorType.SCOPESOURCE, "cipher_leak%d = javax.crypto.Cipher.getInstance(\"AES\");");
+			DataLeak.setVariableDeclaration(OperatorType.SCOPESOURCE, "javax.crypto.Cipher cipher_leak%d = null; ");
 			DataLeak.setSink(OperatorType.SCOPESINK, "android.util.Log.d(\"leak-%d-%d\", cipher_leak%d.getAlgorithm())");
+			
 			prepare_try_multi_test_files();
 			execute_muse(OperatorType.SCOPESINK);
 			DataLeak.setSource(OperatorType.SCOPESOURCE, original_operators[0]);

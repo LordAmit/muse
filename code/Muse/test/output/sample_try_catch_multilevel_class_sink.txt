@@ -1,15 +1,15 @@
 package com.example.amit.helloworld.test;
 
 public class TestClass {
-    String dataLeAk11 = "AES"; 
-	String dataLeAk8 = "AES"; 
-	String dataLeAk5 = "AES"; 
-	String dataLeAk3 = "AES"; 
-	String dataLeAk1 = "AES"; 
-	String dataLeAk0 = "AES"; 
+    javax.crypto.Cipher cipher_leak11 = null; 
+	javax.crypto.Cipher cipher_leak8 = null; 
+	javax.crypto.Cipher cipher_leak5 = null; 
+	javax.crypto.Cipher cipher_leak3 = null; 
+	javax.crypto.Cipher cipher_leak1 = null; 
+	javax.crypto.Cipher cipher_leak0 = null; 
 	int methodA(){
         try {
-			Cipher cipher_leak0 = javax.crypto.Cipher.getInstance(dataLeAk0);
+			cipher_leak0 = javax.crypto.Cipher.getInstance("AES");
 			android.util.Log.d("leak-0-0", cipher_leak0.getAlgorithm())
 			android.util.Log.d("leak-1-0", cipher_leak1.getAlgorithm())
 			android.util.Log.d("leak-3-0", cipher_leak3.getAlgorithm())
@@ -22,7 +22,7 @@ public class TestClass {
     }
     int methodB(){
         try {
-			Cipher cipher_leak1 = javax.crypto.Cipher.getInstance(dataLeAk1);
+			cipher_leak1 = javax.crypto.Cipher.getInstance("AES");
 			android.util.Log.d("leak-0-1", cipher_leak0.getAlgorithm())
 			android.util.Log.d("leak-1-1", cipher_leak1.getAlgorithm())
 			android.util.Log.d("leak-3-1", cipher_leak3.getAlgorithm())
@@ -34,18 +34,18 @@ public class TestClass {
 		return 2;
     }
     class ChildClassLevelOne{
-        String dataLeAk10 = "AES"; 
-		String dataLeAk7 = "AES"; 
-		String dataLeAk4 = "AES"; 
-		String dataLeAk2 = "AES"; 
+        javax.crypto.Cipher cipher_leak10 = null; 
+		javax.crypto.Cipher cipher_leak7 = null; 
+		javax.crypto.Cipher cipher_leak4 = null; 
+		javax.crypto.Cipher cipher_leak2 = null; 
 		int methodConeA(){
             try {
-				Cipher cipher_leak3 = javax.crypto.Cipher.getInstance(dataLeAk3);
+				cipher_leak3 = javax.crypto.Cipher.getInstance("AES");
 				android.util.Log.d("leak-3-2", cipher_leak3.getAlgorithm())
 			} catch (Exception e) {
 			}
 			try {
-				Cipher cipher_leak2 = javax.crypto.Cipher.getInstance(dataLeAk2);
+				cipher_leak2 = javax.crypto.Cipher.getInstance("AES");
 				android.util.Log.d("leak-2-2", cipher_leak2.getAlgorithm())
 				android.util.Log.d("leak-4-2", cipher_leak4.getAlgorithm())
 				android.util.Log.d("leak-7-2", cipher_leak7.getAlgorithm())
@@ -61,12 +61,12 @@ public class TestClass {
         }
         int methodCOneB(){
             try {
-				Cipher cipher_leak5 = javax.crypto.Cipher.getInstance(dataLeAk5);
+				cipher_leak5 = javax.crypto.Cipher.getInstance("AES");
 				android.util.Log.d("leak-5-3", cipher_leak5.getAlgorithm())
 			} catch (Exception e) {
 			}
 			try {
-				Cipher cipher_leak4 = javax.crypto.Cipher.getInstance(dataLeAk4);
+				cipher_leak4 = javax.crypto.Cipher.getInstance("AES");
 				android.util.Log.d("leak-2-3", cipher_leak2.getAlgorithm())
 				android.util.Log.d("leak-4-3", cipher_leak4.getAlgorithm())
 				android.util.Log.d("leak-7-3", cipher_leak7.getAlgorithm())
@@ -81,21 +81,21 @@ public class TestClass {
 			return 2;
         }
         class ChildClassLevelTwo{
-            String dataLeAk9 = "AES"; 
-			String dataLeAk6 = "AES"; 
+            javax.crypto.Cipher cipher_leak9 = null; 
+			javax.crypto.Cipher cipher_leak6 = null; 
 			int methodCTwoA(){
                 try {
-					Cipher cipher_leak8 = javax.crypto.Cipher.getInstance(dataLeAk8);
+					cipher_leak8 = javax.crypto.Cipher.getInstance("AES");
 					android.util.Log.d("leak-8-4", cipher_leak8.getAlgorithm())
 				} catch (Exception e) {
 				}
 				try {
-					Cipher cipher_leak7 = javax.crypto.Cipher.getInstance(dataLeAk7);
+					cipher_leak7 = javax.crypto.Cipher.getInstance("AES");
 					android.util.Log.d("leak-7-4", cipher_leak7.getAlgorithm())
 				} catch (Exception e) {
 				}
 				try {
-					Cipher cipher_leak6 = javax.crypto.Cipher.getInstance(dataLeAk6);
+					cipher_leak6 = javax.crypto.Cipher.getInstance("AES");
 					android.util.Log.d("leak-6-4", cipher_leak6.getAlgorithm())
 					android.util.Log.d("leak-9-4", cipher_leak9.getAlgorithm())
 					android.util.Log.d("leak-2-4", cipher_leak2.getAlgorithm())
@@ -112,17 +112,17 @@ public class TestClass {
             }
             int methodCTwoB(){
                 try {
-					Cipher cipher_leak11 = javax.crypto.Cipher.getInstance(dataLeAk11);
+					cipher_leak11 = javax.crypto.Cipher.getInstance("AES");
 					android.util.Log.d("leak-11-5", cipher_leak11.getAlgorithm())
 				} catch (Exception e) {
 				}
 				try {
-					Cipher cipher_leak10 = javax.crypto.Cipher.getInstance(dataLeAk10);
+					cipher_leak10 = javax.crypto.Cipher.getInstance("AES");
 					android.util.Log.d("leak-10-5", cipher_leak10.getAlgorithm())
 				} catch (Exception e) {
 				}
 				try {
-					Cipher cipher_leak9 = javax.crypto.Cipher.getInstance(dataLeAk9);
+					cipher_leak9 = javax.crypto.Cipher.getInstance("AES");
 					android.util.Log.d("leak-6-5", cipher_leak6.getAlgorithm())
 					android.util.Log.d("leak-9-5", cipher_leak9.getAlgorithm())
 					android.util.Log.d("leak-2-5", cipher_leak2.getAlgorithm())
