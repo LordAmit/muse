@@ -37,6 +37,7 @@ public class ScopeSinkSchema extends ASTVisitor {
 	public ScopeSinkSchema() {
 		taintNodeChanges = new ArrayList<TaintNodeChangeContainers>();
 		nodeChanges = new ArrayList<SinkNodeChangeContainers>();
+		Utility.COUNTER_GLOBAL_TSINK=0;
 	}
 
 	public ArrayList<TaintNodeChangeContainers> getFieldNodeChanges() {
