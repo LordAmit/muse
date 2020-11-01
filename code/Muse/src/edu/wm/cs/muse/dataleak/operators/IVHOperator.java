@@ -125,7 +125,7 @@ public class IVHOperator {
 		String source = "";
 		//Chooses the source to be inserted by whether it is a subclass or superclass
 		if (isParent) {
-			source = DataLeak.getSource(OperatorType.IVH, 0);
+			source = DataLeak.getSource(OperatorType.IVH);
 		}
 		else {
 			source = DataLeak.getVariableDeclaration(OperatorType.IVH);
@@ -168,7 +168,7 @@ public class IVHOperator {
 			//Set up sink to be inserted
 			Block body = method[i].getBody();
 			listRewrite = rewriter.getListRewrite(body, Block.STATEMENTS_PROPERTY);
-			String sink = DataLeak.getSink(OperatorType.IVH, 0, 0);
+			String sink = DataLeak.getSink(OperatorType.IVH);
 			ASTNode placeHolder;
 			if (handler.stringHasThrows(sink)) {
 				placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT));

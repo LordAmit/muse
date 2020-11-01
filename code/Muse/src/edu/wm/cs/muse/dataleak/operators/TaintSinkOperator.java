@@ -133,13 +133,13 @@ public class TaintSinkOperator {
 //		Statement placeHolder = (Statement) rewriter
 //				.createStringPlaceholder(DataLeak.getSource(OperatorType.TAINTSINK, count), ASTNode.EMPTY_STATEMENT);
 		ASTNode placeHolder;
-		if (handler.stringHasThrows(DataLeak.getTaintSinkSourceFinalDecl(count))) {
+		if (handler.stringHasThrows(DataLeak.getTaintSourceFinalDecl(count))) {
 			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
-					DataLeak.getTaintSinkSourceFinalDecl(count), ASTNode.EMPTY_STATEMENT));
+					DataLeak.getTaintSourceFinalDecl(count), ASTNode.EMPTY_STATEMENT));
 		}
 		else {
 			placeHolder = (Statement) rewriter
-					.createStringPlaceholder(DataLeak.getTaintSinkSourceFinalDecl(count), ASTNode.EMPTY_STATEMENT);
+					.createStringPlaceholder(DataLeak.getTaintSourceFinalDecl(count), ASTNode.EMPTY_STATEMENT);
 		}
 		listRewrite.insertAt(placeHolder, index, null);
 		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
