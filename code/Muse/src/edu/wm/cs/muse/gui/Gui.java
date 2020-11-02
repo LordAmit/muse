@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -22,6 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -398,28 +400,104 @@ public class Gui extends Application {
      * TODO: Implement rest of layout 
      * TODO: Sync progress bar progress to Muse progress
      */
-    private void goToProgressScene(Stage stage) {
-//    	HBox progressSceneLayout = new HBox();
-//    	Scene progressScene = new Scene(progressSceneLayout, width, height);
-    	HBox hbox = new HBox(20);
-        hbox.setSpacing(5);
-        hbox.setPadding(new Insets(75, 150, 50, 60));
-        
-       
-    	//Creating a progress bar
-        ProgressBar progress = new ProgressBar();
-        progress.setProgress(0.6);
-        progress.setPrefSize(500, 30);
-        
-        ProgressIndicator indicator = new ProgressIndicator(0.6);
+    private void goToProgressScene(Stage stage) {   	
+    	
+    	//create VBox object
+    	VBox loading = new VBox(20);
+    	//standard dimensions we have been using
+        loading.setMaxWidth(600); 
+        loading.setMaxHeight(600);
+        loading.setPadding(new Insets(10, 50, 50, 50));
         
         
-        hbox.getChildren().addAll(progress, indicator);
+        //Creating a Text object 
+        Text runningText = new Text(); 
+        runningText.setText("Muse is running");
+        runningText.setFont(Font.font("Inconsolata ",  FontWeight.BOLD, 30));
+        //add element to VBox
+        loading.getChildren().add(runningText);
         
-        Group root = new Group(hbox);
-        Scene scene = new Scene(root, 700, 400);
-        stage.setTitle("Muse Progress Example");
+        //create progress bar and add
+        final ProgressBar museProgressBar = new ProgressBar();
+        museProgressBar.prefWidthProperty().bind(root.widthProperty().subtract(20));
+        museProgressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
+        //add element to VBox
+        loading.getChildren().add(museProgressBar);
         
+        //Creating a separator (separates bar from text)
+        Separator sep = new Separator();
+        sep.setMaxWidth(80);
+        sep.setHalignment(HPos.CENTER);
+        //add element to VBox
+        loading.getChildren().add(2, sep);
+        
+        //create text for muse output to be printed and add
+        TextArea testText = new TextArea();
+        //dummy text for now
+        testText.setText("Muse progress toasts can print here:\n");
+        testText.setFont(Font.font("Courier New",  20));
+        testText.setWrapText(true);
+        //add element to VBox
+        loading.getChildren().add(testText); //add the text to pane
+            
+        //create dummy button for testing text and add
+        Button testToastButton = new Button("Get toast");
+        loading.getChildren().add(testToastButton);
+        
+        //create dummy button for testing finish state
+        Button proceedFinishButton = new Button("Proceed");
+        loading.getChildren().add(proceedFinishButton);
+        
+        //create  button for returning to start
+        Button returnStart = new Button("Cancel");
+        loading.getChildren().add(returnStart);
+        
+        //!!!!!!!!!adding action handlers for buttons!!!!!!!!!!!
+        //for our test button, updates text on click for now
+        EventHandler<ActionEvent> buttonHandler = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	//testText.setText("Accepted");
+            	testText.appendText("Button Press detected-- Adding toast.\n");
+            	
+                event.consume();
+             
+            } 
+        };
+        testToastButton.setOnAction(buttonHandler);
+        
+      //for our proceed button, go to finish activity
+        EventHandler<ActionEvent> finishButtonHandler = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	//call finish activity
+            	testText.appendText("\nFinish button selected!\nInvoking goToSuccessfulRunScene()\n(Not Implemented)\n");
+            	//goToSuccessfulRunScene(stage);
+                event.consume();
+             
+            } 
+        };
+        proceedFinishButton.setOnAction(finishButtonHandler);
+        
+      //for our cancel button, return to start menu
+        EventHandler<ActionEvent> returnStartHandler = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	//call finish activity
+            	testText.appendText("\nCancel button selected! Returning to start.\n");
+            	goToTitleScene(stage);
+                event.consume();
+             
+            } 
+        };
+        returnStart.setOnAction(returnStartHandler);
+      //!!!!!!!!!end of action handlers for buttons!!!!!!!!!!!
+  
+        BorderPane root = new BorderPane(loading);
+        Scene scene = new Scene(root);
+  
+        stage.setWidth(800);
+        stage.setHeight(600);
         stage.setScene(scene);
         stage.show();
         
@@ -431,7 +509,7 @@ public class Gui extends Application {
      * If there was an error, it will take the user to the
      * error scene instead
      */
-    private void goToSuccessfulRunScene() {
+    private void goToSuccessfulRunScene(Stage stage) {
     	
     }
     
