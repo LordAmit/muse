@@ -424,7 +424,7 @@ public class Gui extends Application {
         
         //Creating a Text object 
         Text runningText = new Text(); 
-        runningText.setText("Muse is running");
+        runningText.setText("μSE is running");
         runningText.setFont(Font.font("Inconsolata ",  FontWeight.BOLD, 30));
         //add element to VBox
         loading.getChildren().add(runningText);
@@ -444,13 +444,13 @@ public class Gui extends Application {
         loading.getChildren().add(2, sep);
         
         //create text for muse output to be printed and add
-        TextArea testText = new TextArea();
+        TextArea museRuntimeText = new TextArea();
         //dummy text for now
-        testText.setText("Muse progress toasts can print here:\n");
-        testText.setFont(Font.font("Courier New",  20));
-        testText.setWrapText(true);
+        museRuntimeText.setText("Muse progress toasts can print here:\n");
+        museRuntimeText.setFont(Font.font("Courier New",  20));
+        museRuntimeText.setWrapText(true);
         //add element to VBox
-        loading.getChildren().add(testText); //add the text to pane
+        loading.getChildren().add(museRuntimeText); //add the text to pane
             
         //create dummy button for testing text and add
         Button testToastButton = new Button("Get toast");
@@ -470,7 +470,7 @@ public class Gui extends Application {
             @Override
             public void handle(ActionEvent event) {
             	//testText.setText("Accepted");
-            	testText.appendText("Button Press detected-- Adding toast.\n");
+            	museRuntimeText.appendText("Button Press detected-- Adding toast.\n");
             	
                 event.consume();
              
@@ -483,8 +483,11 @@ public class Gui extends Application {
             @Override
             public void handle(ActionEvent event) {
             	//call finish activity
-            	testText.appendText("\nFinish button selected!\nInvoking goToSuccessfulRunScene()\n(Not Implemented)\n");
-            	//goToSuccessfulRunScene(stage);
+            	museRuntimeText.appendText("\nFinish button selected!\nInvoking goToSuccessfulRunScene()"
+            			+ "\nBringing TextArea to new function\n");
+            	//takes the TextArea with runtime string into our final function stage
+            	//this lets us display the text to the user for potential use after running muse
+            	goToSuccessfulRunScene(stage,museRuntimeText);
                 event.consume();
              
             } 
@@ -496,7 +499,7 @@ public class Gui extends Application {
             @Override
             public void handle(ActionEvent event) {
             	//call finish activity
-            	testText.appendText("\nCancel button selected! Returning to start.\n");
+            	museRuntimeText.appendText("\nCancel button selected! Returning to start.\n");
             	goToTitleScene(stage);
                 event.consume();
              
@@ -521,9 +524,40 @@ public class Gui extends Application {
      * If there was an error, it will take the user to the
      * error scene instead
      */
-    private void goToSuccessfulRunScene(Stage stage) {
+    private void goToSuccessfulRunScene(Stage stage,TextArea runTimeInfoText) {
     	
-    	//insert code here
+    	//create VBox object
+    	VBox success = new VBox(20);
+    	//standard dimensions we have been using
+    	success.setMaxWidth(600); 
+    	success.setMaxHeight(600);
+    	success.setPadding(new Insets(10, 50, 50, 50));
+        
+        //Creating a Text object 
+        Text successText = new Text(); 
+        successText.setText("μSE has successfully completed its run!");
+        successText.setFont(Font.font("Inconsolata ",  FontWeight.BOLD, 30));
+        //add element to VBox
+        success.getChildren().add(successText);
+        
+        //Creating a Text object 
+        Text infoText = new Text(); 
+        infoText.setText("Runtime text log:");
+        infoText.setFont(Font.font("Inconsolata ", 20));
+        //add element to VBox
+        success.getChildren().add(infoText);
+        
+        
+        BorderPane root = new BorderPane(success);
+        Scene scene = new Scene(root);    
+        
+        //add TextArea with SAME text from Progress Scene
+        success.getChildren().add(runTimeInfoText); //add the text to pane
+  
+        stage.setWidth(800);
+        stage.setHeight(600);
+        stage.setScene(scene);
+        stage.show();
     	
     }
     
