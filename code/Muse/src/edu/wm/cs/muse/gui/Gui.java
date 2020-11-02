@@ -4,6 +4,10 @@ package edu.wm.cs.muse.gui;
 import java.io.File;
 import java.io.FileWriter;
 
+import org.eclipse.text.edits.MalformedTreeException;
+
+import edu.wm.cs.muse.Muse;
+import edu.wm.cs.muse.dataleak.support.Arguments;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
