@@ -553,6 +553,25 @@ public class Gui extends Application {
         
         //add TextArea with SAME text from Progress Scene
         success.getChildren().add(runTimeInfoText); //add the text to pane
+        
+        //create  button for returning to start
+        Button goBackToStart = new Button("Return To Start");
+        success.getChildren().add(goBackToStart);
+        
+        //for our return button, return to start menu
+        EventHandler<ActionEvent> goBackToStartHandler = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	//call finish activity
+            	//museRuntimeText.appendText("\nCancel button selected! Returning to start.\n");
+            	goToTitleScene(stage);
+                event.consume();
+             
+            } 
+        };
+        goBackToStart.setOnAction(goBackToStartHandler);
+        
+        
   
         stage.setWidth(800);
         stage.setHeight(600);
