@@ -27,4 +27,3 @@ gui:
   script:
     - echo "Launch GUI"
     - cd code/Muse
-    - mvn clean javafx:run
