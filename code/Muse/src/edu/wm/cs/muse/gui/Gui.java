@@ -523,6 +523,8 @@ public class Gui extends Application {
      */
     private void goToSuccessfulRunScene(Stage stage) {
     	
+    	//insert code here
+    	
     }
     
     /*
