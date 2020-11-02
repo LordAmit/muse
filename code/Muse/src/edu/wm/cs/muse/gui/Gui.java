@@ -562,8 +562,6 @@ public class Gui extends Application {
         EventHandler<ActionEvent> goBackToStartHandler = new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	//call finish activity
-            	//museRuntimeText.appendText("\nCancel button selected! Returning to start.\n");
             	goToTitleScene(stage);
                 event.consume();
              
