@@ -32,6 +32,9 @@ import edu.wm.cs.muse.dataleak.schemas.ScopeSinkSchema;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
+import javafx.application.Application;
+import edu.wm.cs.muse.gui.Gui;
+
 import edu.wm.cs.muse.mdroid.ASTHelper;
 import log.LeakRemover;
 import log.LogDiff;
