@@ -53,9 +53,9 @@ public class Gui extends Application {
 	
 	
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    // public static void main(String[] args) {
+    //     launch(args);
+    // }
     
     /*
      * This method has to be implemented because Gui "extends"
@@ -126,9 +126,17 @@ public class Gui extends Application {
                 System.out.println("You pressed the button that will ask which existing configuration"
                 		+ " you want to run muse with.");
                 
-                // TODO:File chooser for browse buttons
                 FileChooser fileChooser = new FileChooser();
-                fileChooser.showOpenDialog(window);
+                String filePath = fileChooser.showOpenDialog(window).getAbsolutePath();
+                String[] run = {filePath};
+
+                try {
+                	Arguments.extractArguments(run[0]);
+					new Muse().runMuse(run);
+				} catch (MalformedTreeException | org.eclipse.jface.text.BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
     	
