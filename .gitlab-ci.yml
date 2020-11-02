@@ -3,7 +3,6 @@ image: maven:latest
 stages:
   - build
   - test
-  - gui
   - deploy
 
 build:
@@ -21,9 +20,3 @@ test:
     - echo "Testing Muse"
     - cd code/Muse
     - mvn clean test
-
-gui:
-  stage: gui
-  script:
-    - echo "Launch GUI"
-    - cd code/Muse
