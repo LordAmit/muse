@@ -39,7 +39,7 @@ import javafx.stage.Stage;
 
 
 /*
- * This is the class for the main GUI window.s
+ * This is the class for the main GUI window.
  * @author Phil Watkins
  */
 public class Gui extends Application {
@@ -422,6 +422,7 @@ public class Gui extends Application {
         
         stage.setScene(scene);
         stage.show();
+        
     }
     
     /*
@@ -481,124 +482,83 @@ public class Gui extends Application {
      */
     private boolean validInputs(TextField config_name_textfield, TextField lib4ast_path_textfield, TextField app_src_textfield, ComboBox<String> operatorSelections, CheckBox mutate_checkbox , TextField app_name_textfield, TextField destination_folder_textfield, CheckBox log_checkbox, TextField insertion_log_path_textfield, TextField execution_log_path_textfield, CheckBox custom_data_leak_checkbox, TextField source_string_textfield, TextField sink_string_textfield, TextField vardec_string_textfield)
     {
-    	boolean valid = true;
-    	
-    	
-    	
-    	
-    	
+    	boolean valid = true;	
     	if (config_name_textfield.getText().equals("")) {
     		updateBorder(config_name_textfield, false);
-    		valid = false;
-    	}
+    		valid = false; }
     	else
     		updateBorder(config_name_textfield, true);
-    	
     	if (lib4ast_path_textfield.getText().equals("")) {
         	updateBorder(lib4ast_path_textfield, false);
-        	valid = false;
-    	}
+        	valid = false; }
     	else
         	updateBorder(lib4ast_path_textfield, true);
-
     	if (app_src_textfield.getText().equals("")) {
     		updateBorder(app_src_textfield, false);
-    		valid = false;
-    	}
+    		valid = false; }
     	else
     		updateBorder(app_src_textfield, true);
-    	
     	if (operatorSelections.getValue() == null) {
     		updateBorder(operatorSelections, false);
-    		valid = false;
-    	}
+    		valid = false; }
     	else
     		updateBorder(operatorSelections, true);
-
-    	
-    	if (mutate_checkbox.isSelected())
-    	{        	
+    	if (mutate_checkbox.isSelected()) {        	
     		if (app_name_textfield.getText().equals("")) {
         		updateBorder(app_name_textfield, false);
-        		valid = false;
-    		}
+        		valid = false; }
     		else
         		updateBorder(app_name_textfield, true);
-        	
         	if (destination_folder_textfield.getText().equals("")) {
         		updateBorder(destination_folder_textfield, false);
-        		valid = false;	
-        	}
+        		valid = false; } 
         	else
-        		updateBorder(destination_folder_textfield, true);
-
-    	}
+        		updateBorder(destination_folder_textfield, true); }
     	else
     	{
     		updateBorder(app_name_textfield, true);
-    		updateBorder(destination_folder_textfield, true);
-    	}
-    	
+    		updateBorder(destination_folder_textfield, true); }
     	if (log_checkbox.isSelected())
     	{
-    		
-        	
-    		if (insertion_log_path_textfield.getText().equals("")) {
+    	if (insertion_log_path_textfield.getText().equals("")) {
     			updateBorder(insertion_log_path_textfield, false);
-        		valid = false;
-    		}
+        		valid = false; }
     		else
     			updateBorder(insertion_log_path_textfield, true);
-
         	if (execution_log_path_textfield.getText().equals("")) {
             	updateBorder(execution_log_path_textfield, false);
-        		valid = false;   	
-        	}
+        		valid = false; }
         	else
-            	updateBorder(execution_log_path_textfield, true);
-
-    	}
+            	updateBorder(execution_log_path_textfield, true); }
     	else
     	{
 			updateBorder(insertion_log_path_textfield, true);
-        	updateBorder(execution_log_path_textfield, true);
-    	}
-    	
+        	updateBorder(execution_log_path_textfield, true); }
     	if (custom_data_leak_checkbox.isSelected())
     	{
-        	
     		if (source_string_textfield.getText().equals("")) {
         		updateBorder(source_string_textfield, false);
-        		valid = false;
-    		}
+        		valid = false; }
     		else
         		updateBorder(source_string_textfield, true);
         	
         	if (sink_string_textfield.getText().equals("")) {
             	updateBorder(sink_string_textfield, false);
-        		valid = false;
-        	}
+        		valid = false; }
         	else
             	updateBorder(sink_string_textfield, true);
-
         	if (vardec_string_textfield.getText().equals("")) {
             	updateBorder(vardec_string_textfield, false);
-        		valid = false;
-        	}
+        		valid = false; }
         	else
-            	updateBorder(vardec_string_textfield, true);
-
-    	}
-    	else
-    	{
+            	updateBorder(vardec_string_textfield, true); }
+    	else {
     		updateBorder(source_string_textfield, true);
         	updateBorder(sink_string_textfield, true);
-        	updateBorder(vardec_string_textfield, true);
-        	
-    	}
+        	updateBorder(vardec_string_textfield, true); }
     	
     	return valid;
-    }
+    	}
     
     private void updateBorder(TextField tf, boolean valid)
     {
@@ -610,10 +570,10 @@ public class Gui extends Application {
     
     private void updateBorder(ComboBox<String> cb, boolean valid)
     {
-    	if (valid)
-    		cb.setStyle("-fx-border-color: red ; -fx-border-width: 0px ;");
-    	else
-    		cb.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+    	if (valid) {
+    		cb.setStyle("-fx-border-color: red ; -fx-border-width: 0px ;"); }
+    	else {
+    		cb.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;"); }
     }
 	 
 }
