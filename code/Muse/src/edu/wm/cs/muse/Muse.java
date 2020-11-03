@@ -18,12 +18,14 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 
 import edu.wm.cs.muse.dataleak.operators.ComplexReachability;
+import edu.wm.cs.muse.dataleak.operators.IVHOperator;
 import edu.wm.cs.muse.dataleak.operators.ReachabilityOperator;
 import edu.wm.cs.muse.dataleak.operators.TaintSinkOperator;
 import edu.wm.cs.muse.dataleak.operators.TaintSourceOperator;
 import edu.wm.cs.muse.dataleak.operators.ScopeSourceOperator;
 import edu.wm.cs.muse.dataleak.operators.ScopeSinkOperator;
 import edu.wm.cs.muse.dataleak.schemas.ComplexReachabilitySchema;
+import edu.wm.cs.muse.dataleak.schemas.IVHSchema;
 import edu.wm.cs.muse.dataleak.schemas.ReachabilitySchema;
 import edu.wm.cs.muse.dataleak.schemas.TaintSinkSchema;
 import edu.wm.cs.muse.dataleak.schemas.TaintSourceSchema;
@@ -103,6 +105,8 @@ public class Muse {
 			return OperatorType.REACHABILITY;
 		case "COMPLEXREACHABILITY":
 			return OperatorType.COMPLEXREACHABILITY;
+		case "IVH":
+			return OperatorType.IVH;
 		default:
 			printArgumentError();
 			System.exit(-1);
@@ -239,7 +243,13 @@ public class Muse {
 			rewriter = complexOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			break;
-
+		case IVH:
+			IVHSchema ivhSchema = new IVHSchema();
+			root.accept(ivhSchema);
+			IVHOperator ivhOperator = new IVHOperator(rewriter, ivhSchema.getNodeChanges(), file.getAbsolutePath());
+			rewriter = ivhOperator.InsertChanges();
+			applyChangesToFile(file,source,rewriter);
+			break;
 		}
 	}
 

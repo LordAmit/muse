@@ -1,10 +1,5 @@
 package edu.wm.cs.muse.dataleak.support;
 
-
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.lang.reflect.Method;
 
 import java.util.ArrayList;
@@ -75,13 +70,19 @@ public class TryCatchHandler {
 	 *
 	 */
 	public boolean stringHasThrows(String insertion) throws ClassNotFoundException {
-		String[] stringsInitial = insertion.split("=");
-		//checks for the keyword "new" and removes it
-		for(int i = 0; i < stringsInitial.length; i++ ) {
-			String[] new_split = stringsInitial[i].split("new");
-			if (new_split.length > 1) {
-				stringsInitial[i] = new_split[1];
+		//In case of multiple lines, we take the first one, as this
+		//is our source that may throw exceptions
+		String[] list = insertion.split("\n");
+		for (int k=0; k<list.length; k++) {
+			String[] stringsInitial = list[k].split("=");
+			//checks for the keyword "new" and removes it
+			for(int i = 0; i < stringsInitial.length; i++ ) {
+				String[] new_split = stringsInitial[i].split("new");
+				if (new_split.length > 1) {
+					stringsInitial[i] = new_split[1];
+				}
 			}
+<<<<<<< code/Muse/src/edu/wm/cs/muse/dataleak/support/TryCatchHandler.java
 		}
 		String newInsertion = "";
 		//Adds the assignment of the variable to stringsInitial
@@ -116,16 +117,37 @@ public class TryCatchHandler {
 				if (strings[i].charAt(strings.length-1) != '(' && !strings[i].contains(")") && !strings[i].contains("\"")) {
 					canon_name += strings[i].substring(strings[i].indexOf("(")+1);
 				}
+=======
+			String newInsertion = "";
+			//Adds the assignment of the variable to stringsInitial
+			if (stringsInitial.length>1) {
+				newInsertion = stringsInitial[1];
+>>>>>>> code/Muse/src/edu/wm/cs/muse/dataleak/support/TryCatchHandler.java
 			}
 			else {
-				//adds substrings that contain the class name for methods.
-				if(canon_name.length() == 0) {
-					canon_name+=strings[i];
+				newInsertion = stringsInitial[0];
+			}
+			//removes whitespace
+			insertion = newInsertion.replaceAll("\\s", "");
+			List<String> methods = new ArrayList<String>();
+			String canon_name = "";
+			String[] strings = insertion.split("\\.");
+			for (int i=0; i<strings.length; i++) {
+				//searches for multiple method calls within the string.
+				if (strings[i].contains("(")) {
+					methods.add(strings[i].substring(0, strings[i].indexOf("(")));
 				}
 				else {
-					canon_name+=("." + strings[i]);
+					//adds substrings that contain the class name for methods.
+					if(canon_name.length() == 0) {
+						canon_name+=strings[i];
+					}
+					else {
+						canon_name+=("." + strings[i]);
+					}
 				}
 			}
+<<<<<<< code/Muse/src/edu/wm/cs/muse/dataleak/support/TryCatchHandler.java
 		}
 		Class<?> c = null;
 		//looks for methods that are in both the insertion string and the canon class
@@ -140,6 +162,23 @@ public class TryCatchHandler {
 							if (allMethods[i].getExceptionTypes().length !=0) {
 								return true;
 							}
+=======
+			Class<?> c = null;
+			try {
+				c = Class.forName(canon_name);
+			}
+			catch (ClassNotFoundException e) {
+				continue;
+			}
+			//looks for methods that are in both the insertion string and the canon class
+			//and returns true if the method has an exception.
+			Method[] allMethods = c.getMethods();
+			for (int i=0; i<allMethods.length; i++) {
+				for (int j=0; j<methods.size();j++) {
+					if (allMethods[i].toString().contains(methods.get(j))) {
+						if (allMethods[i].getExceptionTypes().length !=0) {
+							return true;
+>>>>>>> code/Muse/src/edu/wm/cs/muse/dataleak/support/TryCatchHandler.java
 						}
 					}
 				}

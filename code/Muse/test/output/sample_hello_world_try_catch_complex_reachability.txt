@@ -1,0 +1,47 @@
+package com.example.amit.helloworld;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+public class MainActivity extends AppCompatActivity {
+    int intA = 0;
+
+    int methodA() {
+        try {
+			javax.crypto.Cipher dataLeAk0 = javax.crypto.Cipher.getInstance("AES");
+			String leAkPath0 = dataLeAk0.getAlgorithm();
+			android.util.Log.d("leak-0", leAkPath0);
+		} catch (Exception e) {
+		}
+		return 1;
+    }
+
+    int intB = 0;
+
+    int methodB() {
+        try {
+			javax.crypto.Cipher dataLeAk1 = javax.crypto.Cipher.getInstance("AES");
+			String leAkPath1 = dataLeAk1.getAlgorithm();
+			android.util.Log.d("leak-1", leAkPath1);
+		} catch (Exception e) {
+		}
+		return 0;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+		try {
+			javax.crypto.Cipher dataLeAk2 = javax.crypto.Cipher.getInstance("AES");
+			String leAkPath2 = dataLeAk2.getAlgorithm();
+			android.util.Log.d("leak-2", leAkPath2);
+		} catch (Exception e) {
+		}
+
+        this.intA = 1;
+        this.methodA();
+        this.intB = 2;
+        this.methodB();
+        setContentView(R.layout.activity_main);
+    }
+}

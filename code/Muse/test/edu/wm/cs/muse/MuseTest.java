@@ -140,12 +140,11 @@ public class MuseTest {
 
 		}
 	}
-
+	
 	@Test
 	@Order(2)
 	public void complex_reachability_operation_on_multi_class() {
 		try {
-
 			prepare_test_files(OperatorType.COMPLEXREACHABILITY, 1);
 			execute_muse(OperatorType.COMPLEXREACHABILITY);
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
@@ -226,6 +225,7 @@ public class MuseTest {
 	}
 
 	@Test
+	@Order(6)
 	public void scope_source_operation_on_multi_class() {
 		try {
 			scope_multi_reset();
@@ -345,6 +345,72 @@ public class MuseTest {
 			DataLeak.setSink(OperatorType.SCOPESINK, original_operators[2]);
 		}
 	}
+	
+	@Test
+	@Order(9)
+	public void ivh_operation_on_hello_world() {
+		try {
+			prepare_test_files(OperatorType.IVH, 1);
+			execute_muse(OperatorType.IVH);
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+			prepare_test_files(OperatorType.IVH, 2);
+			execute_muse(OperatorType.IVH);
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+			prepare_test_files(OperatorType.IVH, 3);
+			execute_muse(OperatorType.IVH);
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+
+		} catch (MalformedTreeException e) {
+			e.printStackTrace();
+
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	@Test
+	@Order(10)
+	public void reachability_operation_on_hello_world_try_catch() {
+		try {
+			DataLeak.setSource(OperatorType.REACHABILITY, "javax.crypto.Cipher dataLeAk%d = javax.crypto.Cipher.getInstance(\"AES\");");
+			prepare_test_files(OperatorType.REACHABILITY, 2);
+			execute_muse(OperatorType.REACHABILITY);
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+		} catch (IOException e) {
+			e.printStackTrace();
+
+		} catch (MalformedTreeException e) {
+			e.printStackTrace();
+
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	@Order(11)
+	public void complexreachability_operation_on_hello_world_try_catch() {
+		try {
+			DataLeak.setSource(OperatorType.COMPLEXREACHABILITY, "javax.crypto.Cipher dataLeAk%d = javax.crypto.Cipher.getInstance(\"AES\");");
+			String[] string = {"String leAkPath%d = dataLeAk%d.getAlgorithm();"};
+			DataLeak.setPaths(string);
+			prepare_test_files(OperatorType.COMPLEXREACHABILITY, 2);
+			execute_muse(OperatorType.COMPLEXREACHABILITY);
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+		} catch (IOException e) {
+			e.printStackTrace();
+
+		} catch (MalformedTreeException e) {
+			e.printStackTrace();
+
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+	}
 
 	private void execute_muse(OperatorType operator) throws BadLocationException, MalformedTreeException, IOException {
 		Arguments.setTestMode(true);
@@ -352,6 +418,7 @@ public class MuseTest {
 		sourceDoc = new Document(content);
 		muse.operatorExecution(root, rewriter, sourceDoc.get(),output, operator);
 		processedOutput = output;
+		DataLeak.reset(operator);
 		//if temp_file is created by execution of muse, break it down after use
 		File file = new File("test/temp/temp_file.java");
 		if (!(file == null)) {
@@ -403,13 +470,25 @@ public class MuseTest {
 			break;
 
 		case REACHABILITY:
-			content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
-			expectedOutput = new File("test/output/sample_hello_world_reachability.txt");
+			if (test == 1) {
+				content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
+				expectedOutput = new File("test/output/sample_hello_world_reachability.txt");
+			}
+			else if (test == 2) {
+				content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
+				expectedOutput = new File("test/output/sample_hello_world_try_catch_reachability.txt");
+			}
 			break;
 			
 		case COMPLEXREACHABILITY:
-			content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
-			expectedOutput = new File("test/output/sample_hello_world_complex_reachability.txt");
+			if (test ==1) {
+				content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
+				expectedOutput = new File("test/output/sample_hello_world_complex_reachability.txt");
+			}
+			else if (test == 2) {
+				content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
+				expectedOutput = new File("test/output/sample_hello_world_try_catch_complex_reachability.txt");
+			}
 			break;
 			
 		case TAINTSOURCE:
@@ -433,6 +512,20 @@ public class MuseTest {
 			expectedOutput = new File("test/output/sample_multilevelclass_taint_sink.txt");
 			break;
 			
+		case IVH:
+			if (test == 1) {
+				content = FileUtility.readSourceFile("test/input/sample_class_extended.txt").toString();
+				expectedOutput = new File("test/output/sample_class_extended_output.txt");
+			}
+			else if (test == 2) {
+				content = FileUtility.readSourceFile("test/input/sample_class_extended_from_B.txt").toString();
+				expectedOutput = new File("test/output/sample_class_extended_from_B_output.txt");
+			}
+			else if (test == 3) {
+				content = FileUtility.readSourceFile("test/input/sample_class_extended_twice.txt").toString();
+				expectedOutput = new File("test/output/sample_class_extended_twice_output.txt");
+			}
+			break;
 		}
 		
 		muse = new Muse();

@@ -1,12 +1,7 @@
 package edu.wm.cs.muse.dataleak;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
-import edu.wm.cs.muse.dataleak.support.Arguments;
-import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 
 /**
@@ -25,7 +20,12 @@ import edu.wm.cs.muse.dataleak.support.OperatorType;
  */
 public class DataLeak {
 
-	// default source and sink strings
+	/**
+	 * A HashMap of the sources for each of the operators
+	 * with an OperatorType key and a String value. This is 
+	 * used for accessing which strings are to be inserted
+	 * as sources.
+	 */
 	private static HashMap<OperatorType, String> sourceLeaks = new HashMap<OperatorType, String>() {
 		{
 			put(OperatorType.REACHABILITY,
@@ -36,39 +36,77 @@ public class DataLeak {
 					"dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
 			put(OperatorType.TAINTSOURCE,
 					"dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			put(OperatorType.IVH,
+					"public String dataLeak = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
 		}
 	};
+	
+	/**
+	 * A HashMap of the sinks needed for each of the operators
+	 * with an OperatorType key and a String value. This is used
+	 * for accessing which strings are to be inserted as sinks.
+	 */
 	private static HashMap<OperatorType, String> sinkLeaks = new HashMap<OperatorType, String>() {
 		{
 			put(OperatorType.REACHABILITY, "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);");
 			put(OperatorType.COMPLEXREACHABILITY, "android.util.Log.d(\"leak-%d\", leAkPath%d);");
 			put(OperatorType.SCOPESINK, "android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
 			put(OperatorType.TAINTSINK, "android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
+			put(OperatorType.IVH, "android.util.Log.d(\"Leaking: \" + dataLeak + dataLeakGetter());");
 		}
 	};
+	
+	/**
+	 * A HashMap of the variable declarations needed for each of
+	 * the operators with an OperatorType key and a String value.
+	 * This is used for declaring the variables where
+	 * sources will be inserted.
+	 */
 	private static HashMap<OperatorType, String> variableDeclarations = new HashMap<OperatorType, String>() {
 		{
 			put(OperatorType.SCOPESOURCE, "String dataLeAk%d = \"%d\";");
 			put(OperatorType.TAINTSOURCE, "String dataLeAk%d = \"\";");
 			put(OperatorType.COMPLEXREACHABILITY, "String dataLeAk%d = dataLeAk%d");
+			put(OperatorType.IVH, "public String dataLeak = \"\";");
 		}
 	};
 
-	private static String taintSinkSourceFinalDecl = "final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
+	/**
+	 * Returns a final version of the typical variable declaration used
+	 * by taintSource.
+	 */
+	private static String taintSourceFinalDecl = "final String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();";
 
-	public static String getTaintSinkSourceFinalDecl(int count) {
-		return String.format(taintSinkSourceFinalDecl, count);
+	/**
+	 * Retrieves the taintSinkSouceFinalDecl String and formats it
+	 * with the index of the current dataLeAk.
+	 * 
+	 * @param count
+	 * @return
+	 */
+	public static String getTaintSourceFinalDecl(int count) {
+		return String.format(taintSourceFinalDecl, count);
 	}
 
+	/**
+	 * A set of strings used by ComplexReachability. Each string function
+	 * as a sink for this operator. Each string is separated by an extra
+	 * line for readability.
+	 * 
+	 * @return a 4-length array of strings 
+	 */
 	private static String[] paths = new String[] {
 			"String[] leakArRay%d = new String[] {\"n/a\", dataLeAk%d};\n"
 					+ "String leAkPath%d = leakArRay%d[leakArRay%d.length - 1];",
+					
 			"java.util.HashMap<String, java.util.HashMap<String, String>> leakMaP%d = new java.util.HashMap<String, java.util.HashMap<String, String>>();\n"
 					+ "leakMaP%d.put(\"test\", new java.util.HashMap<String, String>());\n"
 					+ "leakMaP%d.get(\"test\").put(\"test\", dataLeAk%d);\n"
 					+ "String leAkPath%d = leakMaP%d.get(\"test\").get(\"test\");",
+					
 			"StringBuffer leakBuFFer%d = new StringBuffer();" + "for (char chAr%d : dataLeAk%d.toCharArray()) {"
 					+ "leakBuFFer%d.append(chAr%d);" + "}" + "String leAkPath%d = leakBuFFer%d.toString();",
+					
 			"String leAkPath%d;" + "try {" + "throw new Exception(dataLeAk%d);" + "} catch (Exception leakErRor%d) {"
 					+ "leAkPath%d = leakErRor%d.getMessage();" + "}" };
 
@@ -110,6 +148,100 @@ public class DataLeak {
 	public static void setPaths(String[] pathStrings) {
 		paths = pathStrings;
 	}
+	
+	/**
+	 * Resets the values of the current operator's sources, sinks, 
+	 * variable declaration, or path if it has been altered by the
+	 * current run of muse
+	 * 
+	 * @param operator  is of type OperatorType
+	 */
+	public static void reset(OperatorType operator) {
+		switch (operator) {
+		case REACHABILITY:
+			if (!sourceLeaks.get(getOperatorSource(operator)).equals("String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();")) {
+				setSource(operator, "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			}
+			if (!sinkLeaks.get(getOperatorSink(operator)).equals("Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);")) {
+				setSink(operator, "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);");
+			}
+			break;
+		case COMPLEXREACHABILITY:
+			if (!sourceLeaks.get(getOperatorSource(operator)).equals("String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();")) {
+				setSource(operator, "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			}
+			if (!sinkLeaks.get(getOperatorSink(operator)).equals("android.util.Log.d(\"leak-%d\", leAkPath%d);")) {
+				setSink(operator, "android.util.Log.d(\"leak-%d\", leAkPath%d);");
+			}
+			if (!variableDeclarations.get(getOperatorSource(operator)).equals("String dataLeAk%d = dataLeAk%d")) {
+				setVariableDeclaration(operator, "String dataLeAk%d = dataLeAk%d");
+			}
+			if (paths.length!= 4
+					|| !paths[0].equals("String[] leakArRay%d = new String[] {\"n/a\", dataLeAk%d};\n"
+					+ "String leAkPath%d = leakArRay%d[leakArRay%d.length - 1];")
+					|| !paths[1].equals("java.util.HashMap<String, java.util.HashMap<String, String>> leakMaP%d = new java.util.HashMap<String, java.util.HashMap<String, String>>();\n"
+					+ "leakMaP%d.put(\"test\", new java.util.HashMap<String, String>());\n"
+					+ "leakMaP%d.get(\"test\").put(\"test\", dataLeAk%d);\n"
+					+ "String leAkPath%d = leakMaP%d.get(\"test\").get(\"test\");")
+					|| !paths[2].equals("StringBuffer leakBuFFer%d = new StringBuffer();" + "for (char chAr%d : dataLeAk%d.toCharArray()) {"
+					+ "leakBuFFer%d.append(chAr%d);" + "}" + "String leAkPath%d = leakBuFFer%d.toString();")
+					|| !paths[3].equals("String leAkPath%d;" + "try {" + "throw new Exception(dataLeAk%d);" + "} catch (Exception leakErRor%d) {"
+					+ "leAkPath%d = leakErRor%d.getMessage();" + "}")) {
+				paths = new String[] {
+						"String[] leakArRay%d = new String[] {\"n/a\", dataLeAk%d};\n"
+								+ "String leAkPath%d = leakArRay%d[leakArRay%d.length - 1];",
+								
+						"java.util.HashMap<String, java.util.HashMap<String, String>> leakMaP%d = new java.util.HashMap<String, java.util.HashMap<String, String>>();\n"
+								+ "leakMaP%d.put(\"test\", new java.util.HashMap<String, String>());\n"
+								+ "leakMaP%d.get(\"test\").put(\"test\", dataLeAk%d);\n"
+								+ "String leAkPath%d = leakMaP%d.get(\"test\").get(\"test\");",
+								
+						"StringBuffer leakBuFFer%d = new StringBuffer();" + "for (char chAr%d : dataLeAk%d.toCharArray()) {"
+								+ "leakBuFFer%d.append(chAr%d);" + "}" + "String leAkPath%d = leakBuFFer%d.toString();",
+								
+						"String leAkPath%d;" + "try {" + "throw new Exception(dataLeAk%d);" + "} catch (Exception leakErRor%d) {"
+								+ "leAkPath%d = leakErRor%d.getMessage();" + "}" };
+			}
+			break;
+		case TAINTSINK:
+			if (!sinkLeaks.get(getOperatorSink(operator)).equals("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);")) {
+				setSink(operator, "android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
+			}
+			break;
+		case TAINTSOURCE:
+			if (!sourceLeaks.get(getOperatorSource(operator)).equals("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();")) {
+				setSource(operator, "dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			}
+			if (!variableDeclarations.get(getOperatorSource(operator)).equals("String dataLeAk%d = \"\";")) {
+				setVariableDeclaration(operator, "String dataLeAk%d = \"\";");
+			}
+			break;
+		case SCOPESINK:
+			if (!sinkLeaks.get(getOperatorSink(operator)).equals("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);")) {
+				setSink(operator, "android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
+			}
+			break;
+		case SCOPESOURCE:
+			if (!sourceLeaks.get(getOperatorSource(operator)).equals("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();")) {
+				setSource(operator, "dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			}
+			if (!variableDeclarations.get(getOperatorSource(operator)).equals("String dataLeAk%d = \"%d\";")) {
+				setVariableDeclaration(operator, "String dataLeAk%d = \"%d\";");
+			}
+			break;
+		case IVH:
+			if (!sourceLeaks.get(getOperatorSource(operator)).equals("public String dataLeak = java.util.Calendar.getInstance().getTimeZone().getDisplayName();")) {
+				setSource(operator, "public String dataLeak = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			}
+			if (!sinkLeaks.get(getOperatorSink(operator)).equals("android.util.Log.d(\"Leaking: \" + dataLeak + dataLeakGetter());")) {
+				setSink(operator, "android.util.Log.d(\"Leaking: \" + dataLeak + dataLeakGetter());");
+			}
+			if (!variableDeclarations.get(getOperatorSource(operator)).equals("public String dataLeak = \"\";")) {
+				setVariableDeclaration(operator, "public String dataLeak = \"\";");
+			}
+			break;
+		}		
+	}
 
 	/**
 	 * Returns the path strings for the ComplexReachability operator
@@ -124,12 +256,36 @@ public class DataLeak {
 	 * Formats the sink string and returns the correct sink string based on the
 	 * operator type specified.
 	 * 
+	 * Does not accept OperatorType.IVH as it has different formatting needs.
+	 * 
 	 * @param op         is the operator type
 	 * @param identifier the identifier for the source
 	 * @return the appropriate source for the operator type specified.
 	 */
 	public static String getSource(OperatorType op, int identifier) {
-		return String.format(sourceLeaks.get(getOperatorSource(op)), identifier);
+		if (!(op == OperatorType.IVH)) {
+			return String.format(sourceLeaks.get(getOperatorSource(op)), identifier);
+		}
+		else {
+			throw new IllegalArgumentException("Type must be OperatorType.Reachability, "
+					+ "OperatorType.ComplexReachability, OperatorType.ScopeSink, or OperatorType.TaintSink");
+		}
+	}
+	
+	/**
+	 * Returns the source needed for IVH and is suited for the lack of 
+	 * formatting needed for this OperatorType.
+	 * 
+	 * @param op
+	 * @return the appropriate source for the operator type specified.
+	 */
+	public static String getSource(OperatorType op) {
+		if (op == OperatorType.IVH) {
+			return sourceLeaks.get(getOperatorSource(op));
+		}
+		else {
+			throw new IllegalArgumentException("Type must be OperatorType.IVH");
+		}
 	}
 
 	/**
@@ -140,13 +296,38 @@ public class DataLeak {
 	 * is returned if the schema operator type is specified. Additionally, the sink
 	 * operator requires two identifiers to format its sink.
 	 * 
+	 * Does not take in OperatorType.IVH as it has different formatting
+	 * 
 	 * @param op               is the operator type
 	 * @param sourceIdentifier the identifier for the source
 	 * @param sinkIdentifier   the identifier for the sink
 	 * @return the appropriate sink for the operator type specified.
 	 */
 	public static String getSink(OperatorType op, int sourceIdentifier, int sinkIdentifier) {
-		return String.format(sinkLeaks.get(getOperatorSink(op)), sourceIdentifier, sinkIdentifier, sourceIdentifier);
+		if (!(op == OperatorType.IVH)) {
+			return String.format(sinkLeaks.get(getOperatorSink(op)), sourceIdentifier, sinkIdentifier, sourceIdentifier);
+		}
+		else {
+			throw new IllegalArgumentException("Type must be OperatorType.Reachability, "
+					+ "OperatorType.ComplexReachability, OperatorType.ScopeSink, or OperatorType.TaintSink");
+		}
+		
+	}
+	
+	/**
+	 * Formats the sink for OperatorType.IVH as it does not have a need
+	 * for formatting like the other sinks do.
+	 * 
+	 * @param op
+	 * @return the appropriate sink for the operator type specified.
+	 */
+	public static String getSink(OperatorType op) {
+		if (op == OperatorType.IVH) {
+			return sinkLeaks.get(getOperatorSink(op));
+		}
+		else {
+			throw new IllegalArgumentException("Type must be OperatorType.IVH");
+		}
 	}
 
 	/**
@@ -193,9 +374,10 @@ public class DataLeak {
 	 *         operator schema.
 	 */
 	public static String getLeak(OperatorType op, int identifier) throws IllegalArgumentException {
-		if (op == OperatorType.REACHABILITY)
+		if (op == OperatorType.REACHABILITY) {
 			return String.format(sourceLeaks.get(op), identifier) + "\n"
 					+ String.format(sinkLeaks.get(op), identifier, identifier, identifier);
+		}
 		else if (op == OperatorType.COMPLEXREACHABILITY) {
 
 			String[] paths = getPaths();
@@ -224,6 +406,11 @@ public class DataLeak {
 		return String.format(getVariableDeclaration(OperatorType.COMPLEXREACHABILITY), identifierOne, identifierTwo);
 	}
 
+	/**
+	 * 
+	 * @param op
+	 * @return the related source for the current OperatorType sink
+	 */
 	private static OperatorType getOperatorSource(OperatorType op) {
 		if (op == OperatorType.SCOPESINK) {
 			op = OperatorType.SCOPESOURCE;
@@ -233,6 +420,11 @@ public class DataLeak {
 		return op;
 	}
 
+	/**
+	 * 
+	 * @param op
+	 * @return the related sink for the current OperatorType source
+	 */
 	private static OperatorType getOperatorSink(OperatorType op) {
 		if (op == OperatorType.SCOPESOURCE) {
 			op = OperatorType.SCOPESINK;
