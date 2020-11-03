@@ -312,7 +312,20 @@ public class Gui extends Application {
 
 		grid.add(new Separator(), 0, 20, 3, 1);
 
-		Button finish = new Button("Finish");
+		// Run Muse button
+		Button runMuseButton = new Button("Run Muse");
+		runMuseButton.setDisable(true);
+		runMuseButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent runEvent) {
+				goToProgressScene(stage);
+				System.out.println("'Run Muse' selected. Proceeding to Progress Scene.");
+
+			}
+		});
+		
+		Button finish = new Button("Generate Properties File");
 		finish.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -330,10 +343,12 @@ public class Gui extends Application {
 							execution_log_path_textfield.getText(), custom_data_leak_checkbox.isSelected(),
 							source_string_textfield.getText(), sink_string_textfield.getText(),
 							vardec_string_textfield.getText());
+					runMuseButton.setDisable(false);
+					
 				}
 			}
 		});
-
+				
 		// Back button
 		Button returnTitleButton = new Button("Back");
 		returnTitleButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -342,18 +357,6 @@ public class Gui extends Application {
 			public void handle(ActionEvent anevent) {
 				goToTitleScene(stage);
 				System.out.println("'Back' selected. Returning to title.");
-
-			}
-		});
-
-		// Run Muse button
-		Button runMuseButton = new Button("Run Muse");
-		runMuseButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent runEvent) {
-				goToProgressScene(stage);
-				System.out.println("'Run Muse' selected. Proceeding to Progress Scene.");
 
 			}
 		});
