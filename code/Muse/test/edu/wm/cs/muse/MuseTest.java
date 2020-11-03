@@ -347,7 +347,7 @@ public class MuseTest {
 	}
 	
 	@Test
-	@Order(9)
+	@Order(10)
 	public void ivh_operation_on_hello_world() {
 		try {
 			prepare_test_files(OperatorType.IVH, 1);
@@ -373,7 +373,7 @@ public class MuseTest {
 	}
 	
 	@Test
-	@Order(10)
+	@Order(11)
 	public void reachability_operation_on_hello_world_try_catch() {
 		try {
 			DataLeak.setSource(OperatorType.REACHABILITY, "javax.crypto.Cipher dataLeAk%d = javax.crypto.Cipher.getInstance(\"AES\");");
@@ -392,7 +392,7 @@ public class MuseTest {
 	}
 	
 	@Test
-	@Order(11)
+	@Order(12)
 	public void complexreachability_operation_on_hello_world_try_catch() {
 		try {
 			DataLeak.setSource(OperatorType.COMPLEXREACHABILITY, "javax.crypto.Cipher dataLeAk%d = javax.crypto.Cipher.getInstance(\"AES\");");
