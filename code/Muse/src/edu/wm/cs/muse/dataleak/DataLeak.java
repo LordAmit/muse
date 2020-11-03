@@ -148,6 +148,100 @@ public class DataLeak {
 	public static void setPaths(String[] pathStrings) {
 		paths = pathStrings;
 	}
+	
+	/**
+	 * Resets the values of the current operator's sources, sinks, 
+	 * variable declaration, or path if it has been altered by the
+	 * current run of muse
+	 * 
+	 * @param operator  is of type OperatorType
+	 */
+	public static void reset(OperatorType operator) {
+		switch (operator) {
+		case REACHABILITY:
+			if (!sourceLeaks.get(getOperatorSource(operator)).equals("String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();")) {
+				setSource(operator, "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			}
+			if (!sinkLeaks.get(getOperatorSink(operator)).equals("Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);")) {
+				setSink(operator, "Object throwawayLeAk%d = android.util.Log.d(\"leak-%d\", dataLeAk%d);");
+			}
+			break;
+		case COMPLEXREACHABILITY:
+			if (!sourceLeaks.get(getOperatorSource(operator)).equals("String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();")) {
+				setSource(operator, "String dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			}
+			if (!sinkLeaks.get(getOperatorSink(operator)).equals("android.util.Log.d(\"leak-%d\", leAkPath%d);")) {
+				setSink(operator, "android.util.Log.d(\"leak-%d\", leAkPath%d);");
+			}
+			if (!variableDeclarations.get(getOperatorSource(operator)).equals("String dataLeAk%d = dataLeAk%d")) {
+				setVariableDeclaration(operator, "String dataLeAk%d = dataLeAk%d");
+			}
+			if (paths.length!= 4
+					|| !paths[0].equals("String[] leakArRay%d = new String[] {\"n/a\", dataLeAk%d};\n"
+					+ "String leAkPath%d = leakArRay%d[leakArRay%d.length - 1];")
+					|| !paths[1].equals("java.util.HashMap<String, java.util.HashMap<String, String>> leakMaP%d = new java.util.HashMap<String, java.util.HashMap<String, String>>();\n"
+					+ "leakMaP%d.put(\"test\", new java.util.HashMap<String, String>());\n"
+					+ "leakMaP%d.get(\"test\").put(\"test\", dataLeAk%d);\n"
+					+ "String leAkPath%d = leakMaP%d.get(\"test\").get(\"test\");")
+					|| !paths[2].equals("StringBuffer leakBuFFer%d = new StringBuffer();" + "for (char chAr%d : dataLeAk%d.toCharArray()) {"
+					+ "leakBuFFer%d.append(chAr%d);" + "}" + "String leAkPath%d = leakBuFFer%d.toString();")
+					|| !paths[3].equals("String leAkPath%d;" + "try {" + "throw new Exception(dataLeAk%d);" + "} catch (Exception leakErRor%d) {"
+					+ "leAkPath%d = leakErRor%d.getMessage();" + "}")) {
+				paths = new String[] {
+						"String[] leakArRay%d = new String[] {\"n/a\", dataLeAk%d};\n"
+								+ "String leAkPath%d = leakArRay%d[leakArRay%d.length - 1];",
+								
+						"java.util.HashMap<String, java.util.HashMap<String, String>> leakMaP%d = new java.util.HashMap<String, java.util.HashMap<String, String>>();\n"
+								+ "leakMaP%d.put(\"test\", new java.util.HashMap<String, String>());\n"
+								+ "leakMaP%d.get(\"test\").put(\"test\", dataLeAk%d);\n"
+								+ "String leAkPath%d = leakMaP%d.get(\"test\").get(\"test\");",
+								
+						"StringBuffer leakBuFFer%d = new StringBuffer();" + "for (char chAr%d : dataLeAk%d.toCharArray()) {"
+								+ "leakBuFFer%d.append(chAr%d);" + "}" + "String leAkPath%d = leakBuFFer%d.toString();",
+								
+						"String leAkPath%d;" + "try {" + "throw new Exception(dataLeAk%d);" + "} catch (Exception leakErRor%d) {"
+								+ "leAkPath%d = leakErRor%d.getMessage();" + "}" };
+			}
+			break;
+		case TAINTSINK:
+			if (!sinkLeaks.get(getOperatorSink(operator)).equals("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);")) {
+				setSink(operator, "android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
+			}
+			break;
+		case TAINTSOURCE:
+			if (!sourceLeaks.get(getOperatorSource(operator)).equals("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();")) {
+				setSource(operator, "dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			}
+			if (!variableDeclarations.get(getOperatorSource(operator)).equals("String dataLeAk%d = \"\";")) {
+				setVariableDeclaration(operator, "String dataLeAk%d = \"\";");
+			}
+			break;
+		case SCOPESINK:
+			if (!sinkLeaks.get(getOperatorSink(operator)).equals("android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);")) {
+				setSink(operator, "android.util.Log.d(\"leak-%d-%d\", dataLeAk%d);");
+			}
+			break;
+		case SCOPESOURCE:
+			if (!sourceLeaks.get(getOperatorSource(operator)).equals("dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();")) {
+				setSource(operator, "dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			}
+			if (!variableDeclarations.get(getOperatorSource(operator)).equals("String dataLeAk%d = \"%d\";")) {
+				setVariableDeclaration(operator, "String dataLeAk%d = \"%d\";");
+			}
+			break;
+		case IVH:
+			if (!sourceLeaks.get(getOperatorSource(operator)).equals("public String dataLeak = java.util.Calendar.getInstance().getTimeZone().getDisplayName();")) {
+				setSource(operator, "public String dataLeak = java.util.Calendar.getInstance().getTimeZone().getDisplayName();");
+			}
+			if (!sinkLeaks.get(getOperatorSink(operator)).equals("android.util.Log.d(\"Leaking: \" + dataLeak + dataLeakGetter());")) {
+				setSink(operator, "android.util.Log.d(\"Leaking: \" + dataLeak + dataLeakGetter());");
+			}
+			if (!variableDeclarations.get(getOperatorSource(operator)).equals("public String dataLeak = \"\";")) {
+				setVariableDeclaration(operator, "public String dataLeak = \"\";");
+			}
+			break;
+		}		
+	}
 
 	/**
 	 * Returns the path strings for the ComplexReachability operator
