@@ -97,6 +97,29 @@ public class MuseTest {
 		pw.close();
 	}
 	
+	private void scope_multi_reset() throws FileNotFoundException {
+		FileReader fr = new FileReader("test/output/scope_multi_reset.txt");
+		BufferedReader br = new BufferedReader(fr);
+		
+		try {
+			FileWriter fw = new FileWriter("test/output/output.txt", false);
+			String s;
+
+			while ((s = br.readLine()) != null) { // read a line
+				fw.write(s); // write to output file
+				fw.flush();
+			}
+			br.close();
+			fw.close();
+		} catch (IOException e) {
+			System.out.println("IOException when refreshing output.txt");
+			e.printStackTrace();
+		}
+		
+		PrintWriter pw = new PrintWriter("output.txt");
+		pw.close();
+	}
+	
 	@Test
 	@Order(1)
 	public void reachability_operation_on_hello_world() throws Exception {
@@ -184,7 +207,6 @@ public class MuseTest {
 	@Order(5)
 	public void scope_source_operation_on_hello_world() {
 		try {
-
 			prepare_test_files(OperatorType.SCOPESOURCE, 1);
 			execute_muse(OperatorType.SCOPESOURCE);
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
@@ -206,7 +228,7 @@ public class MuseTest {
 	@Order(6)
 	public void scope_source_operation_on_multi_class() {
 		try {
-
+			scope_multi_reset();
 			prepare_test_files(OperatorType.SCOPESOURCE, 2);
 			execute_muse(OperatorType.SCOPESOURCE);
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
@@ -247,28 +269,80 @@ public class MuseTest {
 	@Test
 	@Order(8)
 	public void try_catch_taint_sink_operation_on_hello_world() {
-		String[] original_operators = new String[] {DataLeak.getRawSource(OperatorType.TAINTSOURCE), DataLeak.getVariableDeclaration(OperatorType.TAINTSOURCE)};
+		String[] original_operators = new String[] {DataLeak.getRawSource(OperatorType.TAINTSOURCE), DataLeak.getVariableDeclaration(OperatorType.TAINTSOURCE),
+													DataLeak.getRawSink(OperatorType.TAINTSINK)};
+		
 		try {
-			DataLeak.setSource(OperatorType.TAINTSOURCE, "dataLeAk%d = javax.crypto.Cipher.getInstance(\"AES\");");
-			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, "javax.crypto.Cipher dataLeAk%d = null; ");
+			/*
+			DataLeak.setSource(OperatorType.TAINTSOURCE, "Cipher cipher_leak%d = javax.crypto.Cipher.getInstance(dataLeAk%<d);");
+			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, "String dataLeAk%d = \"AES\"; ");
+			DataLeak.setSink(OperatorType.TAINTSINK, "android.util.Log.d(\"leak-%d-%d\", cipher_leak%d.getAlgorithm())");
+			*/
+			
+			DataLeak.setSource(OperatorType.TAINTSOURCE, "cipher_leak%d = javax.crypto.Cipher.getInstance(\"AES\");");
+			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, "javax.crypto.Cipher cipher_leak%d = null; ");
+			DataLeak.setSink(OperatorType.TAINTSINK, "android.util.Log.d(\"leak-%d-%d\", cipher_leak%d.getAlgorithm())");
+			
 			prepare_try_test_files();
 			execute_muse(OperatorType.TAINTSINK);
 			DataLeak.setSource(OperatorType.TAINTSOURCE, original_operators[0]);
 			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, original_operators[1]);
+			DataLeak.setSink(OperatorType.TAINTSINK, original_operators[2]);
 			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
 			 
 		} catch (IOException e) {
 			e.printStackTrace();
 			DataLeak.setSource(OperatorType.TAINTSOURCE, original_operators[0]);
 			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, original_operators[1]);
+			DataLeak.setSink(OperatorType.TAINTSINK, original_operators[2]);
 		} catch (MalformedTreeException e) {
 			e.printStackTrace();
 			DataLeak.setSource(OperatorType.TAINTSOURCE, original_operators[0]);
 			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, original_operators[1]);
+			DataLeak.setSink(OperatorType.TAINTSINK, original_operators[2]);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 			DataLeak.setSource(OperatorType.TAINTSOURCE, original_operators[0]);
 			DataLeak.setVariableDeclaration(OperatorType.TAINTSOURCE, original_operators[1]);
+			DataLeak.setSink(OperatorType.TAINTSINK, original_operators[2]);
+		}
+	}
+	
+	@Test
+	@Order(9)
+	public void try_catch_scope_sink_operation_on_multi_class() {
+		String[] original_operators = new String[] {DataLeak.getRawSource(OperatorType.SCOPESOURCE), DataLeak.getVariableDeclaration(OperatorType.SCOPESOURCE),
+													DataLeak.getRawSink(OperatorType.SCOPESINK)};
+		
+		try {
+			scope_multi_reset();
+			
+			DataLeak.setSource(OperatorType.SCOPESOURCE, "cipher_leak%d = javax.crypto.Cipher.getInstance(\"AES\");");
+			DataLeak.setVariableDeclaration(OperatorType.SCOPESOURCE, "javax.crypto.Cipher cipher_leak%d = null; ");
+			DataLeak.setSink(OperatorType.SCOPESINK, "android.util.Log.d(\"leak-%d-%d\", cipher_leak%d.getAlgorithm())");
+			
+			prepare_try_multi_test_files();
+			execute_muse(OperatorType.SCOPESINK);
+			DataLeak.setSource(OperatorType.SCOPESOURCE, original_operators[0]);
+			DataLeak.setVariableDeclaration(OperatorType.SCOPESOURCE, original_operators[1]);
+			DataLeak.setSink(OperatorType.SCOPESINK, original_operators[2]);
+			assertEquals(true, FileUtility.testFileEquality(expectedOutput, processedOutput));
+			 
+		} catch (IOException e) {
+			e.printStackTrace();
+			DataLeak.setSource(OperatorType.SCOPESOURCE, original_operators[0]);
+			DataLeak.setVariableDeclaration(OperatorType.SCOPESOURCE, original_operators[1]);
+			DataLeak.setSink(OperatorType.SCOPESINK, original_operators[2]);
+		} catch (MalformedTreeException e) {
+			e.printStackTrace();
+			DataLeak.setSource(OperatorType.SCOPESOURCE, original_operators[0]);
+			DataLeak.setVariableDeclaration(OperatorType.SCOPESOURCE, original_operators[1]);
+			DataLeak.setSink(OperatorType.SCOPESINK, original_operators[2]);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+			DataLeak.setSource(OperatorType.SCOPESOURCE, original_operators[0]);
+			DataLeak.setVariableDeclaration(OperatorType.SCOPESOURCE, original_operators[1]);
+			DataLeak.setSink(OperatorType.SCOPESINK, original_operators[2]);
 		}
 	}
 	
@@ -363,6 +437,18 @@ public class MuseTest {
 	
 		content = FileUtility.readSourceFile("test/input/sample_helloWorld.txt").toString();
 		expectedOutput = new File("test/output/sample_hello_world_try_catch_sink.txt");
+		
+		muse = new Muse();
+		root = ASTHelper.getTestingAST(content, Arguments.getRootPath());
+	}
+	
+	private void prepare_try_multi_test_files() throws FileNotFoundException, IOException {
+		Utility.COUNTER_GLOBAL = 0;
+		//Doesn't do anything, since output is already initialized to this value
+		//output = new File("test/output/output.txt");
+	
+		content = FileUtility.readSourceFile("test/input/sample_multilevelclass.txt").toString();
+		expectedOutput = new File("test/output/sample_try_catch_multilevel_class_sink.txt");
 		
 		muse = new Muse();
 		root = ASTHelper.getTestingAST(content, Arguments.getRootPath());

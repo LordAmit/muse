@@ -82,10 +82,47 @@ public class TryCatchHandler {
 					stringsInitial[i] = new_split[1];
 				}
 			}
+<<<<<<< code/Muse/src/edu/wm/cs/muse/dataleak/support/TryCatchHandler.java
+		}
+		String newInsertion = "";
+		//Adds the assignment of the variable to stringsInitial
+		if (stringsInitial.length>1) {
+			newInsertion = stringsInitial[1];
+		}
+		else {
+			newInsertion = stringsInitial[0];
+		}
+		//removes whitespace
+		insertion = newInsertion.replaceAll("\\s", "");
+		//creates lists for methods and canon_names once they are found
+		List<String> methods = new ArrayList<String>();
+		List<String> canon_names = new ArrayList<String>();
+		String canon_name = "";
+		String[] strings = insertion.split(",|\\.");
+		for (int i=0; i<strings.length; i++) {
+			//searches for multiple method calls within the string.
+			if (strings[i].contains("(")) {
+				methods.add(strings[i].substring(0, strings[i].indexOf("(")));
+				//if a method was called, adds the canon_name string to the list
+				if(canon_name.length()!=0) {
+					//will not add to the list if it is already there
+					if(!canon_names.contains(canon_name)) {
+						canon_names.add(canon_name);
+						canon_name = "";
+					}
+				}
+				//checks to make sure there is no character that is part of a canon_name after "("
+				//For example, the line android.util.Log.d(javax.crypto.Cipher.getInstance());
+				//would check after ".d(" for the keyword "javax".
+				if (strings[i].charAt(strings.length-1) != '(' && !strings[i].contains(")") && !strings[i].contains("\"")) {
+					canon_name += strings[i].substring(strings[i].indexOf("(")+1);
+				}
+=======
 			String newInsertion = "";
 			//Adds the assignment of the variable to stringsInitial
 			if (stringsInitial.length>1) {
 				newInsertion = stringsInitial[1];
+>>>>>>> code/Muse/src/edu/wm/cs/muse/dataleak/support/TryCatchHandler.java
 			}
 			else {
 				newInsertion = stringsInitial[0];
@@ -110,6 +147,22 @@ public class TryCatchHandler {
 					}
 				}
 			}
+<<<<<<< code/Muse/src/edu/wm/cs/muse/dataleak/support/TryCatchHandler.java
+		}
+		Class<?> c = null;
+		//looks for methods that are in both the insertion string and the canon class
+		//and returns true if the method has an exception.
+		for(int k = 0; k < canon_names.size(); k++) {
+			try {
+				c = Class.forName(canon_names.get(k));
+				Method[] allMethods = c.getMethods();
+				for (int i=0; i<allMethods.length; i++) {
+					for (int j=0; j<methods.size();j++) {
+						if (allMethods[i].toString().contains(methods.get(j)+"(")) {
+							if (allMethods[i].getExceptionTypes().length !=0) {
+								return true;
+							}
+=======
 			Class<?> c = null;
 			try {
 				c = Class.forName(canon_name);
@@ -125,13 +178,16 @@ public class TryCatchHandler {
 					if (allMethods[i].toString().contains(methods.get(j))) {
 						if (allMethods[i].getExceptionTypes().length !=0) {
 							return true;
+>>>>>>> code/Muse/src/edu/wm/cs/muse/dataleak/support/TryCatchHandler.java
 						}
 					}
 				}
 			}
-		}
-		return false; 
-		
+			catch (ClassNotFoundException e) {
+				//System.out.println("Class not found: " + e);
+			}
+		} 
+		return false;
 	} 
 	
 	/**

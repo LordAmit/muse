@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
@@ -21,7 +23,6 @@ import edu.wm.cs.muse.dataleak.DataLeak;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
 import edu.wm.cs.muse.dataleak.support.Placementchecker;
 import edu.wm.cs.muse.dataleak.support.TryCatchHandler;
-import edu.wm.cs.muse.dataleak.support.Utility;
 import edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers;
 
 /**
@@ -90,6 +91,50 @@ public class TaintSinkOperator {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
 		int cur = repeatCounts.containsKey(count) ? repeatCounts.get(count) : -1;
 		repeatCounts.put(count, cur + 1);
+		//if the node we are looking at is a block
+		if (node.getNodeType() == ASTNode.BLOCK) {
+			Block body = (Block) node;
+			//iterate through the statements in the block, looking for the
+			//first instance of a TryStatement
+			List<?> statements = body.statements();
+			//Create a string that has the beginning part of the current sink to check if there are already sinks there
+			Block chosenBody = null;
+			TryStatement finalTryStatement = null;
+			//iterate through statements in node
+			for (int i=0; i<statements.size(); i++) {
+				if (statements.get(i).toString().contains("try {")) {
+					TryStatement statement = (TryStatement) statements.get(i);
+					Block body2 = statement.getBody();
+					//note the related source to the current sink
+					String check = DataLeak.getSource(OperatorType.TAINTSOURCE, count);
+					String[] edited = check.split("=");
+					check = edited[0];
+					check = check.replaceAll("[^A-Za-z_]", "");
+					if (body2.toString().contains(check + Integer.toString(count) + "=")) {
+						chosenBody = body2;
+						break;
+					}
+				
+					//note the current try statement to find the last one
+					finalTryStatement = statement;
+				}
+			}
+			//if there is a related source to the current sink in a try statement, write to that try statement's block
+			if (chosenBody != null) {
+				listRewrite = rewriter.getListRewrite(chosenBody, Block.STATEMENTS_PROPERTY);
+				index = 1;
+			}
+			//if there isn't, but there are try statements with other sources, write in the last one encountered's block
+			else if (finalTryStatement != null) {
+				chosenBody = finalTryStatement.getBody();
+				listRewrite = rewriter.getListRewrite(chosenBody, Block.STATEMENTS_PROPERTY);
+				index=1;
+			}
+
+			
+		}
+		
+		
 		ASTNode placeHolder;
 		if (handler.stringHasThrows(DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)))) {
 			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
@@ -99,6 +144,7 @@ public class TaintSinkOperator {
 			 placeHolder = (Statement) rewriter.createStringPlaceholder(
 						DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT);
 		}
+
 		listRewrite.insertAt(placeHolder, index, null);
 		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
 			temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
@@ -130,8 +176,6 @@ public class TaintSinkOperator {
 
 	void insertSource(ASTNode node, int index, ChildListPropertyDescriptor nodeProperty, int count) throws ClassNotFoundException {
 		ListRewrite listRewrite = rewriter.getListRewrite(node, nodeProperty);
-//		Statement placeHolder = (Statement) rewriter
-//				.createStringPlaceholder(DataLeak.getSource(OperatorType.TAINTSINK, count), ASTNode.EMPTY_STATEMENT);
 		ASTNode placeHolder;
 		if (handler.stringHasThrows(DataLeak.getTaintSourceFinalDecl(count))) {
 			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
@@ -153,6 +197,8 @@ public class TaintSinkOperator {
 				e.printStackTrace();
 			}
 		}
+
+		
 	}
 
 }
