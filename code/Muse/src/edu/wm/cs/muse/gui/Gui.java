@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -43,11 +44,12 @@ import javafx.stage.Stage;
  * @author Phil Watkins
  */
 public class Gui extends Application {
-	Pane root;
+	StackPane root;
 	Button makeConfigBtn;
 	Button oldConfigBtn;
 	Text titleText;
 	Stage window;
+	GridPane grid;
 	
 	
 
@@ -61,6 +63,10 @@ public class Gui extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
+    	
+    	//Button button1 = new Button();
+    	//button1.setText("Button");
+    	
     	window = primaryStage;
         window.setTitle("μSE"); // window name
         
@@ -86,8 +92,20 @@ public class Gui extends Application {
 
         createButtons(stage); // initializes 2 buttons and gives each a handler for running code on being clicked
         createTitleText();
-        root = new Pane();
-        root.getChildren().addAll(makeConfigBtn, oldConfigBtn, titleText); // can add individual elements too
+        
+        
+        grid = new GridPane();
+        grid.add(titleText, 1, 0, 2, 1);
+        grid.add(oldConfigBtn, 1, 2, 1, 1); 
+        grid.add(makeConfigBtn, 2, 2, 1, 1);
+        grid.setAlignment(Pos.CENTER);
+        grid.setHalignment(titleText, HPos.CENTER);
+        grid.setVgap(100); 
+        grid.setHgap(15);  
+        
+        root = new StackPane();
+        root.getChildren().add(grid);
+        //root.getChildren().addAll(makeConfigBtn, oldConfigBtn, titleText); // can add individual elements too
         root.setBackground(background); // solid gray
         window.setScene(new Scene(root, 600, 600)); // layout, width, height
     }
@@ -142,8 +160,8 @@ public class Gui extends Application {
     
     public void createTitleText() {
         titleText = new Text("μSE");
-        titleText.setLayoutX(225);
-        titleText.setLayoutY(600/4);
+        //titleText.setLayoutX(225);
+        //titleText.setLayoutY(600/4);
         titleText.setTextAlignment(TextAlignment.CENTER);
         titleText.setFont(new Font(80));
         titleText.setFill(Color.GREEN);
@@ -368,6 +386,7 @@ public class Gui extends Application {
            new Button("Help"));		// explanations of what each config parameter is, what operators do, etc?
         grid.add(fp, 0, 21, 3, 1);
 
+        grid.setAlignment(Pos.TOP_CENTER);
         return grid;
      }
     
