@@ -18,14 +18,12 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 
 import edu.wm.cs.muse.dataleak.operators.ComplexReachability;
-import edu.wm.cs.muse.dataleak.operators.IVHOperator;
 import edu.wm.cs.muse.dataleak.operators.ReachabilityOperator;
 import edu.wm.cs.muse.dataleak.operators.TaintSinkOperator;
 import edu.wm.cs.muse.dataleak.operators.TaintSourceOperator;
 import edu.wm.cs.muse.dataleak.operators.ScopeSourceOperator;
 import edu.wm.cs.muse.dataleak.operators.ScopeSinkOperator;
 import edu.wm.cs.muse.dataleak.schemas.ComplexReachabilitySchema;
-import edu.wm.cs.muse.dataleak.schemas.IVHSchema;
 import edu.wm.cs.muse.dataleak.schemas.ReachabilitySchema;
 import edu.wm.cs.muse.dataleak.schemas.TaintSinkSchema;
 import edu.wm.cs.muse.dataleak.schemas.TaintSourceSchema;
@@ -34,6 +32,9 @@ import edu.wm.cs.muse.dataleak.schemas.ScopeSinkSchema;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
+import javafx.application.Application;
+import edu.wm.cs.muse.gui.Gui;
+
 import edu.wm.cs.muse.mdroid.ASTHelper;
 import log.LeakRemover;
 import log.LogDiff;
@@ -105,8 +106,6 @@ public class Muse {
 			return OperatorType.REACHABILITY;
 		case "COMPLEXREACHABILITY":
 			return OperatorType.COMPLEXREACHABILITY;
-		case "IVH":
-			return OperatorType.IVH;
 		default:
 			printArgumentError();
 			System.exit(-1);
@@ -243,13 +242,7 @@ public class Muse {
 			rewriter = complexOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			break;
-		case IVH:
-			IVHSchema ivhSchema = new IVHSchema();
-			root.accept(ivhSchema);
-			IVHOperator ivhOperator = new IVHOperator(rewriter, ivhSchema.getNodeChanges(), file.getAbsolutePath());
-			rewriter = ivhOperator.InsertChanges();
-			applyChangesToFile(file,source,rewriter);
-			break;
+
 		}
 	}
 
@@ -297,6 +290,9 @@ public class Muse {
 	}
 
 	public static void main(String[] args) throws Exception {
+		// For running muse with the GUI
+		Application.launch(Gui.class, args);
+
         // defaults scenario, if the user does not give a keyword and only gives config file, run Muse normally
 		if (args.length == 1) {
 			if (!args[0].endsWith(".properties")) {
