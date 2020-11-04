@@ -434,13 +434,13 @@ public class Gui extends Application {
 		window.setMinWidth(400);
 		
 		String helpString1 = "You can use this screen to create a new .properties file to run muse with.\n"
-				+ "Enter the appropriate information into the highlighted fields, hit the Generate Properties File button, and then hit the Run Muse Button to run muse.\n";
+				+ "Enter the appropriate information into the highlighted fields, hit the Generate Properties File button, \nand then hit the Run Muse Button to run muse.\n";
 
 		String helpString2 = "Fields Required For Run:\n"
 				+ "\n"
 				+ "Configuration Name: The name of the .properties file\n"
 				+ "lib4ast Path: The path of the lib4ast folder from MDroidPlus\n"
-				+ "Operator: The type of operator to be used while creating mutants. Currently supported arguments are: TAINTSINK, TAINTSOURCE, REACHABILITY, SCOPESINK, SCOPESOURCE, and COMPLEXREACHABILITY\n"
+				+ "Operator: The type of operator to be used while creating mutants. \nCurrently supported arguments are: TAINTSINK, TAINTSOURCE, REACHABILITY, SCOPESINK, SCOPESOURCE, and COMPLEXREACHABILITY\n"
 				+ "App src Location: Path of the Android app source code folder, which you want to apply mutation on\n";
 		
 		String helpString3 = "Fields Required For Mutate:\n"
