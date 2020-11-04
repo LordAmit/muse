@@ -1,6 +1,8 @@
 package edu.wm.cs.muse.gui;
 
 import java.io.File;
+
+import edu.wm.cs.muse.Muse;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -43,6 +45,7 @@ public class Gui extends Application {
 	Text titleText;
 	Stage window;
 	GridPane grid;
+	String configPath;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -320,7 +323,8 @@ public class Gui extends Application {
 
 			@Override
 			public void handle(ActionEvent runEvent) {
-				goToProgressScene(stage);
+				String args[] = {"mutate", configPath};
+				goToProgressScene(stage, args);
 				System.out.println("'Run Muse' selected. Proceeding to Progress Scene.");
 
 			}
@@ -337,7 +341,7 @@ public class Gui extends Application {
 						mutate_checkbox, app_name_textfield, destination_folder_textfield, log_checkbox,
 						insertion_log_path_textfield, execution_log_path_textfield, custom_data_leak_checkbox,
 						source_string_textfield, sink_string_textfield, vardec_string_textfield)) {
-					GenerateConfig.generateConfig(config_name_textfield.getText(), lib4ast_path_textfield.getText(),
+					configPath=GenerateConfig.generateConfig(config_name_textfield.getText(), lib4ast_path_textfield.getText(),
 							app_src_textfield.getText(), operatorSelections.getValue(), mutate_checkbox.isSelected(),
 							app_name_textfield.getText(), destination_folder_textfield.getText(),
 							log_checkbox.isSelected(), insertion_log_path_textfield.getText(),
@@ -581,7 +585,7 @@ public class Gui extends Application {
 	 * progress 
 	 * @param stage
 	 */
-	private void goToProgressScene(Stage stage) {
+	private void goToProgressScene(Stage stage, String args[]) {
 		HBox hbox = new HBox(20);
 		hbox.setSpacing(5);
 		hbox.setPadding(new Insets(75, 150, 50, 60));
@@ -601,6 +605,13 @@ public class Gui extends Application {
 
 		stage.setScene(scene);
 		stage.show();
+		
+		try {
+			Muse.main(args);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
