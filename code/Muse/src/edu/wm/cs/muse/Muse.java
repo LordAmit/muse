@@ -291,7 +291,7 @@ public class Muse {
 
 	public static void main(String[] args) throws Exception {
 		// For running muse with the GUI
-		Application.launch(Gui.class, args);
+		//Application.launch(Gui.class, args);
 
         // defaults scenario, if the user does not give a keyword and only gives config file, run Muse normally
 		if (args.length == 1) {
@@ -333,6 +333,10 @@ public class Muse {
                 	String[] removerArgs = {args[1], comparisonPath};
                 	new LeakRemover().main(removerArgs);
                 	break;
+
+				case "gui":
+					Application.launch(Gui.class, args);
+					break;
 										
 				default:
 					new Muse().runMuse(args);
