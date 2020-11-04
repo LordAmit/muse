@@ -44,10 +44,16 @@ import javafx.stage.Stage;
 // Top left of screen is 0,0
 
 
+<<<<<<< HEAD
 /**
  * 
  * @author Phil Watkins, Michael Foster
  *
+=======
+/*
+ * This is the class for the main GUI window.
+ * @author Phil Watkins
+>>>>>>> refs/heads/Gui
  */
 public class Gui extends Application {
 	StackPane root;
@@ -59,9 +65,15 @@ public class Gui extends Application {
 	
 	
 
+<<<<<<< HEAD
      //public static void main(String[] args) {
      //    launch(args);
      //}
+=======
+    // public static void main(String[] args) {
+    //     launch(args);
+    // }
+>>>>>>> refs/heads/Gui
     
      /**
       * This method has to be implemented because Gui "extends"
@@ -688,8 +700,12 @@ public class Gui extends Application {
      * Gives information as Muse runs.
      * TODO: Implement rest of layout 
      * TODO: Sync progress bar progress to Muse progress
+<<<<<<< HEAD
 	 * @param stage
 	 */
+=======
+     */
+>>>>>>> refs/heads/Gui
     private void goToProgressScene(Stage stage) {   	
     	
     	//create VBox object
@@ -886,6 +902,124 @@ public class Gui extends Application {
 		button.setOnAction(errorEvent);
     }
 	 	 
+<<<<<<< HEAD
+=======
+    /**
+     * Checks all input fields and returns true if no required fields are empty and marks the fields that are not
+     * @param config_name_textfield
+     * @param lib4ast_path_textfield
+     * @param app_src_textfield
+     * @param operatorSelections
+     * @param mutate_checkbox
+     * @param app_name_textfield
+     * @param destination_folder_textfield
+     * @param log_checkbox
+     * @param insertion_log_path_textfield
+     * @param execution_log_path_textfield
+     * @param custom_data_leak_checkbox
+     * @param source_string_textfield
+     * @param sink_string_textfield
+     * @param vardec_string_textfield
+     * @return true if all required fields contain text
+     */
+    private boolean validInputs(TextField config_name_textfield, TextField lib4ast_path_textfield, TextField app_src_textfield, ComboBox<String> operatorSelections, CheckBox mutate_checkbox , TextField app_name_textfield, TextField destination_folder_textfield, CheckBox log_checkbox, TextField insertion_log_path_textfield, TextField execution_log_path_textfield, CheckBox custom_data_leak_checkbox, TextField source_string_textfield, TextField sink_string_textfield, TextField vardec_string_textfield)
+    {
+    	boolean valid = true;	
+    	if (config_name_textfield.getText().equals("")) {
+    		updateBorder(config_name_textfield, false);
+    		valid = false; }
+    	else
+    		updateBorder(config_name_textfield, true);
+    	if (lib4ast_path_textfield.getText().equals("")) {
+        	updateBorder(lib4ast_path_textfield, false);
+        	valid = false; }
+    	else
+        	updateBorder(lib4ast_path_textfield, true);
+    	if (app_src_textfield.getText().equals("")) {
+    		updateBorder(app_src_textfield, false);
+    		valid = false; }
+    	else
+    		updateBorder(app_src_textfield, true);
+    	if (operatorSelections.getValue() == null) {
+    		updateBorder(operatorSelections, false);
+    		valid = false; }
+    	else
+    		updateBorder(operatorSelections, true);
+    	if (mutate_checkbox.isSelected()) {        	
+    		if (app_name_textfield.getText().equals("")) {
+        		updateBorder(app_name_textfield, false);
+        		valid = false; }
+    		else
+        		updateBorder(app_name_textfield, true);
+        	if (destination_folder_textfield.getText().equals("")) {
+        		updateBorder(destination_folder_textfield, false);
+        		valid = false; } 
+        	else
+        		updateBorder(destination_folder_textfield, true); }
+    	else
+    	{
+    		updateBorder(app_name_textfield, true);
+    		updateBorder(destination_folder_textfield, true); }
+    	if (log_checkbox.isSelected())
+    	{
+    	if (insertion_log_path_textfield.getText().equals("")) {
+    			updateBorder(insertion_log_path_textfield, false);
+        		valid = false; }
+    		else
+    			updateBorder(insertion_log_path_textfield, true);
+        	if (execution_log_path_textfield.getText().equals("")) {
+            	updateBorder(execution_log_path_textfield, false);
+        		valid = false; }
+        	else
+            	updateBorder(execution_log_path_textfield, true); }
+    	else
+    	{
+			updateBorder(insertion_log_path_textfield, true);
+        	updateBorder(execution_log_path_textfield, true); }
+    	if (custom_data_leak_checkbox.isSelected())
+    	{
+    		if (source_string_textfield.getText().equals("")) {
+        		updateBorder(source_string_textfield, false);
+        		valid = false; }
+    		else
+        		updateBorder(source_string_textfield, true);
+        	
+        	if (sink_string_textfield.getText().equals("")) {
+            	updateBorder(sink_string_textfield, false);
+        		valid = false; }
+        	else
+            	updateBorder(sink_string_textfield, true);
+        	if (vardec_string_textfield.getText().equals("")) {
+            	updateBorder(vardec_string_textfield, false);
+        		valid = false; }
+        	else
+            	updateBorder(vardec_string_textfield, true); }
+    	else {
+    		updateBorder(source_string_textfield, true);
+        	updateBorder(sink_string_textfield, true);
+        	updateBorder(vardec_string_textfield, true); }
+    	
+    	return valid;
+    	}
+>>>>>>> refs/heads/Gui
     
+<<<<<<< HEAD
+=======
+    private void updateBorder(TextField tf, boolean valid)
+    {
+    	if (valid)
+    		tf.setStyle("-fx-border-color: red ; -fx-border-width: 0px ;");
+    	else
+    		tf.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+    }
+    
+    private void updateBorder(ComboBox<String> cb, boolean valid)
+    {
+    	if (valid) {
+    		cb.setStyle("-fx-border-color: red ; -fx-border-width: 0px ;"); }
+    	else {
+    		cb.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;"); }
+    }
+>>>>>>> refs/heads/Gui
 	 
 }
