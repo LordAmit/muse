@@ -367,10 +367,20 @@ public class Gui extends Application {
 
 			}
 		});
+		
+		Button helpButton = new Button("Help");
+		helpButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent anevent) {
+				displayHelp();
+
+			}
+		});
 
 		FlowPane fp = new FlowPane(Orientation.HORIZONTAL, 10, 10);
 		fp.setAlignment(Pos.CENTER_RIGHT);
-		fp.getChildren().addAll(returnTitleButton, finish, runMuseButton, new Button("Help")); 
+		fp.getChildren().addAll(returnTitleButton, finish, runMuseButton, helpButton); 
 		
 		// TODO: Implement Help Button functionality with info on config parameters and operators
 		grid.add(fp, 0, 21, 3, 1);
@@ -405,6 +415,76 @@ public class Gui extends Application {
 		VBox layout = new VBox(10);
 		layout.setStyle("-fx-padding: 16;");
 		layout.getChildren().addAll(hBox1, hBox2);
+		
+		
+		Scene scene = new Scene(layout);
+		window.setScene(scene);
+		window.showAndWait();
+	}
+	
+	/**
+	 * Creates a pop up alert that the user successfully created a config file
+	 */
+	public void displayHelp()
+	{
+		Stage window = new Stage();
+		
+		window.initModality(Modality.APPLICATION_MODAL);
+		window.setTitle("Help");
+		window.setMinWidth(400);
+		
+		String helpString1 = "You can use this screen to create a new .properties file to run muse with.\n"
+				+ "Enter the appropriate information into the highlighted fields, hit the Generate Properties File button, and then hit the Run Muse Button to run muse.\n";
+
+		String helpString2 = "Fields Required For Run:\n"
+				+ "\n"
+				+ "Configuration Name: The name of the .properties file\n"
+				+ "lib4ast Path: The path of the lib4ast folder from MDroidPlus\n"
+				+ "Operator: The type of operator to be used while creating mutants. Currently supported arguments are: TAINTSINK, TAINTSOURCE, REACHABILITY, SCOPESINK, SCOPESOURCE, and COMPLEXREACHABILITY\n"
+				+ "App src Location: Path of the Android app source code folder, which you want to apply mutation on\n";
+		
+		String helpString3 = "Fields Required For Mutate:\n"
+				+ "\n"
+				+ "Destination Folder: The path of the folder where the mutants will be created\n"
+				+ "App Name: The name of the app being mutated\n";
+		
+		String helpString4 = "Fields Required For Log Analyze:\n"
+				+ "\n"
+				+ "Insertion Log Path: The path to the insertion log used in log analysis\n"
+				+ "Execution Log Path: The path to the execution log used in log analysis\n";
+		
+		String helpString5 = "Fields Required For Custom Data Leak:\n"
+				+ "\n"
+				+ "Source String: The custom source string used for data leak\n"
+				+ "Sink String: The custom sink string used for data leak\n"
+				+ "varDec String: The custom varDec string used for data leak";
+		
+		Label label1 = new Label();
+		label1.setText(helpString1);
+		Label label2 = new Label();
+		label2.setText(helpString2);
+		Label label3 = new Label();
+		label3.setText(helpString3);
+		Label label4 = new Label();
+		label4.setText(helpString4);
+		Label label5 = new Label();
+		label5.setText(helpString5);
+
+		VBox vbox = new VBox(10);
+		vbox.getChildren().addAll(label1, new Separator(), label2, new Separator(), label3, new Separator(), label4, new Separator(), label5);
+		HBox hBox1=new HBox();
+        hBox1.getChildren().add(vbox);
+        hBox1.setAlignment(Pos.TOP_LEFT);
+        
+		Button closeButton = new Button("Return");
+		closeButton.setOnAction(e -> window.close());
+		HBox hBox2=new HBox();
+        hBox2.getChildren().add(closeButton);
+        hBox2.setAlignment(Pos.BOTTOM_RIGHT);
+		
+		VBox layout = new VBox(10);
+		layout.setStyle("-fx-padding: 16;");
+		layout.getChildren().addAll(hBox1, new Separator(),hBox2);
 		
 		
 		Scene scene = new Scene(layout);
