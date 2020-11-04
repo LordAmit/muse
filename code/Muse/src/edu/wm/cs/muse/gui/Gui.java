@@ -25,6 +25,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 // Development notes: Transitions will probably be done with stages. Each frame/activity
@@ -344,11 +345,13 @@ public class Gui extends Application {
 							source_string_textfield.getText(), sink_string_textfield.getText(),
 							vardec_string_textfield.getText());
 					runMuseButton.setDisable(false);
+					displaySuccessful(config_name_textfield.getText());
 					
 				}
 			}
 		});
-				
+		
+			
 		// Back button
 		Button returnTitleButton = new Button("Back");
 		returnTitleButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -372,6 +375,39 @@ public class Gui extends Application {
 		return grid;
 	}
 
+	/**
+	 * Creates a pop up alert that the user successfully created a config file
+	 */
+	public void displaySuccessful(String config_name)
+	{
+		Stage window = new Stage();
+		
+		window.initModality(Modality.APPLICATION_MODAL);
+		window.setTitle("Successful Generation");
+		window.setMinWidth(400);
+		
+		Label label = new Label();
+		label.setText("You have successfully created the file: " +config_name + ".properties");
+		HBox hBox1=new HBox();
+        hBox1.getChildren().add(label);
+        hBox1.setAlignment(Pos.TOP_LEFT);
+        
+		Button closeButton = new Button("Return");
+		closeButton.setOnAction(e -> window.close());
+		HBox hBox2=new HBox();
+        hBox2.getChildren().add(closeButton);
+        hBox2.setAlignment(Pos.BOTTOM_RIGHT);
+		
+		VBox layout = new VBox(10);
+		layout.setStyle("-fx-padding: 16;");
+		layout.getChildren().addAll(hBox1, hBox2);
+		
+		
+		Scene scene = new Scene(layout);
+		window.setScene(scene);
+		window.showAndWait();
+	}
+		
 
 	/**
 	 * On a button press open dir_choser sets text-field to the folder
