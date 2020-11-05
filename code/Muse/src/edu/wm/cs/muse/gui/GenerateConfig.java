@@ -5,8 +5,10 @@ import java.io.FileWriter;
 
 public class GenerateConfig {
 	
-	public static void generateConfig(String config_name, String lib4ast, String app_src, String operator, boolean mutate , String app_name, String destination_folder, boolean log_analyze, String insertion_log, String execution_log, boolean custom_data_leak, String source, String sink, String varDec)
+	public static String generateConfig(String config_name, String lib4ast, String app_src, String operator, boolean mutate , String app_name, String destination_folder, boolean log_analyze, String insertion_log, String execution_log, boolean custom_data_leak, String source, String sink, String varDec)
 	{
+		
+		String config_path = "";
 		// Creates a config file if one doesn't already exist
         try { 
         	File myObj = new File(config_name + ".properties");
@@ -16,8 +18,11 @@ public class GenerateConfig {
         	} else {
         		System.out.println("Modifying Existing File");
         	}
+            config_path = myObj.getAbsolutePath();
         } catch(Exception e)
         {  }
+        
+        
         
         // Forms the config text file as a string to write onto the .properties file later
         String config_text = "lib4ast: "+lib4ast+"\n"
@@ -57,5 +62,6 @@ public class GenerateConfig {
         } catch (Exception e)
         {  }
         
+        return config_path;
 	}
 }
