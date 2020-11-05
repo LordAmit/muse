@@ -17,6 +17,7 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
+import org.junit.After;
 import org.junit.Test;
 
 import edu.wm.cs.muse.Muse;
@@ -47,7 +48,18 @@ public class ScopeSinkSchemaTest {
 	TextEdit edits;
 	File processedOutput;
 	ScopeSinkSchema scopeSinkSchema;
-
+	
+	
+	/**
+	 * Deletes temp files that were created
+	 */
+	@After
+	public void cleanup () {
+		File file = new File("temp_file.java");
+		if (!(file == null)) {
+			file.delete();
+		}
+	}
 
   /**
    * Test Case: Checks if TaintSinkSchema traverses static method in input file

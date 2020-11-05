@@ -17,6 +17,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
+import org.junit.After;
 import org.junit.Test;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -85,6 +86,16 @@ public class PlacementCheckerTest extends Placementchecker {
 		    return true;
 	  }
 	
+	/**
+	* Deletes temp files that were created
+	*/
+	@After
+	public void cleanup () {
+		File file = new File("temp_file.java");
+		if (!(file == null)) {
+			file.delete();
+		}
+	}
 
 	@Test
 	public void test_getTempFileMethod_sample_HelloWorld() throws FileNotFoundException, IOException {
