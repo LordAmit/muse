@@ -418,7 +418,6 @@ public class MuseTest {
 		sourceDoc = new Document(content);
 		muse.operatorExecution(root, rewriter, sourceDoc.get(),output, operator);
 		processedOutput = output;
-		DataLeak.reset(operator);
 		//if temp_file is created by execution of muse, break it down after use
 		File file = new File("test/temp/temp_file.java");
 		if (!(file == null)) {
