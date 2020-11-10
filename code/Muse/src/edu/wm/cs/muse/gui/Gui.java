@@ -95,6 +95,7 @@ public class Gui extends Application {
 		
 		// create Background 
 		Background background = new Background(background_fill); 
+		
         
 
         createButtons(stage); // initializes 2 buttons and gives each a handler for running code on being clicked
@@ -820,10 +821,8 @@ public class Gui extends Application {
       //!!!!!!!!!end of action handlers for buttons!!!!!!!!!!!
   
         BorderPane root = new BorderPane(loading);
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root, 800, 600);
   
-        stage.setWidth(800);
-        stage.setHeight(600);
         stage.setScene(scene);
         stage.show();
         
@@ -862,7 +861,7 @@ public class Gui extends Application {
         
         
         BorderPane root = new BorderPane(success);
-        Scene scene = new Scene(root);    
+        Scene scene = new Scene(root,800,600);    
         
         //add TextArea with SAME text from Progress Scene
         success.getChildren().add(runTimeInfoText); //add the text to pane
@@ -883,9 +882,6 @@ public class Gui extends Application {
         goBackToStart.setOnAction(goBackToStartHandler);
         
         
-  
-        stage.setWidth(800);
-        stage.setHeight(600);
         stage.setScene(scene);
         stage.show();
     	
