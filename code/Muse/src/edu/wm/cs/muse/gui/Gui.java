@@ -4,6 +4,7 @@ package edu.wm.cs.muse.gui;
 import java.io.File;
 import java.io.FileWriter;
 
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.text.edits.MalformedTreeException;
 
 import edu.wm.cs.muse.Muse;
@@ -150,14 +151,17 @@ public class Gui extends Application {
                 FileChooser fileChooser = new FileChooser();
                 String filePath = fileChooser.showOpenDialog(window).getAbsolutePath();
                 String[] run = {filePath};
-
-                try {
-                	Arguments.extractArguments(run[0]);
-					new Muse().runMuse(run);
-				} catch (MalformedTreeException | org.eclipse.jface.text.BadLocationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                goToProgressScene(stage,run);
+                
+                //code commented out-- moved into goToProgressScene
+//                try {
+//                	//goToProgressScene(stage);
+//                	Arguments.extractArguments(run[0]);
+//					new Muse().runMuse(run);
+//				} catch (MalformedTreeException | org.eclipse.jface.text.BadLocationException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
             }
         });
     	
@@ -348,9 +352,10 @@ public class Gui extends Application {
 		runMuseButton.setOnAction(new EventHandler<ActionEvent>() {
 	   		 
 	         @Override
-	         public void handle(ActionEvent runEvent) {
-	         	goToProgressScene(stage);
-	         	System.out.println("'Run Muse' selected. Proceeding to Progress Scene.");
+	         public void handle(ActionEvent runEvent) {	
+	         	//goToProgressScene(stage);
+	         	//System.out.println("'Run Muse' selected. Proceeding to Progress Scene. ");
+	        	 System.out.println("'Run Muse' selected. Button is currently disabled. ");
 	         	
 	         	}
 	     });
@@ -690,7 +695,7 @@ public class Gui extends Application {
      * TODO: Sync progress bar progress to Muse progress
 	 * @param stage
 	 */
-    private void goToProgressScene(Stage stage) {   	
+    private void goToProgressScene(Stage stage,String[] run) {   	
     	
     	//create VBox object
     	VBox loading = new VBox(20);
@@ -731,8 +736,8 @@ public class Gui extends Application {
         loading.getChildren().add(museRuntimeText); //add the text to pane
             
         //create dummy button for testing text and add
-        Button testToastButton = new Button("Get toast");
-        loading.getChildren().add(testToastButton);
+        Button startMuseButton = new Button("Start Muse");
+        loading.getChildren().add(startMuseButton);
         
         //create dummy button for testing finish state
         Button proceedFinishButton = new Button("Proceed");
@@ -748,13 +753,27 @@ public class Gui extends Application {
             @Override
             public void handle(ActionEvent event) {
             	//testText.setText("Accepted");
-            	museRuntimeText.appendText("Button Press detected-- Adding toast.\n");
+            	museRuntimeText.appendText("Starting Muse!\n");
             	
+            	//create new thread to run Muse on. This lets progressScene continue.
+            	new Thread(new Runnable() {
+    			    public void run() {
+    			    	Arguments.extractArguments(run[0]);
+     					try {
+							new Muse().runMuse(run);
+						} catch (MalformedTreeException e) {
+							e.printStackTrace();
+						} catch (BadLocationException e) {
+							e.printStackTrace();
+						}
+    			    }
+    			}).start();
+ 
                 event.consume();
              
             } 
         };
-        testToastButton.setOnAction(buttonHandler);
+        startMuseButton.setOnAction(buttonHandler);
         
       //for our proceed button, go to finish activity
         EventHandler<ActionEvent> finishButtonHandler = new EventHandler<ActionEvent>() {
