@@ -296,6 +296,14 @@ public class Muse {
         // defaults scenario, if the user does not give a keyword and only gives config file, run Muse normally
 		if (args.length == 1) {
 			if (!args[0].endsWith(".properties")) {
+				//the user can run the gui as a standalone program. Muse will run from the gui.
+				if(args[0].equals("gui")|| args[0].equals("GUI")) {
+					System.out.println("Muse is running in GUI standalone-mode."
+							+ " Param: '" + args[0] + "' detected."); 
+					Application.launch(Gui.class, args);
+					return;
+			    }
+				
 				printArgumentError();
 				// if no config file given, generate one
 				System.out.println("\nNo properties file specified. Generate new file? (y/n)");
