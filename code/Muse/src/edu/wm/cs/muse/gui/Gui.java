@@ -1,8 +1,10 @@
 package edu.wm.cs.muse.gui;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.PrintStream;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.text.edits.MalformedTreeException;
@@ -47,7 +49,7 @@ import javafx.stage.Stage;
 
 /**
  * 
- * @author Phil Watkins, Michael Foster
+ * @author Phil Watkins, Michael Foster, Johnny Clapham
  *
  */
 public class Gui extends Application {
@@ -707,7 +709,7 @@ public class Gui extends Application {
         
         //Creating a Text object 
         Text runningText = new Text(); 
-        runningText.setText("μSE is running");
+        runningText.setText("μSE is ready. Click 'Start'.");
         runningText.setFont(Font.font("Inconsolata ",  FontWeight.BOLD, 30));
         //add element to VBox
         loading.getChildren().add(runningText);
@@ -718,6 +720,7 @@ public class Gui extends Application {
         museProgressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
         //add element to VBox
         loading.getChildren().add(museProgressBar);
+        museProgressBar.setVisible(false);
         
         //Creating a separator (separates bar from text)
         Separator sep = new Separator();
@@ -730,17 +733,18 @@ public class Gui extends Application {
         TextArea museRuntimeText = new TextArea();
         //dummy text for now
         museRuntimeText.setText("Muse progress toasts can print here:\n");
-        museRuntimeText.setFont(Font.font("Courier New",  20));
+        museRuntimeText.setFont(Font.font("Courier New",  15));
         museRuntimeText.setWrapText(true);
         //add element to VBox
         loading.getChildren().add(museRuntimeText); //add the text to pane
             
         //create dummy button for testing text and add
-        Button startMuseButton = new Button("Start Muse");
+        Button startMuseButton = new Button("Start");
         loading.getChildren().add(startMuseButton);
         
         //create dummy button for testing finish state
         Button proceedFinishButton = new Button("Proceed");
+        proceedFinishButton.setDisable(true);
         loading.getChildren().add(proceedFinishButton);
         
         //create  button for returning to start
@@ -753,17 +757,27 @@ public class Gui extends Application {
             @Override
             public void handle(ActionEvent event) {
             	//testText.setText("Accepted");
+            	museProgressBar.setVisible(true);
+            	runningText.setText("μSE is running");
             	museRuntimeText.appendText("Starting Muse!\n");
             	
             	//create new thread to run Muse on. This lets progressScene continue.
             	new Thread(new Runnable() {
     			    public void run() {
     			    	Arguments.extractArguments(run[0]);
-     					try {
-							new Muse().runMuse(run);
-						} catch (MalformedTreeException e) {
-							e.printStackTrace();
-						} catch (BadLocationException e) {
+ 						try {
+ 							//for now, create a string to store the entire intercepted console output
+ 							// uses the Interceptor helper class
+							String museConsoleOutput = Interceptor.copyOut(() ->{
+								new Muse().runMuse(run);
+							});
+							//add the intercepted console output to the text area
+							museRuntimeText.appendText(museConsoleOutput);
+							museRuntimeText.appendText("Muse has finished running.\nPlease click 'Proceed' to continue.");
+							proceedFinishButton.setDisable(false);
+							
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
     			    }
