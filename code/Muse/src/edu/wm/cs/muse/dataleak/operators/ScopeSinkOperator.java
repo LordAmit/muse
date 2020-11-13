@@ -137,7 +137,7 @@ public class ScopeSinkOperator {
 			String sink = String.format(DataLeak.getSink(OperatorType.SCOPESINK, Integer.parseInt(placeholderValue), index));
 			ASTNode placeHolder;
 			if (handler.stringHasThrows(sink)) {
-				placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT));
+				placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT), rewriter);
 			}
 			else {
 				placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);

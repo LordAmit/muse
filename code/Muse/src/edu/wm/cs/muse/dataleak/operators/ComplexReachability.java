@@ -43,7 +43,7 @@ public class ComplexReachability extends ReachabilityOperator {
 				if (handler.stringHasThrows(DataLeak.getLeak(OperatorType.COMPLEXREACHABILITY, Utility.COUNTER_GLOBAL))) {
 					placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
 						DataLeak.getLeak(OperatorType.COMPLEXREACHABILITY, Utility.COUNTER_GLOBAL),
-						ASTNode.EMPTY_STATEMENT));
+						ASTNode.EMPTY_STATEMENT), rewriter);
 				}
 				else{
 					placeHolder = (Statement) rewriter.createStringPlaceholder(

@@ -138,7 +138,7 @@ public class TaintSinkOperator {
 		ASTNode placeHolder;
 		if (handler.stringHasThrows(DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)))) {
 			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
-					DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT));
+					DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT), rewriter);
 		}
 		else {
 			 placeHolder = (Statement) rewriter.createStringPlaceholder(
@@ -179,7 +179,7 @@ public class TaintSinkOperator {
 		ASTNode placeHolder;
 		if (handler.stringHasThrows(DataLeak.getTaintSourceFinalDecl(count))) {
 			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
-					DataLeak.getTaintSourceFinalDecl(count), ASTNode.EMPTY_STATEMENT));
+					DataLeak.getTaintSourceFinalDecl(count), ASTNode.EMPTY_STATEMENT), rewriter);
 		}
 		else {
 			placeHolder = (Statement) rewriter

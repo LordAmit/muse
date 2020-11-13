@@ -133,7 +133,7 @@ public class IVHOperator {
 		
 		ASTNode placeHolder;
 		if (handler.stringHasThrows(source)) {
-			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT));
+			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT), rewriter);
 		}
 		else {
 			placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
@@ -171,7 +171,7 @@ public class IVHOperator {
 			String sink = DataLeak.getSink(OperatorType.IVH);
 			ASTNode placeHolder;
 			if (handler.stringHasThrows(sink)) {
-				placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT));
+				placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT), rewriter);
 			}
 			else {
 				placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);

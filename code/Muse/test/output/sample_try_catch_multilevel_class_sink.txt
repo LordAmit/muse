@@ -17,6 +17,7 @@ public class TestClass {
 			android.util.Log.d("leak-8-0", cipher_leak8.getAlgorithm())
 			android.util.Log.d("leak-11-0", cipher_leak11.getAlgorithm())
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return 1;
     }
@@ -30,6 +31,7 @@ public class TestClass {
 			android.util.Log.d("leak-8-1", cipher_leak8.getAlgorithm())
 			android.util.Log.d("leak-11-1", cipher_leak11.getAlgorithm())
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return 2;
     }
@@ -43,6 +45,7 @@ public class TestClass {
 				cipher_leak3 = javax.crypto.Cipher.getInstance("AES");
 				android.util.Log.d("leak-3-2", cipher_leak3.getAlgorithm())
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			try {
 				cipher_leak2 = javax.crypto.Cipher.getInstance("AES");
@@ -56,6 +59,7 @@ public class TestClass {
 				android.util.Log.d("leak-8-2", cipher_leak8.getAlgorithm())
 				android.util.Log.d("leak-11-2", cipher_leak11.getAlgorithm())
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			return 1;
         }
@@ -64,6 +68,7 @@ public class TestClass {
 				cipher_leak5 = javax.crypto.Cipher.getInstance("AES");
 				android.util.Log.d("leak-5-3", cipher_leak5.getAlgorithm())
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			try {
 				cipher_leak4 = javax.crypto.Cipher.getInstance("AES");
@@ -77,6 +82,7 @@ public class TestClass {
 				android.util.Log.d("leak-8-3", cipher_leak8.getAlgorithm())
 				android.util.Log.d("leak-11-3", cipher_leak11.getAlgorithm())
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			return 2;
         }
@@ -88,11 +94,13 @@ public class TestClass {
 					cipher_leak8 = javax.crypto.Cipher.getInstance("AES");
 					android.util.Log.d("leak-8-4", cipher_leak8.getAlgorithm())
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				try {
 					cipher_leak7 = javax.crypto.Cipher.getInstance("AES");
 					android.util.Log.d("leak-7-4", cipher_leak7.getAlgorithm())
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				try {
 					cipher_leak6 = javax.crypto.Cipher.getInstance("AES");
@@ -107,6 +115,7 @@ public class TestClass {
 					android.util.Log.d("leak-5-4", cipher_leak5.getAlgorithm())
 					android.util.Log.d("leak-11-4", cipher_leak11.getAlgorithm())
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				return 1;
             }
@@ -115,11 +124,13 @@ public class TestClass {
 					cipher_leak11 = javax.crypto.Cipher.getInstance("AES");
 					android.util.Log.d("leak-11-5", cipher_leak11.getAlgorithm())
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				try {
 					cipher_leak10 = javax.crypto.Cipher.getInstance("AES");
 					android.util.Log.d("leak-10-5", cipher_leak10.getAlgorithm())
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				try {
 					cipher_leak9 = javax.crypto.Cipher.getInstance("AES");
@@ -134,6 +145,7 @@ public class TestClass {
 					android.util.Log.d("leak-5-5", cipher_leak5.getAlgorithm())
 					android.util.Log.d("leak-8-5", cipher_leak8.getAlgorithm())
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				return 2;
             }

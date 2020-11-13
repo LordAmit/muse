@@ -85,7 +85,7 @@ public class TaintSourceOperator {
 		ASTNode placeHolder;
 		if (handler.stringHasThrows(DataLeak.getSource(OperatorType.TAINTSOURCE, Utility.COUNTER_GLOBAL))) {
 			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
-					DataLeak.getSource(OperatorType.TAINTSOURCE, Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT));
+					DataLeak.getSource(OperatorType.TAINTSOURCE, Utility.COUNTER_GLOBAL), ASTNode.EMPTY_STATEMENT), rewriter);
 		}
 		else {
 			placeHolder = (Statement) rewriter.createStringPlaceholder(
@@ -111,7 +111,7 @@ public class TaintSourceOperator {
 		String variable = String.format(DataLeak.getVariableDeclaration(OperatorType.TAINTSOURCE), Utility.COUNTER_GLOBAL, 
 				Utility.COUNTER_GLOBAL);
 		if (handler.stringHasThrows(variable)) {
-			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT));
+			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT), rewriter);
 		}
 		else {
 			placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);

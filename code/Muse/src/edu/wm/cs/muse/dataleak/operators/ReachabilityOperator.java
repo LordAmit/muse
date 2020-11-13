@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
@@ -43,7 +42,6 @@ public class ReachabilityOperator {
 			System.out.println(String.format(nodeChange.changedSource, Utility.COUNTER_GLOBAL));
 
 			
-			
 			/*
 			 * Uses the rewriter to create an AST for the SinkSchema to utilize Then
 			 * creates a new instance to manipulate the AST The root node then accepts the
@@ -55,7 +53,7 @@ public class ReachabilityOperator {
 				if (handler.stringHasThrows(DataLeak.getLeak(OperatorType.REACHABILITY, Utility.COUNTER_GLOBAL))) {
 					placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
 						DataLeak.getLeak(OperatorType.REACHABILITY, Utility.COUNTER_GLOBAL),
-						ASTNode.EMPTY_STATEMENT));
+						ASTNode.EMPTY_STATEMENT), rewriter);
 				}
 				else{
 					placeHolder = (Statement) rewriter.createStringPlaceholder(

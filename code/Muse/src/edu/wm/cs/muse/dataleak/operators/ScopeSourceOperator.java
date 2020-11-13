@@ -100,7 +100,7 @@ public class ScopeSourceOperator {
 		// listRewrite.insertAt(placeHolder, index, null);
 		ASTNode placeHolder;
 		if (handler.stringHasThrows(source)) {
-			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT));
+			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT), rewriter);
 		}
 		else {
 			placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
@@ -127,7 +127,7 @@ public class ScopeSourceOperator {
 				Utility.COUNTER_GLOBAL);
 		ASTNode placeHolder;
 		if (handler.stringHasThrows(variable)) {
-			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT));
+			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT), rewriter);
 		}
 		else {
 			placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
