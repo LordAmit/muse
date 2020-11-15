@@ -117,9 +117,9 @@
 			<version>3.12.3</version> </dependency> -->
 		<!-- https://mvnrepository.com/artifact/org.eclipse.jdt/org.eclipse.jdt.core -->
 		<dependency>
-			<groupId>org.eclipse.jdt</groupId>
+			<groupId>com.google.code.maven-play-plugin.org.eclipse.jdt</groupId>
 			<artifactId>org.eclipse.jdt.core</artifactId>
-			<version>3.23.0</version>
+			<version>3.10.0.v20140604-1726</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.eclipse.text/org.eclipse.text -->
 		<dependency>
