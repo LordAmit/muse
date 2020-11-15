@@ -149,7 +149,7 @@ public class Gui extends Application {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("You pressed the button that will ask which existing configuration"
-                		+ " you want to run muse with.");
+                		+ " you want to run μse with.");
                 
                 FileChooser fileChooser = new FileChooser();
                 String filePath = fileChooser.showOpenDialog(window).getAbsolutePath();
@@ -350,7 +350,7 @@ public class Gui extends Application {
         grid.add(new Separator(), 0, 20, 3, 1);
         
         // Run Muse button
-		Button runMuseButton = new Button("Run Muse");
+		Button runMuseButton = new Button("Run μse");
 		runMuseButton.setDisable(true);
 		runMuseButton.setOnAction(new EventHandler<ActionEvent>() {
 	   		 
@@ -358,7 +358,7 @@ public class Gui extends Application {
 	         public void handle(ActionEvent runEvent) {	
 	         	//goToProgressScene(stage);
 	         	//System.out.println("'Run Muse' selected. Proceeding to Progress Scene. ");
-	        	 System.out.println("'Run Muse' selected. Button is currently disabled. ");
+	        	 System.out.println("'Run μse' selected. Button is currently disabled. ");
 	         	
 	         	}
 	     });
@@ -466,8 +466,8 @@ public class Gui extends Application {
 		window.setTitle("Help");
 		window.setMinWidth(400);
 		
-		String helpString1 = "You can use this screen to create a new .properties file to run muse with.\n"
-				+ "Enter the appropriate information into the highlighted fields, hit the Generate Properties File button, \nand then hit the Run Muse Button to run muse.\n";
+		String helpString1 = "You can use this screen to create a new .properties file to run μse with.\n"
+				+ "Enter the appropriate information into the highlighted fields, hit the Generate Properties File button, \nand then hit the Run μse Button to run μse.\n";
 
 		String helpString2 = "Fields Required For Run:\n"
 				+ "\n"
@@ -733,7 +733,7 @@ public class Gui extends Application {
         //create text for muse output to be printed and add
         TextArea museRuntimeText = new TextArea();
         //dummy text for now
-        museRuntimeText.setText("Muse progress toasts can print here:\n");
+        museRuntimeText.setText("μse progress toasts can print here:\n");
         museRuntimeText.setFont(Font.font("Courier New",  15));
         museRuntimeText.setWrapText(true);
         //add element to VBox
@@ -760,7 +760,7 @@ public class Gui extends Application {
             	//testText.setText("Accepted");
             	museProgressBar.setVisible(true);
             	runningText.setText("μSE is running");
-            	museRuntimeText.appendText("Starting Muse!\n");
+            	museRuntimeText.appendText("Starting μse!\n");
             	
             	//create new thread to run Muse on. This lets progressScene continue.
             	new Thread(new Runnable() {
@@ -774,7 +774,7 @@ public class Gui extends Application {
 							});
 							//add the intercepted console output to the text area
 							museRuntimeText.appendText(museConsoleOutput);
-							museRuntimeText.appendText("Muse has finished running.\nPlease click 'Proceed' to continue.");
+							museRuntimeText.appendText("μse has finished running.\nPlease click 'Proceed' to continue.");
 							proceedFinishButton.setDisable(false);
 							
 						} catch (Exception e) {
