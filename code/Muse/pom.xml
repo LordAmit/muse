@@ -8,10 +8,9 @@
 	<name>Muse</name>
 	<repositories>
 		<repository>
-			<name>
-	custom</name>
+			<name>custom</name>
 			<id>some</id>
-			<url>https://repo.spring.io/plugins-release-local/</url>
+			<url>https://mvnrepository.com/repos/central</url>
 		</repository>
 	</repositories>
 	<build>
