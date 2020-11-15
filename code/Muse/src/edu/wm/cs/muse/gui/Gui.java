@@ -216,7 +216,7 @@ public class Gui extends Application {
         grid.add(new Separator(), 0, 1, 3, 1);
         
         TextField config_name_textfield = new TextField();
-        grid.add(new Label("Configuration Name:"), 0, 2, 1, 1);
+        grid.add(new Label("Configuration File Name:"), 0, 2, 1, 1);
         grid.add(config_name_textfield, 1, 2, 1, 1);
         
         //libs4ast directory chooser
@@ -230,7 +230,7 @@ public class Gui extends Application {
         
         
         
-        grid.add(new Label("Operator:"), 0, 4, 1, 1);
+        grid.add(new Label("Mutation Scheme:"), 0, 4, 1, 1);
         ComboBox<String> operatorSelections = new ComboBox<>();
         operatorSelections.setPrefWidth(400);
         
@@ -246,7 +246,7 @@ public class Gui extends Application {
         //app_source directory chooser
         TextField app_src_textfield = new TextField();
         app_src_textfield.setEditable(false);
-        grid.add(new Label("App src Location:"), 0, 5, 1, 1);
+        grid.add(new Label("App Source:"), 0, 5, 1, 1);
         grid.add(app_src_textfield, 1, 5, 1, 1);
         Button appbrowse = new Button("Browse...");
         grid.add(appbrowse, 2, 5, 1, 1);
@@ -255,7 +255,7 @@ public class Gui extends Application {
         //destination directory chooser
         TextField destination_folder_textfield = new TextField();
         destination_folder_textfield.setEditable(false);
-        grid.add(new Label("Destination Folder:"), 0, 8, 1, 1);
+        grid.add(new Label("Destination Path:"), 0, 8, 1, 1);
         grid.add(destination_folder_textfield, 1, 8, 1, 1);
         Button destbrowse = new Button("Browse...");
         grid.add(destbrowse, 2, 8, 1, 1);
@@ -313,7 +313,7 @@ public class Gui extends Application {
 
         grid.add(new Separator(), 0, 14, 3, 1);
 
-        CheckBox custom_data_leak_checkbox = new CheckBox("Use Custom Data Leak");
+        CheckBox custom_data_leak_checkbox = new CheckBox("Use Custom Format");
         grid.add(custom_data_leak_checkbox, 0, 15, 3, 1);
 
         TextField source_string_textfield = new TextField();
@@ -325,7 +325,7 @@ public class Gui extends Application {
         grid.add(sink_string_textfield, 1, 17, 1, 1);
         
         TextField vardec_string_textfield = new TextField();
-        grid.add(new Label("\tvarDec String:"), 0, 18, 1, 1);
+        grid.add(new Label("\tVariable Declaration String:"), 0, 18, 1, 1);
         grid.add(vardec_string_textfield, 1, 18, 1, 1);
 
         grid.add(new Label("Once created, configurations can be reused\n"
@@ -474,14 +474,14 @@ public class Gui extends Application {
 
 		String helpString2 = "Fields Required For Run:\n"
 				+ "\n"
-				+ "Configuration Name: The name of the .properties file\n"
+				+ "Configuration File Name: The name of the .properties file\n"
 				+ "lib4ast Path: The path of the lib4ast folder from MDroidPlus\n"
-				+ "Operator: The type of operator to be used while creating mutants. \nCurrently supported arguments are: TAINTSINK, TAINTSOURCE, REACHABILITY, SCOPESINK, SCOPESOURCE, and COMPLEXREACHABILITY\n"
-				+ "App src Location: Path of the Android app source code folder, which you want to apply mutation on\n";
+				+ "Mutation Scheme: The type mutation scheme to be used while creating mutants. \nCurrently supported arguments are: TAINTSINK, TAINTSOURCE, REACHABILITY, SCOPESINK, SCOPESOURCE, and COMPLEXREACHABILITY\n"
+				+ "App Source: Path of the Android app source code folder, which you want to apply mutation on\n";
 		
 		String helpString3 = "Fields Required For Mutate:\n"
 				+ "\n"
-				+ "Destination Folder: The path of the folder where the mutants will be created\n"
+				+ "Destination Path: The path of the folder where the mutants will be created\n"
 				+ "App Name: The name of the app being mutated\n";
 		
 		String helpString4 = "Fields Required For Log Analyze:\n"
@@ -489,11 +489,11 @@ public class Gui extends Application {
 				+ "Insertion Log Path: The path to the insertion log used in log analysis\n"
 				+ "Execution Log Path: The path to the execution log used in log analysis\n";
 		
-		String helpString5 = "Fields Required For Custom Data Leak:\n"
+		String helpString5 = "Fields Required For Custom Format:\n"
 				+ "\n"
 				+ "Source String: The custom source string used for data leak\n"
 				+ "Sink String: The custom sink string used for data leak\n"
-				+ "varDec String: The custom varDec string used for data leak";
+				+ "Variable Declaration String: The custom variable declaration string used for data leak";
 		
 		Label label1 = new Label();
 		label1.setText(helpString1);
