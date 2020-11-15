@@ -557,9 +557,9 @@ public class Gui extends Application {
 		
 		String helpString4 = "Fields Required For Custom Format:\n"
 				+ "\n"
-				+ "Source String: The custom source string used for data leak\n"
-				+ "Sink String: The custom sink string used for data leak\n"
-				+ "Variable Declaration String: The custom variable declaration string used for data leak";
+				+ "Source String: The custom source string used for data leak\n\tEx: dataLeAk%d = java.util.Calendar.getInstance().getTimeZone().getDisplayName();\n"
+				+ "Sink String: The custom sink string used for data leak\n\tEx: android.util.Log.d(\\\"leak-%d-%d\\\", dataLeAk%d);\n"
+				+ "Variable Declaration String: The custom variable declaration string used for data leak\n\tEx: String dataLeAk%d = \\\"%d\\\";";
 		
 		String helpString5 = "Fields Required For Log Analyze:\n"
 				+ "\n"
