@@ -229,28 +229,30 @@ public class Gui extends Application {
         MuseDirectoryChooser(libs4astbrowse,lib4ast_path_textfield,stage);
         
         
+        //app_source directory chooser
+        TextField app_src_textfield = new TextField();
+        app_src_textfield.setEditable(false);
+        grid.add(new Label("App Source:"), 0, 4, 1, 1);
+        grid.add(app_src_textfield, 1, 4, 1, 1);
+        Button appbrowse = new Button("Browse...");
+        grid.add(appbrowse, 2, 4, 1, 1);
+        MuseDirectoryChooser(appbrowse,app_src_textfield,stage);
         
-        grid.add(new Label("Mutation Scheme:"), 0, 4, 1, 1);
+        
+        grid.add(new Label("Mutation Scheme:"), 0, 5, 1, 1);
         ComboBox<String> operatorSelections = new ComboBox<>();
         operatorSelections.setPrefWidth(400);
         
         operatorSelections.getItems().addAll("SCOPESOURCE", "SCOPESINK", "TAINTSOURCE",
         									 "TAINTSINK", "COMPLEXREACHABILITY", "REACHABILITY");
-        grid.add(operatorSelections, 1, 4, 1, 1);
+        grid.add(operatorSelections, 1, 5, 1, 1);
         
+        
+        // Mutation fields
         
         CheckBox mutate_checkbox = new CheckBox("Mutate");
         grid.add(mutate_checkbox, 0, 7, 3, 1);
         grid.add(new Separator(), 0, 6, 3, 1);
-        
-        //app_source directory chooser
-        TextField app_src_textfield = new TextField();
-        app_src_textfield.setEditable(false);
-        grid.add(new Label("App Source:"), 0, 5, 1, 1);
-        grid.add(app_src_textfield, 1, 5, 1, 1);
-        Button appbrowse = new Button("Browse...");
-        grid.add(appbrowse, 2, 5, 1, 1);
-        MuseDirectoryChooser(appbrowse,app_src_textfield,stage);
         
         //destination directory chooser
         TextField destination_folder_textfield = new TextField();
@@ -478,8 +480,8 @@ public class Gui extends Application {
 				+ "\n"
 				+ "Configuration File Name: The name of the .properties file\n"
 				+ "lib4ast Path: The path of the lib4ast folder from MDroidPlus\n"
-				+ "Mutation Scheme: The type mutation scheme to be used while creating mutants. \nCurrently supported arguments are: TAINTSINK, TAINTSOURCE, REACHABILITY, SCOPESINK, SCOPESOURCE, and COMPLEXREACHABILITY\n"
-				+ "App Source: Path of the Android app source code folder, which you want to apply mutation on\n";
+				+ "App Source: Path of the Android app source code folder, which you want to apply mutation on\n"
+				+ "Mutation Scheme: The type mutation scheme to be used while creating mutants. \nCurrently supported arguments are: TAINTSINK, TAINTSOURCE, REACHABILITY, SCOPESINK, SCOPESOURCE, and COMPLEXREACHABILITY\n";
 		
 		String helpString3 = "Fields Required For Mutate:\n"
 				+ "\n"
