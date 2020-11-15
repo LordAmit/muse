@@ -102,7 +102,7 @@ public class TaintSinkOperator {
 			TryStatement finalTryStatement = null;
 			//iterate through statements in node
 			for (int i=0; i<statements.size(); i++) {
-				if (statements.get(i).toString().contains("try {")) {
+				if (statements.get(i).toString().startsWith("try {")) {
 					TryStatement statement = (TryStatement) statements.get(i);
 					Block body2 = statement.getBody();
 					//note the related source to the current sink
@@ -126,8 +126,7 @@ public class TaintSinkOperator {
 			}
 			//if there isn't, but there are try statements with other sources, write in the last one encountered's block
 			else if (finalTryStatement != null) {
-				chosenBody = finalTryStatement.getBody();
-				listRewrite = rewriter.getListRewrite(chosenBody, Block.STATEMENTS_PROPERTY);
+				listRewrite = rewriter.getListRewrite(finalTryStatement.getBody(), Block.STATEMENTS_PROPERTY);
 				index=1;
 			}
 
