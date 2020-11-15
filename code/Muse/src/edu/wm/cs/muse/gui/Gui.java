@@ -208,6 +208,7 @@ public class Gui extends Application {
         grid.setPadding(new Insets(10));
         grid.setHgap(10);
         grid.setVgap(10);
+        
 
         Text txt = new Text("Generate a Configuration File");
         txt.setFont(Font.font("Dialog", FontWeight.BOLD, 12));
@@ -248,8 +249,8 @@ public class Gui extends Application {
         
         
         // Mutation fields
-        
         CheckBox mutate_checkbox = new CheckBox("Mutate");
+        
         grid.add(mutate_checkbox, 0, 7, 3, 1);
         grid.add(new Separator(), 0, 6, 3, 1);
         
@@ -271,22 +272,17 @@ public class Gui extends Application {
         
 		destination_folder_textfield.setDisable(!mutate_checkbox.isSelected());
         app_name_textfield.setDisable(!mutate_checkbox.isSelected());
+        destbrowse.setDisable(!mutate_checkbox.isSelected());
         
-        mutate_checkbox.setOnAction(new EventHandler<ActionEvent>() {
-    		 
-            @Override
-            public void handle(ActionEvent event) {
-        		destination_folder_textfield.setDisable(!mutate_checkbox.isSelected());
-        		app_name_textfield.setDisable(!mutate_checkbox.isSelected());
-        		updateBorder(destination_folder_textfield, true);
-        		updateBorder(app_name_textfield, true);
-            }
-        });
+        
 
         
         grid.add(new Separator(), 0, 10, 3, 1);
-
+        
         CheckBox custom_data_leak_checkbox = new CheckBox("Use Custom Format");
+        
+        custom_data_leak_checkbox.setDisable(true);
+
         grid.add(custom_data_leak_checkbox, 0, 11, 3, 1);
 
         TextField source_string_textfield = new TextField();
@@ -307,19 +303,7 @@ public class Gui extends Application {
         sink_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
         vardec_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
         
-		// Every time the data leak checkbox is clicked, disable/enable corresponding text fields and remove their errored border
-		custom_data_leak_checkbox.setOnAction(new EventHandler<ActionEvent>() {
-      		 
-            @Override
-            public void handle(ActionEvent event) {
-            	source_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected());
-                sink_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
-                vardec_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
-                updateBorder(source_string_textfield, true);
-        		updateBorder(sink_string_textfield, true);
-        		updateBorder(vardec_string_textfield, true);
-            }
-        });
+		
 
         grid.add(new Separator(), 0, 15, 3, 1);
         
@@ -337,17 +321,78 @@ public class Gui extends Application {
         insertion_log_path_textfield.setDisable(!log_checkbox.isSelected());
 		execution_log_path_textfield.setDisable(!log_checkbox.isSelected()); 
         
-		// Every time the log checkbox is clicked, disable/enable corresponding text fields and remove their errored border
+		
+        // Setting the checkbox actions
+        mutate_checkbox.setOnAction(new EventHandler<ActionEvent>() {
+   		 
+            @Override
+            public void handle(ActionEvent event) {
+            	// Updating mutate fields
+        		destination_folder_textfield.setDisable(!mutate_checkbox.isSelected());
+        		app_name_textfield.setDisable(!mutate_checkbox.isSelected());
+                destbrowse.setDisable(!mutate_checkbox.isSelected());
+                updateBorder(destination_folder_textfield, true);
+        		updateBorder(app_name_textfield, true);
+
+                // Updating custom format
+        		custom_data_leak_checkbox.setDisable(!mutate_checkbox.isSelected());
+        		custom_data_leak_checkbox.setSelected(false);
+        		source_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected());
+	            sink_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
+	            vardec_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
+	            updateBorder(source_string_textfield, true);
+	      		updateBorder(sink_string_textfield, true);
+        		updateBorder(vardec_string_textfield, true);
+        		
+        		// Updating log
+        		log_checkbox.setDisable(mutate_checkbox.isSelected());
+        		log_checkbox.setSelected(false);
+        		insertion_log_path_textfield.setDisable(!log_checkbox.isSelected());
+        		execution_log_path_textfield.setDisable(!log_checkbox.isSelected()); 
+        		updateBorder(insertion_log_path_textfield, true);
+        		updateBorder(execution_log_path_textfield, true);  		
+            }
+        });
+        
+        // Every time the data leak checkbox is clicked, disable/enable corresponding text fields and remove their errored border
+  		custom_data_leak_checkbox.setOnAction(new EventHandler<ActionEvent>() {
+        		 
+              @Override
+              public void handle(ActionEvent event) {
+              	source_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected());
+	              sink_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
+	              vardec_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
+	              updateBorder(source_string_textfield, true);
+	      		updateBorder(sink_string_textfield, true);
+          		updateBorder(vardec_string_textfield, true);
+              }
+          });
+        
+  		// Every time the log checkbox is clicked, disable/enable corresponding text fields and remove their errored border
         log_checkbox.setOnAction(new EventHandler<ActionEvent>() {
       		 
             @Override
             public void handle(ActionEvent event) {
+            	// Updating log
         		insertion_log_path_textfield.setDisable(!log_checkbox.isSelected());
         		execution_log_path_textfield.setDisable(!log_checkbox.isSelected()); 
         		updateBorder(insertion_log_path_textfield, true);
         		updateBorder(execution_log_path_textfield, true);
+        		
+        		// Updating mutate fields
+        		mutate_checkbox.setDisable(log_checkbox.isSelected());
+        		mutate_checkbox.setSelected(false);
+        		destination_folder_textfield.setDisable(!mutate_checkbox.isSelected());
+        		app_name_textfield.setDisable(!mutate_checkbox.isSelected());
+                destbrowse.setDisable(!mutate_checkbox.isSelected());
+                updateBorder(destination_folder_textfield, true);
+        		updateBorder(app_name_textfield, true);
+        		
+        		
             }
         });
+        
+     
 
 
         grid.add(new Separator(), 0, 19, 3, 1);
