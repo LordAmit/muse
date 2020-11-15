@@ -221,6 +221,7 @@ public class Gui extends Application {
         
         //libs4ast directory chooser
         TextField lib4ast_path_textfield = new TextField();
+        lib4ast_path_textfield.setEditable(false);
         grid.add(new Label("lib4ast Path:"), 0, 3, 1, 1);
         grid.add(lib4ast_path_textfield, 1, 3, 1, 1);
         Button libs4astbrowse = new Button("Browse...");
@@ -244,6 +245,7 @@ public class Gui extends Application {
         
         //app_source directory chooser
         TextField app_src_textfield = new TextField();
+        app_src_textfield.setEditable(false);
         grid.add(new Label("App src Location:"), 0, 5, 1, 1);
         grid.add(app_src_textfield, 1, 5, 1, 1);
         Button appbrowse = new Button("Browse...");
@@ -252,6 +254,7 @@ public class Gui extends Application {
         
         //destination directory chooser
         TextField destination_folder_textfield = new TextField();
+        destination_folder_textfield.setEditable(false);
         grid.add(new Label("Destination Folder:"), 0, 8, 1, 1);
         grid.add(destination_folder_textfield, 1, 8, 1, 1);
         Button destbrowse = new Button("Browse...");
