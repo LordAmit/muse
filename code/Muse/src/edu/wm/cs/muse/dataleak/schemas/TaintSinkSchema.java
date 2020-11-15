@@ -64,7 +64,7 @@ public class TaintSinkSchema extends ASTVisitor {
 		}
 		for (Object obj : node.statements()) {
 			if (obj.toString().startsWith("super") || obj.toString().startsWith("this(")
-					|| obj.toString().startsWith(vdName)|| obj.toString().startsWith("try")) {
+					|| obj.toString().startsWith(vdName)|| obj.toString().startsWith("try {")) {
 				index++;
 			}
 		}
