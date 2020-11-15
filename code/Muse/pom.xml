@@ -10,7 +10,7 @@
 		<repository>
 			<name>custom</name>
 			<id>some</id>
-			<url>https://mvnrepository.com/repos/central</url>
+			<url>https://repo1.maven.org/maven2/</url>
 		</repository>
 	</repositories>
 	<build>
