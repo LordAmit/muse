@@ -257,7 +257,8 @@ public class Gui extends Application {
         //destination directory chooser
         TextField destination_folder_textfield = new TextField();
         destination_folder_textfield.setEditable(false);
-        grid.add(new Label("\tDestination Path:"), 0, 8, 1, 1);
+        Label destination_path_label = new Label("\tDestination Path:");
+        grid.add(destination_path_label, 0, 8, 1, 1);
         grid.add(destination_folder_textfield, 1, 8, 1, 1);
         Button destbrowse = new Button("Browse...");
         grid.add(destbrowse, 2, 8, 1, 1);
@@ -266,10 +267,12 @@ public class Gui extends Application {
         
         
         TextField app_name_textfield = new TextField();
-        grid.add(new Label("\tApp Name:"), 0, 9, 1, 1);
+        Label app_name_label = new Label("\tApp Name:");
+        grid.add(app_name_label, 0, 9, 1, 1);
         grid.add(app_name_textfield, 1, 9, 1, 1);
 
-        
+        destination_path_label.setDisable(!mutate_checkbox.isSelected());
+        app_name_label.setDisable(!mutate_checkbox.isSelected());
 		destination_folder_textfield.setDisable(!mutate_checkbox.isSelected());
         app_name_textfield.setDisable(!mutate_checkbox.isSelected());
         destbrowse.setDisable(!mutate_checkbox.isSelected());
@@ -286,19 +289,24 @@ public class Gui extends Application {
         grid.add(custom_data_leak_checkbox, 0, 11, 3, 1);
 
         TextField source_string_textfield = new TextField();
-        grid.add(new Label("\tSource String:"), 0, 12, 1, 1);
+        Label source_string_label = new Label("\tSource String:");
+        grid.add(source_string_label, 0, 12, 1, 1);
         grid.add(source_string_textfield, 1, 12, 1, 1);
         
         TextField sink_string_textfield = new TextField();
-        grid.add(new Label("\tSink String:"), 0, 13, 1, 1);
+        Label sink_string_label = new Label("\tSink String:");
+        grid.add(sink_string_label, 0, 13, 1, 1);
         grid.add(sink_string_textfield, 1, 13, 1, 1);
         
         TextField vardec_string_textfield = new TextField();
-        grid.add(new Label("\tVariable Declaration String:"), 0, 14, 1, 1);
+        Label variable_declaration_string = new Label("\tVariable Declaration String:");
+        grid.add(variable_declaration_string, 0, 14, 1, 1);
         grid.add(vardec_string_textfield, 1, 14, 1, 1);
 
         
-        
+        source_string_label.setDisable(!custom_data_leak_checkbox.isSelected());
+        sink_string_label.setDisable(!custom_data_leak_checkbox.isSelected());
+        variable_declaration_string.setDisable(!custom_data_leak_checkbox.isSelected());
         source_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected());
         sink_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
         vardec_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
@@ -311,13 +319,17 @@ public class Gui extends Application {
         grid.add(log_checkbox, 0, 16, 3, 1);
 
         TextField insertion_log_path_textfield = new TextField();
-        grid.add(new Label("\tInsertion Log Path:"), 0, 17, 1, 1);
+        Label insertion_log_label = new Label("\tInsertion Log Path:");
+        grid.add(insertion_log_label, 0, 17, 1, 1);
         grid.add(insertion_log_path_textfield, 1, 17, 1, 1);
         
         TextField execution_log_path_textfield = new TextField();
-        grid.add(new Label("\tExecution Log Path:"), 0, 18, 1, 1);
+        Label execution_log_label =new Label("\tExecution Log Path:");
+        grid.add(execution_log_label, 0, 18, 1, 1);
         grid.add(execution_log_path_textfield, 1, 18, 1, 1);
         
+        insertion_log_label.setDisable(!log_checkbox.isSelected());
+        execution_log_label.setDisable(!log_checkbox.isSelected());
         insertion_log_path_textfield.setDisable(!log_checkbox.isSelected());
 		execution_log_path_textfield.setDisable(!log_checkbox.isSelected()); 
         
@@ -331,12 +343,17 @@ public class Gui extends Application {
         		destination_folder_textfield.setDisable(!mutate_checkbox.isSelected());
         		app_name_textfield.setDisable(!mutate_checkbox.isSelected());
                 destbrowse.setDisable(!mutate_checkbox.isSelected());
+                destination_path_label.setDisable(!mutate_checkbox.isSelected());
+                app_name_label.setDisable(!mutate_checkbox.isSelected());
                 updateBorder(destination_folder_textfield, true);
         		updateBorder(app_name_textfield, true);
 
                 // Updating custom format
         		custom_data_leak_checkbox.setDisable(!mutate_checkbox.isSelected());
         		custom_data_leak_checkbox.setSelected(false);
+        		source_string_label.setDisable(!custom_data_leak_checkbox.isSelected());
+                sink_string_label.setDisable(!custom_data_leak_checkbox.isSelected());
+                variable_declaration_string.setDisable(!custom_data_leak_checkbox.isSelected());
         		source_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected());
 	            sink_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
 	            vardec_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
@@ -359,12 +376,15 @@ public class Gui extends Application {
         		 
               @Override
               public void handle(ActionEvent event) {
-              	source_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected());
+            	  source_string_label.setDisable(!custom_data_leak_checkbox.isSelected());
+                  sink_string_label.setDisable(!custom_data_leak_checkbox.isSelected());
+                  variable_declaration_string.setDisable(!custom_data_leak_checkbox.isSelected());
+              	  source_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected());
 	              sink_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
 	              vardec_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
 	              updateBorder(source_string_textfield, true);
-	      		updateBorder(sink_string_textfield, true);
-          		updateBorder(vardec_string_textfield, true);
+	      		  updateBorder(sink_string_textfield, true);
+          		  updateBorder(vardec_string_textfield, true);
               }
           });
         
@@ -374,6 +394,8 @@ public class Gui extends Application {
             @Override
             public void handle(ActionEvent event) {
             	// Updating log
+            	insertion_log_label.setDisable(!log_checkbox.isSelected());
+                execution_log_label.setDisable(!log_checkbox.isSelected());
         		insertion_log_path_textfield.setDisable(!log_checkbox.isSelected());
         		execution_log_path_textfield.setDisable(!log_checkbox.isSelected()); 
         		updateBorder(insertion_log_path_textfield, true);
