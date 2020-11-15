@@ -257,7 +257,7 @@ public class Gui extends Application {
         //destination directory chooser
         TextField destination_folder_textfield = new TextField();
         destination_folder_textfield.setEditable(false);
-        grid.add(new Label("Destination Path:"), 0, 8, 1, 1);
+        grid.add(new Label("\tDestination Path:"), 0, 8, 1, 1);
         grid.add(destination_folder_textfield, 1, 8, 1, 1);
         Button destbrowse = new Button("Browse...");
         grid.add(destbrowse, 2, 8, 1, 1);
@@ -266,7 +266,7 @@ public class Gui extends Application {
         
         
         TextField app_name_textfield = new TextField();
-        grid.add(new Label("App Name:"), 0, 9, 1, 1);
+        grid.add(new Label("\tApp Name:"), 0, 9, 1, 1);
         grid.add(app_name_textfield, 1, 9, 1, 1);
 
         
