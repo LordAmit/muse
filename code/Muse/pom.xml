@@ -11,7 +11,7 @@
 			<name>
 	custom</name>
 			<id>some</id>
-			<url>https://repo.spring.io/plugins-release/</url>
+			<url>https://repo.spring.io/plugins-release-local/</url>
 		</repository>
 	</repositories>
 	<build>
