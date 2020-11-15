@@ -243,8 +243,7 @@ public class Gui extends Application {
         ComboBox<String> operatorSelections = new ComboBox<>();
         operatorSelections.setPrefWidth(400);
         
-        operatorSelections.getItems().addAll("SCOPESOURCE", "SCOPESINK", "TAINTSOURCE",
-        									 "TAINTSINK", "COMPLEXREACHABILITY", "REACHABILITY");
+        operatorSelections.getItems().addAll("SCOPESINK", "TAINTSINK", "REACHABILITY", "COMPLEXREACHABILITY", "IVH");
         grid.add(operatorSelections, 1, 5, 1, 1);
         
         
@@ -481,7 +480,7 @@ public class Gui extends Application {
 				+ "Configuration File Name: The name of the .properties file\n"
 				+ "lib4ast Path: The path of the lib4ast folder from MDroidPlus\n"
 				+ "App Source: Path of the Android app source code folder, which you want to apply mutation on\n"
-				+ "Mutation Scheme: The type mutation scheme to be used while creating mutants. \nCurrently supported arguments are: TAINTSINK, TAINTSOURCE, REACHABILITY, SCOPESINK, SCOPESOURCE, and COMPLEXREACHABILITY\n";
+				+ "Mutation Scheme: The type mutation scheme to be used while creating mutants. \nCurrently supported arguments are: SCOPESINK, TAINTSINK, REACHABILITY, COMPLEXREACHABILITY, and IVH\n";
 		
 		String helpString3 = "Fields Required For Mutate:\n"
 				+ "\n"
