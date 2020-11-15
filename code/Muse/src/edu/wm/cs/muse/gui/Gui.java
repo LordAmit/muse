@@ -285,51 +285,22 @@ public class Gui extends Application {
         
         grid.add(new Separator(), 0, 10, 3, 1);
 
-        CheckBox log_checkbox = new CheckBox("Log Analyze");
-        grid.add(log_checkbox, 0, 11, 3, 1);
-
-        TextField insertion_log_path_textfield = new TextField();
-        grid.add(new Label("\tInsertion Log Path:"), 0, 12, 1, 1);
-        grid.add(insertion_log_path_textfield, 1, 12, 1, 1);
-        
-        TextField execution_log_path_textfield = new TextField();
-        grid.add(new Label("\tExecution Log Path:"), 0, 13, 1, 1);
-        grid.add(execution_log_path_textfield, 1, 13, 1, 1);
-        
-        insertion_log_path_textfield.setDisable(!log_checkbox.isSelected());
-		execution_log_path_textfield.setDisable(!log_checkbox.isSelected()); 
-        
-		// Every time the log checkbox is clicked, disable/enable corresponding text fields and remove their errored border
-        log_checkbox.setOnAction(new EventHandler<ActionEvent>() {
-      		 
-            @Override
-            public void handle(ActionEvent event) {
-        		insertion_log_path_textfield.setDisable(!log_checkbox.isSelected());
-        		execution_log_path_textfield.setDisable(!log_checkbox.isSelected()); 
-        		updateBorder(insertion_log_path_textfield, true);
-        		updateBorder(execution_log_path_textfield, true);
-            }
-        });
-
-        grid.add(new Separator(), 0, 14, 3, 1);
-
         CheckBox custom_data_leak_checkbox = new CheckBox("Use Custom Format");
-        grid.add(custom_data_leak_checkbox, 0, 15, 3, 1);
+        grid.add(custom_data_leak_checkbox, 0, 11, 3, 1);
 
         TextField source_string_textfield = new TextField();
-        grid.add(new Label("\tSource String:"), 0, 16, 1, 1);
-        grid.add(source_string_textfield, 1, 16, 1, 1);
+        grid.add(new Label("\tSource String:"), 0, 12, 1, 1);
+        grid.add(source_string_textfield, 1, 12, 1, 1);
         
         TextField sink_string_textfield = new TextField();
-        grid.add(new Label("\tSink String:"), 0, 17, 1, 1);
-        grid.add(sink_string_textfield, 1, 17, 1, 1);
+        grid.add(new Label("\tSink String:"), 0, 13, 1, 1);
+        grid.add(sink_string_textfield, 1, 13, 1, 1);
         
         TextField vardec_string_textfield = new TextField();
-        grid.add(new Label("\tVariable Declaration String:"), 0, 18, 1, 1);
-        grid.add(vardec_string_textfield, 1, 18, 1, 1);
+        grid.add(new Label("\tVariable Declaration String:"), 0, 14, 1, 1);
+        grid.add(vardec_string_textfield, 1, 14, 1, 1);
 
-        grid.add(new Label("Once created, configurations can be reused\n"
-           + "(see Help for details)"),1, 19, 1, 1);
+        
         
         source_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected());
         sink_string_textfield.setDisable(!custom_data_leak_checkbox.isSelected()); 
@@ -349,8 +320,39 @@ public class Gui extends Application {
             }
         });
 
+        grid.add(new Separator(), 0, 15, 3, 1);
+        
+        CheckBox log_checkbox = new CheckBox("Log Analyze");
+        grid.add(log_checkbox, 0, 16, 3, 1);
 
-        grid.add(new Separator(), 0, 20, 3, 1);
+        TextField insertion_log_path_textfield = new TextField();
+        grid.add(new Label("\tInsertion Log Path:"), 0, 17, 1, 1);
+        grid.add(insertion_log_path_textfield, 1, 17, 1, 1);
+        
+        TextField execution_log_path_textfield = new TextField();
+        grid.add(new Label("\tExecution Log Path:"), 0, 18, 1, 1);
+        grid.add(execution_log_path_textfield, 1, 18, 1, 1);
+        
+        insertion_log_path_textfield.setDisable(!log_checkbox.isSelected());
+		execution_log_path_textfield.setDisable(!log_checkbox.isSelected()); 
+        
+		// Every time the log checkbox is clicked, disable/enable corresponding text fields and remove their errored border
+        log_checkbox.setOnAction(new EventHandler<ActionEvent>() {
+      		 
+            @Override
+            public void handle(ActionEvent event) {
+        		insertion_log_path_textfield.setDisable(!log_checkbox.isSelected());
+        		execution_log_path_textfield.setDisable(!log_checkbox.isSelected()); 
+        		updateBorder(insertion_log_path_textfield, true);
+        		updateBorder(execution_log_path_textfield, true);
+            }
+        });
+
+
+        grid.add(new Separator(), 0, 19, 3, 1);
+        
+        grid.add(new Label("Once created, configurations can be reused\n"
+                + "(see Help for details)"),1, 20, 1, 1);
         
         // Run Muse button
 		Button runMuseButton = new Button("Run μse");
@@ -484,16 +486,18 @@ public class Gui extends Application {
 				+ "Destination Path: The path of the folder where the mutants will be created\n"
 				+ "App Name: The name of the app being mutated\n";
 		
-		String helpString4 = "Fields Required For Log Analyze:\n"
-				+ "\n"
-				+ "Insertion Log Path: The path to the insertion log used in log analysis\n"
-				+ "Execution Log Path: The path to the execution log used in log analysis\n";
-		
-		String helpString5 = "Fields Required For Custom Format:\n"
+		String helpString4 = "Fields Required For Custom Format:\n"
 				+ "\n"
 				+ "Source String: The custom source string used for data leak\n"
 				+ "Sink String: The custom sink string used for data leak\n"
 				+ "Variable Declaration String: The custom variable declaration string used for data leak";
+		
+		String helpString5 = "Fields Required For Log Analyze:\n"
+				+ "\n"
+				+ "Insertion Log Path: The path to the insertion log used in log analysis\n"
+				+ "Execution Log Path: The path to the execution log used in log analysis\n";
+		
+		
 		
 		Label label1 = new Label();
 		label1.setText(helpString1);
