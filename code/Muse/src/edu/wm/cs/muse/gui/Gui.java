@@ -107,7 +107,7 @@ public class Gui extends Application {
         root = new StackPane();
         root.getChildren().addAll(grid); 
         root.setBackground(background); // solid gray
-        window.setScene(new Scene(root, 600, 600)); // layout, width, height
+        window.setScene(new Scene(root, 560, 400)); // layout, width, height
     }
     
     /**
@@ -143,8 +143,8 @@ public class Gui extends Application {
                 goToConfigCreation(stage);
             }
         });
-    	makeConfigBtn.setLayoutX(600 * .6);
-    	makeConfigBtn.setLayoutY(600 * .8);
+//    	makeConfigBtn.setLayoutX(360);
+//    	makeConfigBtn.setLayoutY(510);
     	
     	// Attach an event handler to the button for creating a new config.properties file
     	oldConfigBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -176,8 +176,8 @@ public class Gui extends Application {
     	//goToErrorScene(oldConfigBtn);
     	
     	
-    	oldConfigBtn.setLayoutX(600 * .1);
-    	oldConfigBtn.setLayoutY(600 * .8);
+//    	oldConfigBtn.setLayoutX(0);
+//    	oldConfigBtn.setLayoutY(480);
     	
     }
     
@@ -198,7 +198,7 @@ public class Gui extends Application {
 	    FlowPane leftbanner = new FlowPane();
 	    configLayout.add(createGridPane(stage), 1, 0, 1, 1);
 	    configLayout.setAlignment(Pos.TOP_CENTER);
-       Scene scene = new Scene(configLayout, 750, 660);
+       Scene scene = new Scene(configLayout, 600, 660);
        window.setScene(scene);
     }
     
@@ -210,7 +210,7 @@ public class Gui extends Application {
     	
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10));
-        grid.setHgap(10);
+        grid.setHgap(0);
         grid.setVgap(10);
         
 
@@ -900,7 +900,7 @@ public class Gui extends Application {
       //!!!!!!!!!end of action handlers for buttons!!!!!!!!!!!
   
         BorderPane root = new BorderPane(loading);
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 550, 400);
   
         stage.setScene(scene);
         stage.show();
@@ -1029,7 +1029,5 @@ public class Gui extends Application {
 		//TODO: Change to activate on detected errors (filepaths etc.)
 		button.setOnAction(errorEvent);
     }
-	 	 
-    
-	 
+
 }
