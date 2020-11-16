@@ -3,7 +3,10 @@ package edu.wm.cs.muse.gui;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -837,7 +840,7 @@ public class Gui extends Application {
             	museProgressBar.setVisible(true);
             	runningText.setText("μSE is running");
             	museRuntimeText.appendText("Starting μse!\n");
-            	
+            	startMuseButton.setDisable(true);
             	//create new thread to run Muse on. This lets progressScene continue.
             	new Thread(new Runnable() {
     			    public void run() {
@@ -958,6 +961,42 @@ public class Gui extends Application {
         goBackToStart.setOnAction(goBackToStartHandler);
         
         
+        //create  button for saving muse output
+        Button saveOutputButton = new Button("Save Output");
+        success.getChildren().add(saveOutputButton);
+        
+        //for our saveOutputButton , save textArea content to a text file
+        EventHandler<ActionEvent> saveOutputHandler = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	goToTitleScene(stage);
+            	String runTimeInfoTextString = runTimeInfoText.getText();
+                
+            	//will open a file chooser, and save text to a specified text file.
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Chose .txt file to save μSE text");
+                String filePath = fileChooser.showOpenDialog(window).getAbsolutePath();
+                System.out.println("Saving output at location: \n"+filePath);
+             
+                OutputStream os = null;
+                try {
+                    os = new FileOutputStream(new File(filePath));
+                    os.write(runTimeInfoTextString.getBytes(), 0, runTimeInfoTextString.length());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }finally{
+                    try {
+                        os.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+               
+                event.consume();
+            } 
+        };
+        saveOutputButton.setOnAction(saveOutputHandler);
+
         stage.setScene(scene);
         stage.show();
     	
