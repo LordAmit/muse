@@ -13,7 +13,6 @@ import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
@@ -102,7 +101,7 @@ public class TaintSinkOperator {
 			TryStatement finalTryStatement = null;
 			//iterate through statements in node
 			for (int i=0; i<statements.size(); i++) {
-				if (statements.get(i).toString().contains("try {")) {
+				if (statements.get(i).toString().startsWith("try {")) {
 					TryStatement statement = (TryStatement) statements.get(i);
 					Block body2 = statement.getBody();
 					//note the related source to the current sink
@@ -126,8 +125,7 @@ public class TaintSinkOperator {
 			}
 			//if there isn't, but there are try statements with other sources, write in the last one encountered's block
 			else if (finalTryStatement != null) {
-				chosenBody = finalTryStatement.getBody();
-				listRewrite = rewriter.getListRewrite(chosenBody, Block.STATEMENTS_PROPERTY);
+				listRewrite = rewriter.getListRewrite(finalTryStatement.getBody(), Block.STATEMENTS_PROPERTY);
 				index=1;
 			}
 
@@ -138,7 +136,7 @@ public class TaintSinkOperator {
 		ASTNode placeHolder;
 		if (handler.stringHasThrows(DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)))) {
 			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
-					DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT));
+					DataLeak.getSink(OperatorType.TAINTSINK, count, repeatCounts.get(count)), ASTNode.EMPTY_STATEMENT), rewriter);
 		}
 		else {
 			 placeHolder = (Statement) rewriter.createStringPlaceholder(
@@ -179,7 +177,7 @@ public class TaintSinkOperator {
 		ASTNode placeHolder;
 		if (handler.stringHasThrows(DataLeak.getTaintSourceFinalDecl(count))) {
 			placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
-					DataLeak.getTaintSourceFinalDecl(count), ASTNode.EMPTY_STATEMENT));
+					DataLeak.getTaintSourceFinalDecl(count), ASTNode.EMPTY_STATEMENT), rewriter);
 		}
 		else {
 			placeHolder = (Statement) rewriter

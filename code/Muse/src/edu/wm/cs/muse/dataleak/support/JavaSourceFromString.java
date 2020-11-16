@@ -3,7 +3,6 @@ package edu.wm.cs.muse.dataleak.support;
 import java.net.URI;
 
 import javax.tools.SimpleJavaFileObject;
-import javax.tools.JavaFileObject.Kind;
 
 public class JavaSourceFromString extends SimpleJavaFileObject {
 	  final String code;

@@ -5,12 +5,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CatchClause;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.TryStatement;
+import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 
 /**
  * Handles the checking of whether an api method call leak throws an exception
@@ -154,7 +155,7 @@ public class TryCatchHandler {
 	 * @author Kevin Cortright
 	 */
 	
-	public TryStatement addTryCatch(Statement statement) {
+	public TryStatement addTryCatch(Statement statement, ASTRewrite rewriter) {
 		//Creates a new tryStatement and body for that statement
 		TryStatement tryStatement = statement.getAST().newTryStatement();
 		Block tryBody = statement.getAST().newBlock();
@@ -171,6 +172,8 @@ public class TryCatchHandler {
 		svd.setType(statement.getAST().newSimpleType(statement.getAST().newName("Exception")));
 		svd.setName(statement.getAST().newSimpleName("e"));
 		Block catchBody = statement.getAST().newBlock();
+		Statement catchStatement = (Statement) rewriter.createStringPlaceholder("e.printStackTrace();", ASTNode.EMPTY_STATEMENT);
+		catchBody.statements().add(catchStatement);
 		catchClause.setBody(catchBody);
 		return tryStatement;
 	}

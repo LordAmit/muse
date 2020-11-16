@@ -50,14 +50,12 @@ public class Arguments {
 
 	}
 
-	public static void extractArguments(String[] args) {
-		binariesFolder = args[0];
-		rootPath = args[1];
-		appName = args[2];
-		mutantsFolder = args[3];
-		operator = args[4];
-	}
-
+	/**
+	 * Takes the source file and splits it based on 
+	 * a space to be used for placing the arguments for the file.
+	 * 
+	 * @param file
+	 */
 	public static void extractArguments(File file) {
 		try {
 			String contentString = FileUtility.readSourceFile(file.getAbsolutePath()).toString();
@@ -69,6 +67,14 @@ public class Arguments {
 		}
 	}
 	
+	/**
+	 * Takes the input from file and creates a Properties object
+	 * to be used by extractProperties and call extractArguments
+	 * (String[] args) to set global values.
+	 * 
+	 * @param path
+	 * @return
+	 */
 	public static int extractArguments(String path) {
 		
 		try (InputStream input = new FileInputStream(path)) {
@@ -89,11 +95,14 @@ public class Arguments {
 		return 0;
 	}
 	
-	/*
+	/**
 	 * This method extracts the 5 args Muse needs to run and
 	 * places them into a string array
 	 * 
 	 * This array will be sent to the Arguments class
+	 * @param properties
+	 * @return String[] of arguments
+	 * @throws Exception
 	 */
 	private static String[] extractProperties(Properties properties) throws Exception {
 
@@ -133,7 +142,30 @@ public class Arguments {
 		
 		return new String[] {binariesFolder, rootPath, appName, mutantsFolder, operator};
 	}
-
+	
+	/**
+	 * Set the global values needed for operation execution 
+	 * for Muse.
+	 * 
+	 * @param args
+	 */
+	public static void extractArguments(String[] args) {
+		binariesFolder = args[0];
+		rootPath = args[1];
+		appName = args[2];
+		mutantsFolder = args[3];
+		operator = args[4];
+	}
+	
+	/**
+	 * Reads lines in from file to determine the source (line 1),
+	 * sink (line 2), and variable declaration (line 3) that
+	 * DataLeak needs to be set to.
+	 * 
+	 * @param op
+	 * @param leakPath
+	 * @return
+	 */
 	public static boolean setLeaks(OperatorType op, String leakPath) {
 		try {
 			String[] leakStrings = FileUtility.readSourceFile(leakPath).toString().split("\\n");
@@ -156,6 +188,14 @@ public class Arguments {
 		return true;
 	}
 	
+	/**
+	 * Updates the source, sink, and/or variable declaration 
+	 * for the current OperatorType in DataLeak.
+	 * 
+	 * @param op
+	 * @param configData
+	 * @return
+	 */
 	public static boolean setLeaks(OperatorType op, HashMap<String, String> configData) {
 		if (configData.get("source") != null) {
 			DataLeak.setSource(op, configData.get("source").toString());
@@ -171,18 +211,37 @@ public class Arguments {
 		return true;
 	}
 	
+	/**
+	 * Sets the rootPath of the file to be mutated.
+	 * 
+	 * @param rootPath
+	 */
 	public static void setRootPath(String rootPath) {
 		Arguments.rootPath = rootPath;
 	}
 	
+	/**
+	 * Sets the fileName of the file to be mutated.
+	 * 
+	 * @param filename
+	 */
 	public static void setFileName(String filename) {
 		Arguments.filename = filename;
 	}
 
+	/**
+	 * Set whether this is being run as a test or as
+	 * normal Muse execution.
+	 * 
+	 * @param mode
+	 */
 	public static void setTestMode(Boolean mode) {
 		testmode = mode;
 	}
 
+	/**
+	 * @return if currently run as test
+	 */
 	public static Boolean getTestMode() {
 		return testmode;
 	}
@@ -230,12 +289,20 @@ public class Arguments {
 	/**
 	 * @return operator specified by the argument
 	 * Acceptable options are: 
-	 * TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY
+	 * TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK, REACHABILITY,
+	 * COMPLEXREACHABILITY, and IVH
 	 */
 	public static String getOperator() {
 		return operator;
 	}
 	
+	/**
+	 * Converts the string representation of an OperatorType
+	 * into an OperatorType.
+	 * 
+	 * @param inputOperator
+	 * @return OperatorType
+	 */
 	public static OperatorType getOperatorEnumType(String inputOperator) {
 		// TAINTSOURCE, TAINTSINK, SCOPESOURCE, SCOPESINK and REACHABILITY
 		switch (inputOperator) {
@@ -251,6 +318,8 @@ public class Arguments {
 			return OperatorType.REACHABILITY;
 		case "COMPLEXREACHABILITY":
 			return OperatorType.COMPLEXREACHABILITY;
+		case "IVH":
+			return OperatorType.IVH;
 		default:
 			return null;
 		}

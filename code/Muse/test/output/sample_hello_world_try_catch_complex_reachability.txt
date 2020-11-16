@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity {
 			String leAkPath0 = dataLeAk0.getAlgorithm();
 			android.util.Log.d("leak-0", leAkPath0);
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return 1;
     }
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 			String leAkPath1 = dataLeAk1.getAlgorithm();
 			android.util.Log.d("leak-1", leAkPath1);
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return 0;
     }
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 			String leAkPath2 = dataLeAk2.getAlgorithm();
 			android.util.Log.d("leak-2", leAkPath2);
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
         this.intA = 1;

@@ -18,6 +18,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
+import org.junit.After;
 import org.junit.Test;
 
 import edu.wm.cs.muse.Muse;
@@ -52,6 +53,17 @@ public class TaintSourceSchemaTest {
 	// Muse output is written to this file in each test, and compared to
 	// the expected output.
 	File output = new File("test/output/source_schema_output.txt");
+	
+	/**
+	 * Deletes temp files that were created
+	 */
+	@After
+	public void cleanup () {
+		File file = new File("temp_file.java");
+		if (!(file == null)) {
+			file.delete();
+		}
+	}
 
 	@Test
 	public void taint_source_operation_on_hello_world_static() {

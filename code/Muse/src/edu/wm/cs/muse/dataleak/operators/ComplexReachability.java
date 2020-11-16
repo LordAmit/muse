@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.TryStatement;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
@@ -43,7 +42,7 @@ public class ComplexReachability extends ReachabilityOperator {
 				if (handler.stringHasThrows(DataLeak.getLeak(OperatorType.COMPLEXREACHABILITY, Utility.COUNTER_GLOBAL))) {
 					placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
 						DataLeak.getLeak(OperatorType.COMPLEXREACHABILITY, Utility.COUNTER_GLOBAL),
-						ASTNode.EMPTY_STATEMENT));
+						ASTNode.EMPTY_STATEMENT), rewriter);
 				}
 				else{
 					placeHolder = (Statement) rewriter.createStringPlaceholder(

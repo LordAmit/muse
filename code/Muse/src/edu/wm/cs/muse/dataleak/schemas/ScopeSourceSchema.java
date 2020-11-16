@@ -1,6 +1,5 @@
 package edu.wm.cs.muse.dataleak.schemas;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 

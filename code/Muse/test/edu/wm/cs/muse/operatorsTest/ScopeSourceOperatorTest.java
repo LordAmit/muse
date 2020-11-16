@@ -2,10 +2,12 @@ package edu.wm.cs.muse.operatorsTest;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -48,6 +50,17 @@ public class ScopeSourceOperatorTest {
 		rewriter = ASTRewrite.create(root.getAST());
 		scopeSourceSchema = new ScopeSourceSchema();
 		root.accept(scopeSourceSchema);
+	}
+	
+	/**
+	 * Deletes temp files that were created
+	 */
+	@After
+	public void cleanup () {
+		File file = new File("temp_file.java");
+		if (!(file == null)) {
+			file.delete();
+		}
 	}
 
 	/**

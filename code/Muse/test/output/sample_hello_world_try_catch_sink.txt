@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
 			android.util.Log.d("leak-1-0", cipher_leak1.getAlgorithm())
 			android.util.Log.d("leak-2-0", cipher_leak2.getAlgorithm())
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return 1;
     }
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 			android.util.Log.d("leak-1-1", cipher_leak1.getAlgorithm())
 			android.util.Log.d("leak-2-1", cipher_leak2.getAlgorithm())
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return 0;
     }
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 			android.util.Log.d("leak-1-2", cipher_leak1.getAlgorithm())
 			android.util.Log.d("leak-2-2", cipher_leak2.getAlgorithm())
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
         this.intA = 1;

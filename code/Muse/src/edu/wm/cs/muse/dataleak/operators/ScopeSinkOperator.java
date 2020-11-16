@@ -107,7 +107,7 @@ public class ScopeSinkOperator {
 			TryStatement finalTryStatement = null;
 			//iterate through statements in body node
 			for (int j=0; j<statements.size(); j++) {
-				if (statements.get(j).toString().contains("try {")) {
+				if (statements.get(j).toString().startsWith("try {")) {
 					TryStatement statement = (TryStatement) statements.get(j);
 					Block body2 = statement.getBody();
 					//note the related source to the current sink
@@ -130,14 +130,13 @@ public class ScopeSinkOperator {
 			}
 			//if there isn't, but there are try statements with other sources, write in the last one encountered's block
 			else if (finalTryStatement != null) {
-				chosenBody = finalTryStatement.getBody();
-				listRewrite = rewriter.getListRewrite(chosenBody, Block.STATEMENTS_PROPERTY);
+				listRewrite = rewriter.getListRewrite(finalTryStatement.getBody(), Block.STATEMENTS_PROPERTY);
 				isInTry = true;
 			}
 			String sink = String.format(DataLeak.getSink(OperatorType.SCOPESINK, Integer.parseInt(placeholderValue), index));
 			ASTNode placeHolder;
 			if (handler.stringHasThrows(sink)) {
-				placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT));
+				placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT), rewriter);
 			}
 			else {
 				placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
@@ -153,7 +152,7 @@ public class ScopeSinkOperator {
 			
 			for (Object obj : node.statements()) {
 				 
-				if (obj.toString().startsWith("super") || obj.toString().startsWith("this(") || obj.toString().startsWith(vdName) || obj.toString().startsWith("try")) {
+				if (obj.toString().startsWith("super") || obj.toString().startsWith("this(") || obj.toString().startsWith(vdName) || obj.toString().startsWith("try {")) {
 					//will only change placement if the super is at top or there is a dataleak
 					//source present in that line
 					//System.out.println("SUper found");
