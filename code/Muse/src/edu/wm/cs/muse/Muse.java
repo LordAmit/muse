@@ -35,6 +35,9 @@ import edu.wm.cs.muse.dataleak.schemas.ScopeSinkSchema;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import edu.wm.cs.muse.dataleak.support.FileUtility;
 import edu.wm.cs.muse.dataleak.support.OperatorType;
+import javafx.application.Application;
+import edu.wm.cs.muse.gui.Gui;
+
 import edu.wm.cs.muse.mdroid.ASTHelper;
 import log.LeakRemover;
 import log.LogDiff;
@@ -106,8 +109,6 @@ public class Muse {
 			return OperatorType.REACHABILITY;
 		case "COMPLEXREACHABILITY":
 			return OperatorType.COMPLEXREACHABILITY;
-		case "IVH":
-			return OperatorType.IVH;
 		default:
 			printArgumentError();
 			System.exit(-1);
@@ -249,6 +250,7 @@ public class Muse {
 			applyChangesToFile(file, source, rewriter);
 			DataLeak.reset(operatorType);
 			break;
+
 		case IVH:
 			IVHSchema ivhSchema = new IVHSchema();
 			root.accept(ivhSchema);
@@ -304,9 +306,20 @@ public class Muse {
 	}
 
 	public static void main(String[] args) throws Exception {
+		// For running muse with the GUI
+		//Application.launch(Gui.class, args);
+
         // defaults scenario, if the user does not give a keyword and only gives config file, run Muse normally
 		if (args.length == 1) {
 			if (!args[0].endsWith(".properties")) {
+				//the user can run the gui as a standalone program. Muse will run from the gui.
+				if(args[0].equals("gui")|| args[0].equals("GUI")) {
+					System.out.println("Muse is running in GUI standalone-mode."
+							+ " Param: '" + args[0] + "' detected."); 
+					Application.launch(Gui.class, args);
+					return;
+			    }
+				
 				printArgumentError();
 				// if no config file given, generate one
 				System.out.println("\nNo properties file specified. Generate new file? (y/n)");
@@ -344,6 +357,10 @@ public class Muse {
                 	String[] removerArgs = {args[1], comparisonPath};
                 	new LeakRemover().main(removerArgs);
                 	break;
+
+				case "gui":
+					Application.launch(Gui.class, args);
+					break;
 										
 				default:
 					new Muse().runMuse(args);
