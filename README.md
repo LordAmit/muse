@@ -59,6 +59,12 @@ This will create a folder called `AppFoo` under `/tmp/mutants/` where the mutate
 To run in eclipse click Run Test (dropdown) > Run Configuration > (right click) Java Application > New Configuration. Left click arguments tab, and in Program Arguments give the path to the config.properties file you want to use. A new Run Configuration can be created for each, so you can have multiple config.properties files with different names and parameters. The sample_config.properties file is merely a template for the arguments. It is best to create a new, separate config.properties file in a convenient location. The path must be to the config file itself, not the directory containing it. To run the code, simply run the configuration that was just created. To confirm that the code ran correctly, check the mutated source code (located in the output directory specified in the config file). There should be code injected into the files as expected. Be aware of the additional required parameters for loganalyze and custom leaks.
 
 
+## How to run in Eclipse as GUI
+To run in eclipse as a standalone GUI program: click Run Test (dropdown) > Run Configuration > (right click) Java Application > New Configuration. Left click arguments tab, and in Program Arguments give sole argument: `gui` 
+
+The GUI itself will then provide steps to run µSE itself with an easy file-selection process.
+
+
 ## Additional Features
 To access documentation about the additional features that Muse offers please access the Muse wiki to learn more about how to utilize these features.
 
