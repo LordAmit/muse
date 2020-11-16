@@ -6,13 +6,6 @@
 	<artifactId>Muse</artifactId>
 	<version>1.0.0</version>
 	<name>Muse</name>
-	<repositories>
-		<repository>
-			<name>custom</name>
-			<id>some</id>
-			<url>https://repo1.maven.org/maven2/</url>
-		</repository>
-	</repositories>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test/edu/wm/cs/muse</testSourceDirectory>
