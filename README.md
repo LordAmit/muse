@@ -60,9 +60,25 @@ To run in eclipse click Run Test (dropdown) > Run Configuration > (right click) 
 
 
 ## How to run in Eclipse as GUI
-To run in eclipse as a standalone GUI program: click Run Test (dropdown) > Run Configuration > (right click) Java Application > New Configuration. Left click arguments tab, and in Program Arguments give sole argument: `gui` 
+To run in eclipse as a standalone GUI program: click Run Test (dropdown) > Run Configuration > (right click) Java Application > New Configuration. Let us name this configuration "Muse GUI Example" (we will add to this in the below section for JavaFX set-up) Left click arguments tab, and in Program Arguments give sole argument: `gui` 
 
 The GUI itself will then provide steps to run µSE itself with an easy file-selection process.
+
+
+## How to use JavaFX 11 in Eclipse IDE
+JavaFX requires the user to add the module path to VM arguments, as well as add the relevant JavaFX libraries to Eclipse IDE. 
+
+Download JavaFX 11 (LTS) from the [JavaFX downloads page](https://gluonhq.com/products/javafx/). Save the sdk folder to an area that you remember and note down its path.
+
+To add the libraries, right-click on the project in Eclipse, and open up project properties. Navigate to Java Build Bath, and then to Libraries. Under Modulepath, we want to click on the `Add External JARS button` button. Navigate to the installed javafx sdk that we installed. Open the `lib` folder, and add all of the Executable Jar files to the Modulepath. After completing this step, the project can now import JavaFX.
+
+[Example Build Path](https://i.gyazo.com/ebaf1aa528c93f9e85c89945eba33420.png)
+
+Now let us change the VM arguments on our run configuration for Muse. Click on our "Muse GUI" configuration we created earlier. (Or create a new config with Program arguments: `gui`) and add the VM arguments (replace example path with your JavaFX sdk lib path):
+
+`--module-path "C:\Users\museTestUser\museDocuments\javafx-sdk-11.0.2\lib" --add-modules javafx.controls,javafx.fxml`
+
+[Example Run Configuration](https://i.gyazo.com/ec1f39d5d988be378c3d4d9dd8ce1c84.png)
 
 
 ## Additional Features
