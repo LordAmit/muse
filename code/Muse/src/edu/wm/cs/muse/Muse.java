@@ -53,6 +53,7 @@ public class Muse {
 
 	ASTRewrite rewriter;
 	CommandLine cmd = null;
+	private boolean checkCompilability = true;
 	// TODO: Does not handle anonymous declarations and try_catch clauses well.
 	// currently just ignores such methods.
 	// TODO: Make schema for inserting leaks in static methods, since regular
@@ -139,6 +140,15 @@ public class Muse {
 		FileUtils.writeStringToFile(file, sourceDoc.get(), false);
 		rewriter = null;
 	}
+	
+	/**
+	 * Set whether the operator is supposed to run the compilability
+	 * checker in between each insertion.
+	 * @param check
+	 */
+	public void setCheckCompilability(boolean check) {
+		checkCompilability = check;
+	}
 
 	/**
 	 * Uses the rewriter to create an AST for the schema to utilize then creates a
@@ -166,7 +176,8 @@ public class Muse {
 		case TAINTSINK:
 			TaintSourceSchema sourceSchema_s = new TaintSourceSchema();
 			root.accept(sourceSchema_s);
-			TaintSourceOperator sourceOperator_s = new TaintSourceOperator(rewriter, sourceSchema_s.getNodeChanges(),file.getAbsolutePath());
+			TaintSourceOperator sourceOperator_s = new TaintSourceOperator(rewriter, sourceSchema_s.getNodeChanges(),
+					file.getAbsolutePath(), checkCompilability);
 			rewriter = sourceOperator_s.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			String sink_temp_file_path = "test/temp/temp_file.java";
@@ -192,7 +203,8 @@ public class Muse {
 		case TAINTSOURCE:
 			TaintSourceSchema taintSourceSchema = new TaintSourceSchema();
 			root.accept(taintSourceSchema);
-			TaintSourceOperator taintSourceOperator = new TaintSourceOperator(rewriter, taintSourceSchema.getNodeChanges(),file.getAbsolutePath());
+			TaintSourceOperator taintSourceOperator = new TaintSourceOperator(rewriter, taintSourceSchema.getNodeChanges(),
+					file.getAbsolutePath(), checkCompilability);
 			rewriter = taintSourceOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			DataLeak.reset(operatorType);
@@ -211,7 +223,8 @@ public class Muse {
 		case SCOPESOURCE:
 			ScopeSourceSchema scopeSourceSchema = new ScopeSourceSchema();
 			root.accept(scopeSourceSchema);
-			ScopeSourceOperator scopeSourceOperator = new ScopeSourceOperator(rewriter, scopeSourceSchema.getNodeChanges(),file.getAbsolutePath());
+			ScopeSourceOperator scopeSourceOperator = new ScopeSourceOperator(rewriter, scopeSourceSchema.getNodeChanges(),
+					file.getAbsolutePath(), checkCompilability);
 			rewriter = scopeSourceOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			break;
@@ -219,7 +232,8 @@ public class Muse {
 		case SCOPESINK:
 			ScopeSourceSchema taintSchema_ts = new ScopeSourceSchema();
 			root.accept(taintSchema_ts);
-			ScopeSourceOperator taintOperator_ts = new ScopeSourceOperator(rewriter, taintSchema_ts.getNodeChanges(),file.getAbsolutePath());
+			ScopeSourceOperator taintOperator_ts = new ScopeSourceOperator(rewriter, taintSchema_ts.getNodeChanges(),
+					file.getAbsolutePath(), checkCompilability);
 			rewriter = taintOperator_ts.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			String taintsink_temp_file_path = "test/temp/temp_file_taintsink.java";
@@ -236,7 +250,7 @@ public class Muse {
 			ScopeSinkSchema scopeSinkSchema = new ScopeSinkSchema();
 			root.accept(scopeSinkSchema);
 			ScopeSinkOperator operator = new ScopeSinkOperator(rewriter, scopeSinkSchema.getFieldNodeChanges(),
-					scopeSinkSchema.getMethodNodeChanges(), file.getAbsolutePath());
+					scopeSinkSchema.getMethodNodeChanges(), file.getAbsolutePath(), checkCompilability);
 			rewriter = operator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			Files.delete(temp_file.toPath());
@@ -254,7 +268,7 @@ public class Muse {
 		case IVH:
 			IVHSchema ivhSchema = new IVHSchema();
 			root.accept(ivhSchema);
-			IVHOperator ivhOperator = new IVHOperator(rewriter, ivhSchema.getNodeChanges(), file.getAbsolutePath());
+			IVHOperator ivhOperator = new IVHOperator(rewriter, ivhSchema.getNodeChanges(), file.getAbsolutePath(), checkCompilability);
 			rewriter = ivhOperator.InsertChanges();
 			applyChangesToFile(file,source,rewriter);
 			DataLeak.reset(operatorType);

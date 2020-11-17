@@ -41,13 +41,15 @@ public class ScopeSinkOperator {
 	File temp_file;
 	String source_file;
 	private TryCatchHandler handler = new TryCatchHandler();
+	private boolean checkCompilability;
 
 	public ScopeSinkOperator(ASTRewrite rewriter, ArrayList<TaintNodeChangeContainers> fieldChanges,
-			ArrayList<SinkNodeChangeContainers> methodChanges, String source_file) {
+			ArrayList<SinkNodeChangeContainers> methodChanges, String source_file, boolean checkCompilability) {
 		this.rewriter = rewriter;
 		this.fieldChanges = fieldChanges;
 		this.methodChanges = methodChanges;
 		this.source_file = source_file;
+		this.checkCompilability = checkCompilability;
 
 	}
 
@@ -172,7 +174,7 @@ public class ScopeSinkOperator {
 				placement = 1;
 			}
 			listRewrite.insertAt(placeHolder, placement, null);
-			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+			if (!(listRewrite.getParent().getRoot() instanceof Block) && checkCompilability) {
 				temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
 				try {
 					if (!checker.check(temp_file))
