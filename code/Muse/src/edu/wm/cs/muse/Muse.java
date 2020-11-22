@@ -54,7 +54,6 @@ public class Muse {
 	ASTRewrite rewriter;
 	CommandLine cmd = null;
 	private boolean checkCompilability = true;
-	private boolean isTest = true;
 	// TODO: Does not handle anonymous declarations and try_catch clauses well.
 	// currently just ignores such methods.
 	// TODO: Make schema for inserting leaks in static methods, since regular
@@ -66,7 +65,6 @@ public class Muse {
 		FileUtility.setupMutantsDirectory();
 		Collection<File> files = FileUtils.listFiles(new File(Arguments.getRootPath()), TrueFileFilter.INSTANCE,
 				TrueFileFilter.INSTANCE);
-		isTest = false;
 		for (File file : files) {
 			try {
 				if (file.getName().endsWith(".java")
@@ -199,9 +197,6 @@ public class Muse {
 			rewriter = taintSinkOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			Files.delete(temp_file.toPath());
-			if (isTest) {
-				DataLeak.reset(operatorType);
-			}
 			break;
 
 		case TAINTSOURCE:
@@ -211,9 +206,6 @@ public class Muse {
 					file.getAbsolutePath(), checkCompilability);
 			rewriter = taintSourceOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
-			if (isTest) {
-				DataLeak.reset(operatorType);
-			}
 			break;
 
 		case REACHABILITY:
@@ -223,9 +215,6 @@ public class Muse {
 					reachabilitySchema.getNodeChanges());
 			rewriter = reachabilityOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
-			if (isTest) {
-				DataLeak.reset(operatorType);
-			}
 			break;
 
 		case SCOPESOURCE:
@@ -235,9 +224,6 @@ public class Muse {
 					file.getAbsolutePath(), checkCompilability);
 			rewriter = scopeSourceOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
-			if (isTest) {
-				DataLeak.reset(operatorType);
-			}
 			break;
 
 		case SCOPESINK:
@@ -265,9 +251,6 @@ public class Muse {
 			rewriter = operator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
 			Files.delete(temp_file.toPath());
-			if (isTest) {
-				DataLeak.reset(operatorType);
-			}
 			break;
 		case COMPLEXREACHABILITY:
 			ComplexReachabilitySchema complexSchema = new ComplexReachabilitySchema();
@@ -275,9 +258,6 @@ public class Muse {
 			ComplexReachability complexOperator = new ComplexReachability(rewriter, complexSchema.getNodeChanges());
 			rewriter = complexOperator.InsertChanges();
 			applyChangesToFile(file, source, rewriter);
-			if (isTest) {
-				DataLeak.reset(operatorType);
-			}
 			break;
 
 		case IVH:
@@ -286,9 +266,6 @@ public class Muse {
 			IVHOperator ivhOperator = new IVHOperator(rewriter, ivhSchema.getNodeChanges(), file.getAbsolutePath(), checkCompilability);
 			rewriter = ivhOperator.InsertChanges();
 			applyChangesToFile(file,source,rewriter);
-			if (isTest) {
-				DataLeak.reset(operatorType);
-			}
 			break;
 		}
 	}
