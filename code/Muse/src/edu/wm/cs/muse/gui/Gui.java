@@ -155,19 +155,17 @@ public class Gui extends Application {
                 		+ " you want to run μse with.");
                 
                 FileChooser fileChooser = new FileChooser();
-                String filePath = fileChooser.showOpenDialog(window).getAbsolutePath();
-                String[] run = {filePath};
-                goToProgressScene(stage,run);
+                File selection = fileChooser.showOpenDialog(window);
                 
-                //code commented out-- moved into goToProgressScene
-//                try {
-//                	//goToProgressScene(stage);
-//                	Arguments.extractArguments(run[0]);
-//					new Muse().runMuse(run);
-//				} catch (MalformedTreeException | org.eclipse.jface.text.BadLocationException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+                if(selection != null) { //ensures selection is not null to avoid NullPointerException
+                	String filePath = selection.getAbsolutePath();
+                	String[] run = {filePath};
+                	goToProgressScene(stage,run);
+                } else {
+                	System.out.println("Selection window has closed.");
+                }
+               
+               
             }
         });
     	
