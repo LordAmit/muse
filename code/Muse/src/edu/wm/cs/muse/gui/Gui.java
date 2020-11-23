@@ -107,7 +107,7 @@ public class Gui extends Application {
         root = new StackPane();
         root.getChildren().addAll(grid); 
         root.setBackground(background); // solid gray
-        window.setScene(new Scene(root, 560, 400)); // layout, width, height
+        window.setScene(new Scene(root, 560, 500)); // layout, width, height
     }
     
     /**
@@ -781,7 +781,7 @@ public class Gui extends Application {
     	VBox loading = new VBox(20);
     	//standard dimensions we have been using
         loading.setMaxWidth(600); 
-        loading.setMaxHeight(600);
+        loading.setMaxHeight(700);
         loading.setPadding(new Insets(10, 50, 50, 50));
         
         
@@ -898,8 +898,9 @@ public class Gui extends Application {
       //!!!!!!!!!end of action handlers for buttons!!!!!!!!!!!
   
         BorderPane root = new BorderPane(loading);
-        Scene scene = new Scene(root, 550, 400);
-  
+        //Scene scene = new Scene(root, 550, 400);
+        Scene scene = new Scene(root, 550, 500);
+        
         stage.setScene(scene);
         stage.show();
         
@@ -919,7 +920,7 @@ public class Gui extends Application {
     	VBox success = new VBox(20);
     	//standard dimensions we have been using
     	success.setMaxWidth(600); 
-    	success.setMaxHeight(600);
+    	success.setMaxHeight(700);
     	success.setPadding(new Insets(10, 50, 50, 50));
         
         //Creating a Text object 
