@@ -107,7 +107,7 @@ public class Gui extends Application {
         root = new StackPane();
         root.getChildren().addAll(grid); 
         root.setBackground(background); // solid gray
-        window.setScene(new Scene(root, 600, 600)); // layout, width, height
+        window.setScene(new Scene(root, 560, 500)); // layout, width, height
     }
     
     /**
@@ -143,8 +143,8 @@ public class Gui extends Application {
                 goToConfigCreation(stage);
             }
         });
-    	makeConfigBtn.setLayoutX(600 * .6);
-    	makeConfigBtn.setLayoutY(600 * .8);
+//    	makeConfigBtn.setLayoutX(360);
+//    	makeConfigBtn.setLayoutY(510);
     	
     	// Attach an event handler to the button for creating a new config.properties file
     	oldConfigBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -155,19 +155,17 @@ public class Gui extends Application {
                 		+ " you want to run μse with.");
                 
                 FileChooser fileChooser = new FileChooser();
-                String filePath = fileChooser.showOpenDialog(window).getAbsolutePath();
-                String[] run = {filePath};
-                goToProgressScene(stage,run);
+                File selection = fileChooser.showOpenDialog(window);
                 
-                //code commented out-- moved into goToProgressScene
-//                try {
-//                	//goToProgressScene(stage);
-//                	Arguments.extractArguments(run[0]);
-//					new Muse().runMuse(run);
-//				} catch (MalformedTreeException | org.eclipse.jface.text.BadLocationException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+                if(selection != null) { //ensures selection is not null to avoid NullPointerException
+                	String filePath = selection.getAbsolutePath();
+                	String[] run = {filePath};
+                	goToProgressScene(stage,run);
+                } else {
+                	System.out.println("Selection window has closed.");
+                }
+               
+               
             }
         });
     	
@@ -176,8 +174,8 @@ public class Gui extends Application {
     	//goToErrorScene(oldConfigBtn);
     	
     	
-    	oldConfigBtn.setLayoutX(600 * .1);
-    	oldConfigBtn.setLayoutY(600 * .8);
+//    	oldConfigBtn.setLayoutX(0);
+//    	oldConfigBtn.setLayoutY(480);
     	
     }
     
@@ -198,7 +196,7 @@ public class Gui extends Application {
 	    FlowPane leftbanner = new FlowPane();
 	    configLayout.add(createGridPane(stage), 1, 0, 1, 1);
 	    configLayout.setAlignment(Pos.TOP_CENTER);
-       Scene scene = new Scene(configLayout, 750, 660);
+       Scene scene = new Scene(configLayout, 600, 660);
        window.setScene(scene);
     }
     
@@ -210,7 +208,7 @@ public class Gui extends Application {
     	
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10));
-        grid.setHgap(10);
+        grid.setHgap(0);
         grid.setVgap(10);
         
 
@@ -783,7 +781,7 @@ public class Gui extends Application {
     	VBox loading = new VBox(20);
     	//standard dimensions we have been using
         loading.setMaxWidth(600); 
-        loading.setMaxHeight(600);
+        loading.setMaxHeight(700);
         loading.setPadding(new Insets(10, 50, 50, 50));
         
         
@@ -900,8 +898,9 @@ public class Gui extends Application {
       //!!!!!!!!!end of action handlers for buttons!!!!!!!!!!!
   
         BorderPane root = new BorderPane(loading);
-        Scene scene = new Scene(root, 800, 600);
-  
+        //Scene scene = new Scene(root, 550, 400);
+        Scene scene = new Scene(root, 550, 500);
+        
         stage.setScene(scene);
         stage.show();
         
@@ -921,7 +920,7 @@ public class Gui extends Application {
     	VBox success = new VBox(20);
     	//standard dimensions we have been using
     	success.setMaxWidth(600); 
-    	success.setMaxHeight(600);
+    	success.setMaxHeight(700);
     	success.setPadding(new Insets(10, 50, 50, 50));
         
         //Creating a Text object 
@@ -1029,7 +1028,5 @@ public class Gui extends Application {
 		//TODO: Change to activate on detected errors (filepaths etc.)
 		button.setOnAction(errorEvent);
     }
-	 	 
-    
-	 
+
 }
