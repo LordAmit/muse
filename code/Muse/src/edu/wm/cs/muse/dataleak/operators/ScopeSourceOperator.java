@@ -38,11 +38,15 @@ public class ScopeSourceOperator {
 	private TryCatchHandler handler = new TryCatchHandler();
 	ArrayList<SourceNodeChangeContainers> nodeChanges;
 	ASTRewrite rewriter;
+	private boolean checkCompilability;
 
-	public ScopeSourceOperator(ASTRewrite rewriter, ArrayList<SourceNodeChangeContainers> nodeChanges, String source_file) {
+	public ScopeSourceOperator(ASTRewrite rewriter, ArrayList<SourceNodeChangeContainers> nodeChanges,
+			String source_file, boolean checkCompilability) {
 		this.rewriter = rewriter;
 		this.nodeChanges = nodeChanges;
 		this.source_file = source_file;
+		this.checkCompilability = checkCompilability;
+		
 	}
 
 	/**
@@ -106,7 +110,7 @@ public class ScopeSourceOperator {
 		}
 		
 		listRewrite.insertAt(placeHolder, placement, null);
-		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+		if (!(listRewrite.getParent().getRoot() instanceof Block) && checkCompilability) {
 			temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
 			try {
 				if (!checker.check(temp_file))
@@ -134,7 +138,7 @@ public class ScopeSourceOperator {
 		
 		listRewrite.insertAt(placeHolder, index, null);
 		ASTNode aRoot = listRewrite.getParent().getRoot();
-		if (!(aRoot instanceof Block)) {
+		if (!(aRoot instanceof Block) && checkCompilability) {
 			CompilationUnit astRoot = (CompilationUnit)aRoot;
 		
 			try {

@@ -39,9 +39,11 @@ public class TaintSinkOperator {
 	File temp_file;
 	String source_file;
 	private TryCatchHandler handler = new TryCatchHandler();
+	private boolean checkCompilability;
 
-	public TaintSinkOperator(ASTRewrite rewriter) {
+	public TaintSinkOperator(ASTRewrite rewriter, boolean checkCompilability) {
 		this.rewriter = rewriter;
+		this.checkCompilability = checkCompilability;
 	}
 
 	public TaintSinkOperator(ASTRewrite rewriter, ArrayList<SinkNodeChangeContainers> nodeChanges, String source_file) {
@@ -144,7 +146,7 @@ public class TaintSinkOperator {
 		}
 
 		listRewrite.insertAt(placeHolder, index, null);
-		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+		if (!(listRewrite.getParent().getRoot() instanceof Block) && checkCompilability) {
 			temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
 			try {
 				if (!checker.check(temp_file)) {
@@ -184,7 +186,7 @@ public class TaintSinkOperator {
 					.createStringPlaceholder(DataLeak.getTaintSourceFinalDecl(count), ASTNode.EMPTY_STATEMENT);
 		}
 		listRewrite.insertAt(placeHolder, index, null);
-		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+		if (!(listRewrite.getParent().getRoot() instanceof Block) && checkCompilability) {
 			temp_file = checker.getTempFile((CompilationUnit) listRewrite.getParent().getRoot(), rewriter, source_file);
 			try {
 				if (!checker.check(temp_file)) {

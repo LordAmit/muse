@@ -36,11 +36,14 @@ public class TaintSourceOperator {
 	File temp_file;
 	String source_file;
 	private TryCatchHandler handler = new TryCatchHandler();
+	private boolean checkCompilability;
 
-	public TaintSourceOperator(ASTRewrite rewriter, ArrayList<SourceNodeChangeContainers> nodeChanges, String source_file) {
+	public TaintSourceOperator(ASTRewrite rewriter, ArrayList<SourceNodeChangeContainers> nodeChanges,
+			String source_file, boolean checkCompilability) {
 		this.rewriter = rewriter;
 		this.nodeChanges = nodeChanges;
 		this.source_file = source_file;
+		this.checkCompilability = checkCompilability;
 	}
 
 	/**
@@ -92,7 +95,7 @@ public class TaintSourceOperator {
 		}
 		Utility.COUNTER_GLOBAL++;
 		listRewrite.insertAt(placeHolder, index, null);
-		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+		if (!(listRewrite.getParent().getRoot() instanceof Block) && checkCompilability) {
 			temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
 			try {
 				if (!checker.check(temp_file))
@@ -116,7 +119,7 @@ public class TaintSourceOperator {
 			placeHolder = (Statement) rewriter.createStringPlaceholder(variable, ASTNode.EMPTY_STATEMENT);
 		}
 		listRewrite.insertAt(placeHolder, index, null);
-		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+		if (!(listRewrite.getParent().getRoot() instanceof Block) && checkCompilability) {
 			temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
 			try {
 				if (!checker.check(temp_file))

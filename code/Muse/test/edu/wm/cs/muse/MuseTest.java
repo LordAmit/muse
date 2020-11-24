@@ -427,6 +427,7 @@ public class MuseTest {
 		if (!(file == null)) {
 			folder.delete();
 		}
+		DataLeak.reset(operator);
 	}
 	
 	private void prepare_try_test_files() throws FileNotFoundException, IOException {

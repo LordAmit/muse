@@ -41,11 +41,13 @@ public class IVHOperator {
 	File temp_file;
 	Placementchecker checker = new Placementchecker();
 	String source_file;
+	private boolean checkCompilability;
 	
-	public IVHOperator (ASTRewrite rewriter, ArrayList<IVHNodeChangeContainers> nodeChanges, String source_file) {
+	public IVHOperator (ASTRewrite rewriter, ArrayList<IVHNodeChangeContainers> nodeChanges, String source_file, boolean checkCompilability) {
 		this.rewriter = rewriter;
 		this.nodeChanges = nodeChanges;
 		this.source_file = source_file;
+		this.checkCompilability = checkCompilability;
 	}
 	
 	/**
@@ -138,7 +140,7 @@ public class IVHOperator {
 			placeHolder = (Statement) rewriter.createStringPlaceholder(source, ASTNode.EMPTY_STATEMENT);
 		}
 		listRewrite.insertAt(placeHolder, 0, null);
-		if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+		if (!(listRewrite.getParent().getRoot() instanceof Block) && checkCompilability) {
 			temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
 			try {
 				if (!checker.check(temp_file))
@@ -176,7 +178,7 @@ public class IVHOperator {
 				placeHolder = (Statement) rewriter.createStringPlaceholder(sink, ASTNode.EMPTY_STATEMENT);
 			}
 			listRewrite.insertAt(placeHolder, 0, null);
-			if (!(listRewrite.getParent().getRoot() instanceof Block)) {
+			if (!(listRewrite.getParent().getRoot() instanceof Block) && checkCompilability) {
 				temp_file = checker.getTempFile((CompilationUnit)listRewrite.getParent().getRoot(), rewriter, source_file);
 				try {
 					if (!checker.check(temp_file))
