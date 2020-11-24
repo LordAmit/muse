@@ -15,6 +15,7 @@ import org.eclipse.text.edits.MalformedTreeException;
 import edu.wm.cs.muse.Muse;
 import edu.wm.cs.muse.dataleak.support.Arguments;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -842,11 +843,12 @@ public class Gui extends Application {
             	//create new thread to run Muse on. This lets progressScene continue.
             	new Thread(new Runnable() {
     			    public void run() {
-    			    	Arguments.extractArguments(run[0]);
+    			    	
  						try {
+ 							Arguments.extractArguments(run[0]);
  							//for now, create a string to store the entire intercepted console output
  							// uses the Interceptor helper class
-							String museConsoleOutput = Interceptor.copyOut(() ->{
+ 							String museConsoleOutput = Interceptor.copyOut(() ->{
 								new Muse().runMuse(run);
 							});
 							//add the intercepted console output to the text area
@@ -855,9 +857,10 @@ public class Gui extends Application {
 							proceedFinishButton.setDisable(false);
 							
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
+							// prints stack trace and shows an error dialogue
 							e.printStackTrace();
-						}
+							goToErrorScene(e);
+							}
     			    }
     			}).start();
  
@@ -1004,29 +1007,24 @@ public class Gui extends Application {
     /**
      * If muse crashes or there is an error, the user is taken to this scene.
      * this scene gives information about why muse crashed.
-     * Might give suggestions about what could have gone wrong.
+     * Now implemented to show the user what went wrong with Muse
      * @param button
      */
-    private void goToErrorScene(Button button) {
-    	Alert a = new Alert(AlertType.NONE);
+    private void goToErrorScene(Exception e) {
+  
+    	// we need to update GUI component from non-gui thread
+    	Platform.runLater(()->{
+		    
+    		//we make our alert and pass the exception info
+			Alert alert = new Alert(AlertType.INFORMATION);
+	    	alert.setTitle("Error");
+	    	alert.setHeaderText("Something went wrong! Please check your configuration file.");
+	    	alert.setContentText(e.toString());
+	    	
+	    	alert.showAndWait();
+	    	
+		});
     	
-    	EventHandler<ActionEvent> errorEvent = new 
-                EventHandler<ActionEvent>() { 
-					   public void handle(ActionEvent e){ 
-					       // set alert type 
-					       a.setAlertType(AlertType.ERROR); 
-					       // set content text 
-					       a.setContentText("error Dialog");        
-					       //a.setButtonType(ButtonType.OK);
-					       // show the dialog 
-					       a.show(); 
-					   } 
-					};
-						
-					
-		//currently sets alert on button press of passed button
-		//TODO: Change to activate on detected errors (filepaths etc.)
-		button.setOnAction(errorEvent);
     }
 
 }
