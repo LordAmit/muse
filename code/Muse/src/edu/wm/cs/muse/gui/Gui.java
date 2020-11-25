@@ -63,6 +63,7 @@ public class Gui extends Application {
 	Text titleText;
 	Stage window;
 	GridPane grid;
+	CheckBox compilabilityCheckbox;
 	
 	
 
@@ -197,7 +198,7 @@ public class Gui extends Application {
 	    FlowPane leftbanner = new FlowPane();
 	    configLayout.add(createGridPane(stage), 1, 0, 1, 1);
 	    configLayout.setAlignment(Pos.TOP_CENTER);
-       Scene scene = new Scene(configLayout, 600, 660);
+       Scene scene = new Scene(configLayout, 600, 675); //600, 660?
        window.setScene(scene);
     }
     
@@ -420,7 +421,13 @@ public class Gui extends Application {
      
 
 
-        grid.add(new Separator(), 0, 19, 3, 1);
+//        grid.add(new Separator(), 0, 19, 3, 1);
+        compilabilityCheckbox = new CheckBox("Check Compilability");
+        grid.add(compilabilityCheckbox, 0, 19, 3, 1);
+        
+        
+        
+        
         
         grid.add(new Label("Once created, configurations can be reused\n"
                 + "(see Help for details)"),1, 20, 1, 1);
@@ -849,10 +856,13 @@ public class Gui extends Application {
     			    	
  						try {
  							Arguments.extractArguments(run[0]);
+							 // changed to account for compilability check
+ 							Muse muse = new Muse();
+ 							muse.setCheckCompilability(compilabilityCheckbox.isSelected());
  							//for now, create a string to store the entire intercepted console output
  							// uses the Interceptor helper class
  							String museConsoleOutput = Interceptor.copyOut(() ->{
-								new Muse().runMuse(run);
+ 									muse.runMuse(run);
 							});
 							//add the intercepted console output to the text area
 							museRuntimeText.appendText(museConsoleOutput);
@@ -1029,5 +1039,6 @@ public class Gui extends Application {
 		});
     	
     }
+
 
 }
