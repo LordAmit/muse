@@ -740,6 +740,9 @@ public class Gui extends Application {
 
 		}
 
+		if (!log_checkbox.isSelected() && !mutate_checkbox.isSelected())
+			valid = false;
+
 		return valid;
 	}
 
