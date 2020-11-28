@@ -54,6 +54,11 @@ public class ReachabilityOperator {
 					placeHolder = handler.addTryCatch((Statement) rewriter.createStringPlaceholder(
 						DataLeak.getLeak(OperatorType.REACHABILITY, Utility.COUNTER_GLOBAL),
 						ASTNode.EMPTY_STATEMENT), rewriter);
+					if (nodeChange.node.getNodeType() == ASTNode.TYPE_DECLARATION) {
+						nodeChanges.remove(i);
+						i--;
+						continue;
+					}
 				}
 				else{
 					placeHolder = (Statement) rewriter.createStringPlaceholder(

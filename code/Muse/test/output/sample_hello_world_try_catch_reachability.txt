@@ -4,19 +4,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
-    try {
-		javax.crypto.Cipher dataLeAk0 = javax.crypto.Cipher.getInstance("AES");
-		Object throwawayLeAk0 = android.util.Log.d("leak-0", dataLeAk0);
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-
-	int intA = 0;
+    int intA = 0;
 
     int methodA() {
         try {
-			javax.crypto.Cipher dataLeAk1 = javax.crypto.Cipher.getInstance("AES");
-			Object throwawayLeAk1 = android.util.Log.d("leak-1", dataLeAk1);
+			javax.crypto.Cipher dataLeAk0 = javax.crypto.Cipher.getInstance("AES");
+			Object throwawayLeAk0 = android.util.Log.d("leak-0", dataLeAk0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -27,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
 
     int methodB() {
         try {
-			javax.crypto.Cipher dataLeAk2 = javax.crypto.Cipher.getInstance("AES");
-			Object throwawayLeAk2 = android.util.Log.d("leak-2", dataLeAk2);
+			javax.crypto.Cipher dataLeAk1 = javax.crypto.Cipher.getInstance("AES");
+			Object throwawayLeAk1 = android.util.Log.d("leak-1", dataLeAk1);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -39,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		try {
-			javax.crypto.Cipher dataLeAk3 = javax.crypto.Cipher.getInstance("AES");
-			Object throwawayLeAk3 = android.util.Log.d("leak-3", dataLeAk3);
+			javax.crypto.Cipher dataLeAk2 = javax.crypto.Cipher.getInstance("AES");
+			Object throwawayLeAk2 = android.util.Log.d("leak-2", dataLeAk2);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
