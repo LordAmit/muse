@@ -190,7 +190,7 @@ public class Gui extends Application {
 	    FlowPane leftbanner = new FlowPane();
 	    configLayout.add(createGridPane(stage), 1, 0, 1, 1);
 	    configLayout.setAlignment(Pos.TOP_CENTER);
-       Scene scene = new Scene(configLayout, 600, 675); //600, 660?
+       Scene scene = new Scene(configLayout, 660, 700); //600, 660?
        window.setScene(scene);
     }
     
