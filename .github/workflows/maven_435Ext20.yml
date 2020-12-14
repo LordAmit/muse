@@ -1,13 +1,13 @@
 # This workflow will build a Java project with Maven
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+# For more information see: T
 
 name: Java CI with Maven for 435Ext20
 
 on:
   push:
-    branches: [ 435Ext20 ]
+    branches: [435Ext20]
   pull_request:
-    branches: [ 435Ext20 ]
+    branches: [435Ext20]
 
 jobs:
   build:
