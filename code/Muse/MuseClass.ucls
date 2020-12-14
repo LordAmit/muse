@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class-diagram version="1.2.2" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
   associations="true" dependencies="true" nesting-relationships="true" router="FAN">  
-  <package id="1" language="java" name="edu.wm.cs.muse.dataleak.operators" project="Muse" 
+  <package id="1" language="java" name="edu.wm.cs.muse.dataleak.operators" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/operators" binary="false" corner="BOTTOM_RIGHT">    
     <position height="48" width="231" x="1913" y="300"/>    
     <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
   </package>  
-  <class id="2" language="java" name="edu.wm.cs.muse.Muse" project="Muse" file="/Muse/src/edu/wm/cs/muse/Muse.java" 
+  <class id="2" language="java" name="Muse" project="Muse" file="/Muse/src/edu/wm/cs/muse/Muse.java"
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="223" width="404" x="3356" y="37"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -15,7 +15,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="3" language="java" name="edu.wm.cs.muse.dataleak.operators.ReachabilityOperator" project="Muse" 
+  <class id="3" language="java" name="ReachabilityOperator" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/operators/ReachabilityOperator.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="115" width="430" x="1443" y="300"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -24,7 +24,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="edu.wm.cs.muse.dataleak.operators.SinkOperator" project="Muse" 
+  <class id="4" language="java" name="edu.wm.cs.muse.dataleak.operators.SinkOperator" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/operators/SinkOperator.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="187" width="366" x="2540" y="300"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -33,7 +33,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="edu.wm.cs.muse.dataleak.operators.SourceOperator" project="Muse" 
+  <class id="5" language="java" name="edu.wm.cs.muse.dataleak.operators.SourceOperator" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/operators/SourceOperator.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="151" width="382" x="3356" y="300"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -42,7 +42,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="6" language="java" name="edu.wm.cs.muse.dataleak.operators.TaintOperator" project="Muse" 
+  <class id="6" language="java" name="edu.wm.cs.muse.dataleak.operators.TaintOperator" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/operators/TaintOperator.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="151" width="370" x="2946" y="300"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -51,7 +51,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="7" language="java" name="edu.wm.cs.muse.dataleak.operators.TaintSinkOperator" project="Muse" 
+  <class id="7" language="java" name="TaintSinkOperator" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/operators/TaintSinkOperator.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="133" width="576" x="435" y="300"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -60,7 +60,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="8" language="java" name="edu.wm.cs.muse.dataleak.schemas.ReachabilitySchema" project="Muse" 
+  <class id="8" language="java" name="ReachabilitySchema" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/schemas/ReachabilitySchema.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="151" width="354" x="41" y="300"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -69,7 +69,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="9" language="java" name="edu.wm.cs.muse.dataleak.schemas.SinkSchema" project="Muse" 
+  <class id="9" language="java" name="edu.wm.cs.muse.dataleak.schemas.SinkSchema" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/schemas/SinkSchema.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="133" width="316" x="2184" y="300"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -78,7 +78,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="10" language="java" name="edu.wm.cs.muse.dataleak.schemas.TaintSinkSchema" project="Muse" 
+  <class id="10" language="java" name="TaintSinkSchema" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/schemas/TaintSinkSchema.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="259" width="352" x="1051" y="300"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -87,7 +87,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="11" language="java" name="edu.wm.cs.muse.dataleak.schemas.SourceSchema" project="Muse" 
+  <class id="11" language="java" name="edu.wm.cs.muse.dataleak.schemas.SourceSchema" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/schemas/SourceSchema.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="115" width="330" x="3799" y="300"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -96,7 +96,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="12" language="java" name="edu.wm.cs.muse.dataleak.schemas.TaintSchema" project="Muse" 
+  <class id="12" language="java" name="edu.wm.cs.muse.dataleak.schemas.TaintSchema" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/schemas/TaintSchema.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="151" width="330" x="4169" y="300"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -105,7 +105,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="13" language="java" name="edu.wm.cs.muse.dataleak.support.SchemaUtility" project="Muse" 
+  <class id="13" language="java" name="edu.wm.cs.muse.dataleak.support.SchemaUtility" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/support/SchemaUtility.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="97" width="239" x="1559" y="37"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -114,7 +114,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="14" language="java" name="edu.wm.cs.muse.dataleak.support.FileUtility" project="Muse" 
+  <class id="14" language="java" name="FileUtility" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/support/FileUtility.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="133" width="196" x="4539" y="300"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -123,7 +123,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="15" language="java" name="edu.wm.cs.muse.dataleak.support.Arguments" project="Muse" 
+  <class id="15" language="java" name="Arguments" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/support/Arguments.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="295" width="178" x="4578" y="599"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -132,7 +132,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <enumeration id="16" language="java" name="edu.wm.cs.muse.dataleak.support.OperatorType" project="Muse" 
+  <enumeration id="16" language="java" name="OperatorType" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/support/OperatorType.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="169" width="177" x="3139" y="599"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -141,7 +141,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </enumeration>  
-  <class id="17" language="java" name="edu.wm.cs.muse.dataleak.support.Utility" project="Muse" 
+  <class id="17" language="java" name="Utility" project="Muse"
     file="/Muse/src/edu/wm/cs/muse/dataleak/support/Utility.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="115" width="186" x="2400" y="599"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -150,7 +150,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="18" language="java" name="edu.wm.cs.muse.dataleak.support.node_containers.SourceNodeChangeContainers" 
+  <class id="18" language="java" name="SourceNodeChangeContainers"
     project="Muse" file="/Muse/src/edu/wm/cs/muse/dataleak/support/node_containers/SourceNodeChangeContainers.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="187" width="397" x="3356" y="599"/>    
@@ -160,7 +160,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="19" language="java" name="edu.wm.cs.muse.dataleak.support.node_containers.ReachabilityNodeChangeContainers" 
+  <class id="19" language="java" name="ReachabilityNodeChangeContainers"
     project="Muse" 
     file="/Muse/src/edu/wm/cs/muse/dataleak/support/node_containers/ReachabilityNodeChangeContainers.java" 
     binary="false" corner="BOTTOM_RIGHT">    
@@ -171,7 +171,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="20" language="java" name="edu.wm.cs.muse.dataleak.support.node_containers.TaintNodeChangeContainers" 
+  <class id="20" language="java" name="TaintNodeChangeContainers"
     project="Muse" file="/Muse/src/edu/wm/cs/muse/dataleak/support/node_containers/TaintNodeChangeContainers.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="169" width="522" x="873" y="599"/>    
@@ -181,7 +181,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="21" language="java" name="edu.wm.cs.muse.dataleak.support.node_containers.SinkNodeChangeContainers" 
+  <class id="21" language="java" name="SinkNodeChangeContainers"
     project="Muse" file="/Muse/src/edu/wm/cs/muse/dataleak/support/node_containers/SinkNodeChangeContainers.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="187" width="447" x="1913" y="599"/>    
