@@ -38,7 +38,7 @@ import edu.wm.cs.muse.mdroid.ASTHelper;
 import edu.wm.cs.muse.loganalyzer.LeakRemover;
 import edu.wm.cs.muse.loganalyzer.LogDiff;
 
-import org.apache.commons.cli.CommandLine;
+//import org.apache.commons.cli.CommandLine;
 
 /**
  *
@@ -48,7 +48,7 @@ import org.apache.commons.cli.CommandLine;
 public class Muse {
 
 	ASTRewrite rewriter;
-	CommandLine cmd = null;
+//	CommandLine cmd = null;
 	private boolean checkCompilability = true;
 	// TODO: Does not handle anonymous declarations and try_catch clauses well.
 	// currently just ignores such methods.

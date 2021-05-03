@@ -187,7 +187,7 @@ public class Gui extends Application {
      */
     private void goToConfigCreation(Stage stage) {
     	GridPane configLayout = new GridPane();
-	    FlowPane leftbanner = new FlowPane();
+//	    FlowPane leftbanner = new FlowPane();
 	    configLayout.add(createGridPane(stage), 1, 0, 1, 1);
 	    configLayout.setAlignment(Pos.TOP_CENTER);
        Scene scene = new Scene(configLayout, 660, 700); //600, 660?
@@ -1013,7 +1013,7 @@ public class Gui extends Application {
      * If muse crashes or there is an error, the user is taken to this scene.
      * this scene gives information about why muse crashed.
      * Now implemented to show the user what went wrong with Muse
-     * @param button
+     * @param e exception received
      */
     private void goToErrorScene(Exception e) {
   
