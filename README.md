@@ -1,13 +1,15 @@
 # Muse
 
-## Update Notice
+## Update Notice May, 2021
 
-Muse repository description is currently going through update. There are two branches that require attention in terms of latest development. In chronologically ascending order, these are:
+Muse repository description is currently going through update.
+
+There are two branches that require attention in terms of latest development. In chronologically ascending order, these are:
 
 - [master](https://github.com/LordAmit/muse/tree/master) Contains the Muse version used for the [TOPS paper](https://dl.acm.org/doi/10.1145/3439802)
 - [435Ext20](https://github.com/LordAmit/muse/tree/435Ext20) Contains the Muse version used for the [ICSE'21 Demonstrations paper](https://conf.researchr.org/details/icse-2021/icse-2021-Demonstrations/14/Demo-Mutation-based-Evaluation-of-Security-focused-Static-Analysis-Tools-for-Android). This is built on top of `master` branch, so it contains all the improvements `master` from there.
 
-The website is also being updated accordingly.
+The [website](https://muse-security-evaluation.github.io/#overview) is also being updated accordingly.
 
 ---
 
