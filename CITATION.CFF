@@ -1,5 +1,4 @@
-# YAML 1.2
----
+cff-version: 1.2.0
 abstract: |
     "Mobile application security has been a major area of focus for security research over
     the course of the last decade. Numerous application analysis tools have been proposed
@@ -68,4 +67,8 @@ message: |
     keywords = {Network trace anonymization, semantic attacks, CryptoPAn}
     }"
 title: "Systematic Mutation-Based Evaluation of the Soundness of Security-Focused Android Static Analysis Techniques"
+version: 2.0
+date-released: 2021-04-01
+url: "https://secure-platforms-lab-w-m.github.io/muse/"
+
 ...
