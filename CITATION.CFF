@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-abstract: |
+abstract:
     "Mobile application security has been a major area of focus for security research over
     the course of the last decade. Numerous application analysis tools have been proposed
     in response to malicious, curious, or vulnerable apps. However, existing tools, and
