@@ -45,9 +45,9 @@ authors:
     given-names: Denys
 cff-version: "1.1.0"
 doi: "10.1145/3439802"
-message: |
+journal: ACM Trans. Priv. Secur."
+message:
     "If you use this software, please cite it using this metadata.
-
     @article{10.1145/3439802,
     author = {Ami, Amit Seal and Kafle, Kaushal and Moran, Kevin and Nadkarni, Adwait and Poshyvanyk, Denys},
     title = {Systematic Mutation-Based Evaluation of the Soundness of Security-Focused Android Static Analysis Techniques},
